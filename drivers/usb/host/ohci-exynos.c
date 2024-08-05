@@ -51,7 +51,7 @@ static int exynos_ohci_get_phy(struct device *dev,
 		exynos_ohci->phy[phy_number] = phy;
 	}
 	if (num_phys > 0)
-		return 0;
+		goto init_phys;
 
 	/* Get PHYs using legacy bindings */
 	for_each_available_child_of_node_scoped(dev->of_node, child) {
@@ -73,6 +73,12 @@ static int exynos_ohci_get_phy(struct device *dev,
 	}
 
 	exynos_ohci->legacy_phy = true;
+
+init_phys:
+	for (phy_number = 0; phy_number < PHY_NUMBER; phy_number++) {
+		phy_init(exynos_ohci->phy[phy_number]);
+	}
+
 	return 0;
 }
 
@@ -102,6 +108,16 @@ static void exynos_ohci_phy_disable(struct device *dev)
 		phy_power_off(exynos_ohci->phy[i]);
 }
 
+static void exynos_ohci_phy_exit(struct device *dev)
+{
+	struct usb_hcd *hcd = dev_get_drvdata(dev);
+	struct exynos_ohci_hcd *exynos_ohci = to_exynos_ohci(hcd);
+	int i;
+
+	for (i = 0; i < PHY_NUMBER; i++)
+		phy_exit(exynos_ohci->phy[i]);
+}
+
 static int exynos_ohci_probe(struct platform_device *pdev)
 {
 	struct exynos_ohci_hcd *exynos_ohci;
@@ -127,6 +143,8 @@ static int exynos_ohci_probe(struct platform_device *pdev)
 	}
 
 	exynos_ohci = to_exynos_ohci(hcd);
+
+	hcd->skip_phy_initialization = 1;
 
 	err = exynos_ohci_get_phy(&pdev->dev, exynos_ohci);
 	if (err)
@@ -180,6 +198,7 @@ static int exynos_ohci_probe(struct platform_device *pdev)
 
 fail_add_hcd:
 	exynos_ohci_phy_disable(&pdev->dev);
+	exynos_ohci_phy_exit(&pdev->dev);
 	pdev->dev.of_node = exynos_ohci->of_node;
 fail_io:
 	usb_put_hcd(hcd);
@@ -196,6 +215,7 @@ static void exynos_ohci_remove(struct platform_device *pdev)
 	usb_remove_hcd(hcd);
 
 	exynos_ohci_phy_disable(&pdev->dev);
+	exynos_ohci_phy_exit(&pdev->dev);
 
 	usb_put_hcd(hcd);
 }
