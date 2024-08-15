@@ -947,6 +947,7 @@ static int max77693_charger_probe(struct platform_device *pdev)
 	chg->max77693 = max77693;
 
 	psy_cfg.drv_data = chg;
+	psy_cfg.fwnode = dev_fwnode(&pdev->dev);
 
 	chg->charger = devm_power_supply_register(&pdev->dev,
 						  &max77693_charger_desc,
