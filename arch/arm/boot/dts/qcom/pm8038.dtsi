@@ -1,0 +1,177 @@
+// SPDX-License-Identifier: GPL-2.0
+
+
+&ssbi {
+	pmicintc: pmic@0 {
+		compatible = "qcom,pm8038";
+		interrupt-parent = <&msmgpio>;
+		interrupts = <104 8>;
+		#interrupt-cells = <2>;
+		interrupt-controller;
+		#address-cells = <1>;
+		#size-cells = <0>;
+
+		pwrkey@1c {
+			compatible = "qcom,pm8921-pwrkey";
+			reg = <0x1c>;
+			interrupt-parent = <&pmicintc>;
+			interrupts = <50 1>, <51 1>;
+			debounce = <15625>;
+			pull-up;
+		};
+
+		
+
+		vibrator@4a {
+			compatible = "qcom,pm8921-vib";
+			reg = <0x4a>;
+		};
+
+		/*keypad@148 {
+			compatible = "qcom,pm8921-keypad";
+			reg = <0x148>;
+			interrupt-parent = <&pmicintc>;
+			interrupts = <74 1>, <75 1>;
+			linux,keymap = <
+				MATRIX_KEY(0, 0, KEY_VOLUMEUP)
+				MATRIX_KEY(0, 1, KEY_VOLUMEDOWN)
+				MATRIX_KEY(0, 2, KEY_CAMERA_FOCUS)
+				MATRIX_KEY(0, 3, KEY_CAMERA)
+			>;
+			keypad,num-rows = <1>;
+			keypad,num-columns = <5>;
+			debounce = <15>;
+			scan-delay = <32>;
+			row-hold = <91500>;
+		};*/
+
+		/*pm8038_gpio: gpio@150 {
+
+			compatible = "qcom,pm8921-gpio",
+				     "qcom,ssbi-gpio";
+			reg = <0x150>;
+			interrupt-controller;
+			#interrupt-cells = <2>;
+			gpio-controller;
+			gpio-ranges = <&pm8038_gpio 0 0 44>;
+			#gpio-cells = <2>;
+
+		};*/
+
+		rtc@11d {
+			compatible = "qcom,pm8921-rtc";
+			interrupt-parent = <&pmicintc>;
+			interrupts = <39 1>;
+			reg = <0x11d>;
+			allow-set-time;
+		};
+
+		/* using hacked up pm8941 driver */
+		// TODO: hack it
+		/*wled@25a {
+			compatible = "qcom,pm8xxx-wled";
+			reg = <0x25A>;
+			label = "backlight";
+
+			// dig_mod_gen_en ?
+			// op_fdbck ?
+			qcom,cs-out;
+			qcom,current-limit = <25>;
+			qcom,current-boost-limit = <525>;
+			qcom,switching-freq = <1600>; // ?
+			qcom,ovp = <32>;
+			qcom,num-strings = <2>;
+		};*/
+
+		xoadc: xoadc@197 {
+			compatible = "qcom,pm8038-adc";
+			reg = <197>;
+			interrupts-extended = <&pmicintc 78 IRQ_TYPE_EDGE_RISING>;
+			#address-cells = <2>;
+			#size-cells = <0>;
+			#io-channel-cells = <2>;
+
+			vcoin: adc-channel@0 {
+				reg = <0x00 0x00>;
+			};
+			vbat: adc-channel@1 {
+				reg = <0x00 0x01>;
+			};
+			dcin: adc-channel@2 {
+				reg = <0x00 0x02>;
+			};
+			ichg: adc-channel@3 {
+				reg = <0x00 0x03>;
+			};
+			vph_pwr: adc-channel@4 {
+				reg = <0x00 0x04>;
+			};
+			batt_therm: adc-channel@8 {
+				reg = <0x00 0x08>;
+			};
+			batt_id: adc-channel@9 {
+				reg = <0x00 0x09>;
+			};
+			usb_vbus: adc-channel@a {
+				reg = <0x00 0x0a>;
+			};
+			die_temp: adc-channel@b {
+				reg = <0x00 0x0b>;
+			};
+			ref_625mv: adc-channel@c {
+				reg = <0x00 0x0c>;
+			};
+			ref_1250mv: adc-channel@d {
+				reg = <0x00 0x0d>;
+			};
+			chg_temp: adc-channel@e {
+				reg = <0x00 0x0e>;
+			};
+			ref_muxoff: adc-channel@f {
+				reg = <0x00 0x0f>;
+			};
+		};
+
+		smbb: charger@0 {
+			compatible = "qcom,pm8921-charger";
+			reg = <0x0>;
+
+			interrupt-parent = <&pmicintc>;
+			interrupts =
+				<8 1>,  <9 1>,  <10 1>, <11 1>, <12 1>, <13 1>, <14 1>, <15 1>,
+				<16 1>, <17 1>, <18 1>, <19 1>, <20 1>, <21 1>, <22 1>, <23 1>,
+				<24 1>, <25 1>, <26 1>, <27 1>, <28 1>, <29 1>, <30 1>, <31 1>,
+				<40 1>, <41 1>, <42 1>, <43 1>, <44 1>, <45 1>,			<47 1>;
+			interrupt-names =
+				"vcp", "chg-wdog", "vbat-ov", "usb-uv", "vbatdet-low", "bat-insert", "usb-ov", "usb-valid",
+				"chg-trkl", "chg-fast", "loopchange", "chg-state", "chg-fail", "chg-done", "atc-fail", "atc-done",
+				"vdd-loop", "course-det-low", "bat-temp-ok", "chg-gone", "bat-temp-cold", "chg-hot", "bat-temp-hot", "bat-remove",
+				"dc-uv", "dc-ov", "dc-valid", "psi", "batfet", "vbatdet", "vreg-ov";
+
+			// usb-otg-in-supply = <&pm8941_5vs1>;
+
+			qcom,disable-dc;
+		// { "bat-present", smbb_bat_present_handler },
+
+			chg_otg: otg-vbus { };
+		};
+	};
+};
+
+/ {
+    /*
+	 * These channels from the ADC are simply hardware monitors.
+	 * That is why the ADC is referred to as "HKADC" - HouseKeeping
+	 * ADC.
+	 */
+	iio-hwmon {
+		compatible = "iio-hwmon";
+		io-channels = <&xoadc 0x00 0x01>, /* Battery */
+			    <&xoadc 0x00 0x02>, /* DC in (charger) */
+			    <&xoadc 0x00 0x04>, /* VPH the main system voltage */
+			    <&xoadc 0x00 0x0b>, /* Die temperature */
+			    <&xoadc 0x00 0x0c>, /* Reference voltage 1.25V */
+			    <&xoadc 0x00 0x0d>, /* Reference voltage 0.625V */
+			    <&xoadc 0x00 0x0e>; /* Charger temperature */
+	};
+};

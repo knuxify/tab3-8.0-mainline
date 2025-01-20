@@ -175,7 +175,7 @@ void ci_handle_id_switch(struct ci_hdrc *ci)
 	mutex_lock(&ci->mutex);
 	role = ci_otg_role(ci);
 	if (role != ci->role) {
-		dev_dbg(ci->dev, "switching from %s to %s\n",
+		dev_warn(ci->dev, "switching from %s to %s\n",
 			ci_role(ci)->name, ci->roles[role]->name);
 
 		if (ci->vbus_active && ci->role == CI_ROLE_GADGET)

@@ -3160,6 +3160,47 @@ static int mmcc_msm8960_probe(struct platform_device *pdev)
 {
 	struct regmap *regmap;
 	struct device *dev = &pdev->dev;
+
+	void *ptr = ioremap(0x4000000, 0x1000);
+	uint32_t tmp;
+	*(volatile uint32_t*) (ptr + 0x204) = 0x0;
+	tmp = *(volatile uint32_t*) (ptr + 0x008);
+	*(volatile uint32_t*) (ptr + 0x008) = (tmp & ~0x6C000103) | 0x40000000;
+	*(volatile uint32_t*) (ptr + 0x038) = 0x3C7097F9;
+	*(volatile uint32_t*) (ptr + 0x020C) = 0x0;
+	*(volatile uint32_t*) (ptr + 0x0200) = 0x0;
+#define rmw(x, v, m) ({ \
+	tmp = *(volatile uint32_t*) (ptr + x); \
+	*(volatile uint32_t*) (ptr + x) = (tmp & ~m) | v; \
+})
+	rmw(0x0018, 0x0003AFF9, 0x0803FFFF);
+	rmw(0x0020, 0x3A27FCFF, 0x3A3FFFFF);
+	rmw(0x002C, 0x0027FCFF, 0x003FFFFF);
+	rmw(0x0114, 0x0027FCFF, 0x017FFFFF);
+	rmw(0x0244, 0x000004FF, 0x00000FFF);
+	rmw(0x0030, 0x00003C38, 0x00003FFF);
+	rmw(0x0040, 0x00000000, 0x00000410);
+	rmw(0x0024, 0x00000000, 0x00000410);
+	rmw(0x0090, 0x80FF0000, 0xE0FF0010);
+	rmw(0x0130, 0x80FF0000, 0xE0FF0010);
+	rmw(0x0080, 0xC0FF0000, 0xE0FF0010);
+	rmw(0x0098, 0x80FF0000, 0xE0FF0010);
+	rmw(0x00C0, 0x80FF0000, 0xE1FF0010);
+	rmw(0x016C, 0x80FF0000, 0xE0FF0010);
+	rmw(0x00E0, 0x80FF0000, 0xE0FF0010);
+	rmw(0x0124, 0x000004FF, 0x000007FF);
+	rmw(0x00F8, 0xC0FF0000, 0xE0FF0010);
+	rmw(0x0104, 0x80FF0000, 0xE0FF4010);
+	rmw(0x023C, 0x800000FF, 0xE00000FF);
+	rmw(0x0110, 0x80FF0000, 0xE0FF0010);
+	rmw(0x00EC, 0x80FF0000, 0xE1FFC010);
+	//*(volatile uint32_t*) (ptr + 0x0210) = 0x0;
+	//*(volatile uint32_t*) (ptr + 0x0214) = 0x0;
+	*(volatile uint32_t*) (ptr + 0x0214) = BIT(11);
+	*(volatile uint32_t*) (ptr + 0x0214) = BIT(15);
+	rmw(0x00B0, 1, 7);
+	rmw(0x011C, 1, 7);
+	
 	const struct qcom_cc_desc *desc = device_get_match_data(dev);
 
 	if (desc == &mmcc_apq8064_desc) {
@@ -3175,7 +3216,12 @@ static int mmcc_msm8960_probe(struct platform_device *pdev)
 
 	clk_pll_configure_sr(&pll15, regmap, &pll15_config, false);
 
-	return qcom_cc_really_probe(&pdev->dev, desc, regmap);
+	int ret = qcom_cc_really_probe(&pdev->dev, desc, regmap);
+	printk("a\n");
+	//clk_pll_ops.set_rate(&pll2.clkr.hw, 800000000, 27000000);
+	clk_pll_ops.enable(&pll2.clkr.hw);
+	printk("b\n");
+	return ret;
 }
 
 static struct platform_driver mmcc_msm8960_driver = {
