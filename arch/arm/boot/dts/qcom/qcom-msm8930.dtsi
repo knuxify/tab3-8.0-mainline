@@ -25,16 +25,19 @@
 		ranges;
 
 		// TODO: check is kconfig thing about SMEM can be disabled
-		smem_region: smem@80000000 {
+		/*smem_region: smem@80000000 {
 			reg = <0x80000000 0x200000>;
 			no-map;
-		};
+		};*/
 
 		wcnss_mem: wcnss@8f000000 {
 			reg = <0x8f000000 0x700000>;
 			no-map;
 		};
 
+		// We have 8f700000-8fafffff as system memory,
+		// but it isn't present in downstream
+		// TODO: figure out and reserve if needed
 
 		// probably works
 		rmtfs@8fb00000 {
@@ -45,13 +48,44 @@
 			qcom,client-id = <1>;
 		};
 
-		/*ramoops@91000000 {
-			compatible = "ramoops";
-			reg = <0x91000000 0x100000>;
-			record-size = <0x00020000>;
-			console-size = <0x00020000>;
-			ftrace-size = <0x00020000>;
+		ramoops@88d00000 {
+			//compatible = "ramoops";
+			reg = <0x88d00000 0x100000>;
+			//record-size = <0x00020000>;
+			//console-size = <0x00020000>;
+			//ftrace-size = <0x00020000>;
+		};
+
+		// ION heaps
+		/*mm@98000000 {
+			reg = <0x98000000 0x3800000>;
 		};*/
+
+		/*mm-fw@97e00000 {
+			reg = <0x97e00000 0x1e0000>;
+		};*/
+
+		/*mfc@9b800000 {
+			reg = <0x9b800000 0x2000>;
+		};*/
+
+		/*qsecom@9f309000 {
+			reg = <0x9f309000 0x780000>;
+		};*/
+
+		/*audio@9fa89000 {
+			reg = <0x9fa89000 0x4cf000>;
+		};*/
+
+		// adsp start is 0?
+
+		// in downstream the 8fe00000 - 90000000 is not shown in /proc/iomem
+		// but I'm not sure what is this memory for,
+		// it's placed just after rmtfs, so it may be some kind of shared memory
+		mem@8fe00000 {
+			reg = <0x8fe00000 0x200000>;
+			no-map;
+		};
 	};
 
 	cpus {
@@ -165,12 +199,12 @@
 		};
 	};
 
-	smem {
+	/*smem {
 		compatible = "qcom,smem";
 		memory-region = <&smem_region>;
 
 		hwlocks = <&sfpb_mutex 3>;
-	};
+	};*/
 
 	// TODO: deprecated
 	smd {
@@ -386,7 +420,7 @@
 		};
 
 		sps_sic_non_secure: sps-sic-non-secure@12100000 {
-			compatible = "qcom,sic-non-secure", "syscon";
+			compatible = /*"qcom,sic-non-secure", */"syscon";
 			reg	= <0x12100000 0x10000>;
 		};
 
@@ -535,7 +569,7 @@
 			#size-cells = <1>;
 			ranges;
 
-			syscon-tcsr = <&tcsr>;
+			//syscon-tcsr = <&tcsr>;
 
 			status = "disabled";
 
@@ -638,7 +672,7 @@
 
 		/*sdcc1bam: dma@12402000 {
 			compatible = "qcom,bam-v1.3.0";
-			reg = <0x12402000 0x8000>;
+			reg = <0x12402000 0x2000>;
 			interrupts = <GIC_SPI 98 IRQ_TYPE_LEVEL_HIGH>;
 			clocks = <&gcc SDC1_H_CLK>;
 			clock-names = "bam_clk";
@@ -677,6 +711,9 @@
 				cap-mmc-highspeed;
 				//dmas = <&sdcc1bam 2>, <&sdcc1bam 1>;
 				//dma-names = "tx", "rx";
+
+				pinctrl-0 = <&sdcc1_pins_active>;
+				pinctrl-names = "default";
 			};
 
 			sdcc3: mmc@12180000 {
@@ -692,8 +729,8 @@
 				cap-mmc-highspeed;
 				max-frequency = <192000000>;
 				no-1-8-v;
-				//dmas = <&sdcc3bam 2>, <&sdcc3bam 1>;
-				//dma-names = "tx", "rx";
+				dmas = <&sdcc3bam 2>, <&sdcc3bam 1>;
+				dma-names = "tx", "rx";
 
 				pinctrl-0 = <&sdcc3_pins_active>;
 				pinctrl-1 = <&sdcc3_pins_sleep>;
@@ -701,10 +738,10 @@
 			};
 		};
 
-		tcsr: syscon@1a400000 {
+		/*tcsr: syscon@1a400000 {
 			compatible = "qcom,tcsr-msm8960", "syscon";
 			reg = <0x1a400000 0x100>;
-		};
+		};*/
 
 		/*riva: riva-pil@3204000 {
 			compatible = "qcom,riva-pil";
