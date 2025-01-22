@@ -25,10 +25,10 @@
 		ranges;
 
 		// TODO: check is kconfig thing about SMEM can be disabled
-		/*smem_region: smem@80000000 {
+		smem_region: smem@80000000 {
 			reg = <0x80000000 0x200000>;
 			no-map;
-		};*/
+		};
 
 		wcnss_mem: wcnss@8f000000 {
 			reg = <0x8f000000 0x700000>;
@@ -48,44 +48,13 @@
 			qcom,client-id = <1>;
 		};
 
-		ramoops@88d00000 {
+		/*ramoops@88d00000 {
 			//compatible = "ramoops";
 			reg = <0x88d00000 0x100000>;
 			//record-size = <0x00020000>;
 			//console-size = <0x00020000>;
 			//ftrace-size = <0x00020000>;
-		};
-
-		// ION heaps
-		/*mm@98000000 {
-			reg = <0x98000000 0x3800000>;
 		};*/
-
-		/*mm-fw@97e00000 {
-			reg = <0x97e00000 0x1e0000>;
-		};*/
-
-		/*mfc@9b800000 {
-			reg = <0x9b800000 0x2000>;
-		};*/
-
-		/*qsecom@9f309000 {
-			reg = <0x9f309000 0x780000>;
-		};*/
-
-		/*audio@9fa89000 {
-			reg = <0x9fa89000 0x4cf000>;
-		};*/
-
-		// adsp start is 0?
-
-		// in downstream the 8fe00000 - 90000000 is not shown in /proc/iomem
-		// but I'm not sure what is this memory for,
-		// it's placed just after rmtfs, so it may be some kind of shared memory
-		mem@8fe00000 {
-			reg = <0x8fe00000 0x200000>;
-			no-map;
-		};
 	};
 
 	cpus {
@@ -125,51 +94,6 @@
 		reg = <0x80000000 0>;
 	};
 
-	/*thermal-zones {
-		cpu0-thermal {
-			polling-delay-passive = <250>;
-			polling-delay = <1000>;
-
-			thermal-sensors = <&tsens 7>;
-			coefficients = <1199 0>;
-
-			trips {
-				cpu_alert0: trip0 {
-					temperature = <75000>;
-					hysteresis = <2000>;
-					type = "passive";
-				};
-				cpu_crit0: trip1 {
-					temperature = <110000>;
-					hysteresis = <2000>;
-					type = "critical";
-				};
-			};
-		};
-
-		cpu1-thermal {
-			polling-delay-passive = <250>;
-			polling-delay = <1000>;
-
-			thermal-sensors = <&tsens 8>;
-			coefficients = <1132 0>;
-
-			trips {
-				cpu_alert1: trip0 {
-					temperature = <75000>;
-					hysteresis = <2000>;
-					type = "passive";
-				};
-				cpu_crit1: trip1 {
-					temperature = <110000>;
-					hysteresis = <2000>;
-					type = "critical";
-				};
-			};
-		};
-	};*/
-
-
 	cpu-pmu {
 		compatible = "qcom,krait-pmu";
 		interrupts = <GIC_PPI 10 0x304>;
@@ -199,15 +123,21 @@
 		};
 	};
 
-	/*smem {
+	sfpb_mutex: hwmutex {
+		compatible = "qcom,sfpb-mutex";
+		syscon = <&sfpb_wrapper_mutex 0x604 0x4>;
+		#hwlock-cells = <1>;
+	};
+
+	smem {
 		compatible = "qcom,smem";
 		memory-region = <&smem_region>;
 
 		hwlocks = <&sfpb_mutex 3>;
-	};*/
+	};
 
 	// TODO: deprecated
-	smd {
+	/*smd {
 		compatible = "qcom,smd";
 
 		modem@0 {
@@ -245,7 +175,7 @@
 
 			status = "disabled";
 		};
-	};
+	};*/
 
 	smsm {
 		compatible = "qcom,smsm";
@@ -309,12 +239,6 @@
 		#size-cells = <1>;
 		ranges;
 		compatible = "simple-bus";
-
-		sfpb_mutex: hwmutex {
-			compatible = "qcom,sfpb-mutex";
-			syscon = <&sfpb_wrapper_mutex 0x604 0x4>;
-			#hwlock-cells = <1>;
-		};
 
 		intc: interrupt-controller@2000000 {
 			compatible = "qcom,msm-qgic2";
@@ -420,7 +344,7 @@
 		};
 
 		sps_sic_non_secure: sps-sic-non-secure@12100000 {
-			compatible = /*"qcom,sic-non-secure", */"syscon";
+			compatible = "qcom,sic-non-secure", "syscon";
 			reg	= <0x12100000 0x10000>;
 		};
 
@@ -450,32 +374,32 @@
 			};
 		};
 
-		/*sram@2a03f000 {
+		sram@2a03f000 { // TODO: rename to imem?
             compatible = "qcom,apq8064-imem", "syscon", "simple-mfd";
             reg = <0x2a03f000 0x1000>;
 
-            pc-cntr@664 {
+            /*pc-cntr@664 {
                 compatible = "qcom,pc-cntr"; // TODO
                 reg = <0x664 0x40>;
-            };
-        };*/
+            };*/
+        };
 
 		acc0: clock-controller@2088000 {
 			compatible = "qcom,kpss-acc-v1";
 			reg = <0x02088000 0x1000>, <0x02008000 0x1000>;
-			/*clocks = <&gcc PLL8_VOTE>, <&pxo_board>;
+			clocks = <&gcc PLL8_VOTE>, <&pxo_board>;
 			clock-names = "pll8_vote", "pxo";
 			clock-output-names = "acpu0_aux";
-			#clock-cells = <0>;*/
+			#clock-cells = <0>;
 		};
 
 		acc1: clock-controller@2098000 {
 			compatible = "qcom,kpss-acc-v1";
 			reg = <0x02098000 0x1000>, <0x02008000 0x1000>;
-			/*clocks = <&gcc PLL8_VOTE>, <&pxo_board>;
+			clocks = <&gcc PLL8_VOTE>, <&pxo_board>;
 			clock-names = "pll8_vote", "pxo";
 			clock-output-names = "acpu1_aux";
-			#clock-cells = <0>;*/
+			#clock-cells = <0>;
 		};
 
 		saw0: regulator@2089000 {
@@ -569,7 +493,7 @@
 			#size-cells = <1>;
 			ranges;
 
-			//syscon-tcsr = <&tcsr>;
+			syscon-tcsr = <&tcsr>;
 
 			status = "disabled";
 
@@ -670,7 +594,7 @@
 			};
 		};
 
-		/*sdcc1bam: dma@12402000 {
+		/*sdcc1bam: dma-controller@12402000 {
 			compatible = "qcom,bam-v1.3.0";
 			reg = <0x12402000 0x2000>;
 			interrupts = <GIC_SPI 98 IRQ_TYPE_LEVEL_HIGH>;
@@ -680,7 +604,7 @@
 			qcom,ee = <0>;
 		};*/
 
-		sdcc3bam: dma@12182000 { // dma-controller breaks initramfs
+		sdcc3bam: dma-controller@12182000 {
 			compatible = "qcom,bam-v1.3.0";
 			reg = <0x12182000 0x2000>; // maybe 0x8000
 			interrupts = <0 96 IRQ_TYPE_LEVEL_HIGH>;
@@ -738,10 +662,10 @@
 			};
 		};
 
-		/*tcsr: syscon@1a400000 {
+		tcsr: syscon@1a400000 {
 			compatible = "qcom,tcsr-msm8960", "syscon";
 			reg = <0x1a400000 0x100>;
-		};*/
+		};
 
 		/*riva: riva-pil@3204000 {
 			compatible = "qcom,riva-pil";
