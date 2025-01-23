@@ -469,15 +469,16 @@
 	vmmc-supply = <&pm8038_l5>;
 	vqmmc-supply = <&pm8038_l11>;
 
-	// TODO: make emmc work
-	/*qcom,vdd-voltage-level = <2950000 2950000>;
+	qcom,vdd-voltage-level = <2950000 2950000>;
 	qcom,vdd-current_level = <9000 200000>;
 	qcom,vdd-always-on;
 	qcom,vdd-lpm_sup;
 
 	qcom,vdd-io-voltage-level = <1800000 1800000>;
 	qcom,vdd-io-current_level = <0 200000>; // no lpm for vdd-io
-	qcom,vdd-io-always-on;*/
+	// The SoC with 1.2 or higher revision doesn't require this
+	// Same applies to sdcc3
+	//qcom,vdd-io-always-on;
 
 	status = "okay";
 };
@@ -492,18 +493,14 @@
 
 	qcom,vdd-voltage-level = <2950000 2950000>;
 	qcom,vdd-current_level = <9000 800000>;
-	//qcom,vdd-always-on; // I guess
+	qcom,vdd-always-on; // I guess
 	qcom,vdd-lpm_sup;
 
 
 	qcom,vdd-io-voltage-level = <1850000 2950000>;
 	qcom,vdd-io-current_level = <2000 16000>;
-	qcom,vdd-io-always-on;
+	//qcom,vdd-io-always-on;
 	qcom,vdd-io-lpm_sup;
-
-	/*sd-uhs-sdr50;
-	sd-uhs-sdr104;
-	sd-uhs-ddr50;*/
 
 	status = "okay";
 };
@@ -513,7 +510,7 @@
 	v1p8-supply = <&pm8038_l4>;
 };*/
 
-&usb1 {
+/*&usb1 {
 	dr_mode = "otg";
 	status = "okay";
 	ulpi {
@@ -522,7 +519,7 @@
 			v1p8-supply = <&pm8038_l4>;
 		};
 	};
-};
+};*/
 
 /*&pm8038_gpio {
 	gpio_keys_pin_a: gpio-keys-active-state {
