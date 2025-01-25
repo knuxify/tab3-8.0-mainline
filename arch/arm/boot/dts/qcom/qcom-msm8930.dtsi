@@ -39,7 +39,6 @@
 		// but it isn't present in downstream
 		// TODO: figure out and reserve if needed
 
-		// probably works
 		rmtfs@8fb00000 {
 			compatible = "qcom,rmtfs-mem";
 			reg = <0x8fb00000 0x300000>;
@@ -425,64 +424,6 @@
 
 		};
 
-		gsbi3: gsbi@16200000 {
-			compatible = "qcom,gsbi-v1.0.0";
-			cell-index = <3>;
-			reg = <0x16200000 0x100>;
-			clocks = <&gcc GSBI3_H_CLK>;
-			clock-names = "iface";
-			#address-cells = <1>;
-			#size-cells = <1>;
-			ranges;
-
-			status = "disabled";
-
-			gsbi3_i2c: i2c@16280000 {
-				compatible = "qcom,i2c-qup-v1.1.1";
-				// TODO: fix pinctrl
-				//pinctrl-0 = <&i2c3_pins>;
-				//pinctrl-1 = <&i2c3_pins_sleep>;
-				//pinctrl-names = "default", "sleep";
-				reg = <0x16280000 0x1000>;
-				interrupts = <GIC_SPI 151 IRQ_TYPE_LEVEL_HIGH>;
-				clocks = <&gcc GSBI3_QUP_CLK>,
-					 <&gcc GSBI3_H_CLK>;
-				clock-names = "core", "iface";
-				#address-cells = <1>;
-				#size-cells = <0>;
-
-				status = "disabled";
-			};
-		};
-
-		gsbi4: gsbi@16300000 {
-			compatible = "qcom,gsbi-v1.0.0";
-			cell-index = <4>;
-			reg = <0x16300000 0x03>;
-			clocks = <&gcc GSBI4_H_CLK>;
-			clock-names = "iface";
-			#address-cells = <1>;
-			#size-cells = <1>;
-			ranges;
-
-			status = "disabled";
-
-			gsbi4_i2c: i2c@16380000 {
-				compatible = "qcom,i2c-qup-v1.1.1";
-				// TODO: fix pinctrl
-				//pinctrl-0 = <&i2c4_pins>;
-				//pinctrl-1 = <&i2c4_pins_sleep>;
-				//pinctrl-names = "default", "sleep";
-				reg = <0x16380000 0x1000>;
-				interrupts = <GIC_SPI 153 IRQ_TYPE_LEVEL_HIGH>;
-				clocks = <&gcc GSBI4_QUP_CLK>,
-					 <&gcc GSBI4_H_CLK>;
-				clock-names = "core", "iface";
-
-				status = "disabled";
-			};
-		};
-
 		gsbi5: gsbi@16400000 {
 			compatible = "qcom,gsbi-v1.0.0";
 			cell-index = <5>;
@@ -505,33 +446,6 @@
 				clocks = <&gcc GSBI5_UART_CLK>, <&gcc GSBI5_H_CLK>;
 				clock-names = "core", "iface";
 				status = "disabled";
-			};
-		};
-
-		gsbi12: gsbi@12480000 {
-			status = "disabled";
-			compatible = "qcom,gsbi-v1.0.0";
-			cell-index = <12>;
-			reg = <0x12480000 0x03>;
-			clocks = <&gcc GSBI12_H_CLK>;
-			clock-names = "iface";
-			#address-cells = <1>;
-			#size-cells = <1>;
-			ranges;
-
-			gsbi12_i2c: i2c@124a0000 {
-				compatible = "qcom,i2c-qup-v1.1.1";
-				// TODO: fix pinctrl
-				//pinctrl-0 = <&i2c12_pins>;
-				//pinctrl-1 = <&i2c12_pins_sleep>;
-				//pinctrl-names = "default", "sleep";
-				reg = <0x124a0000 0x1000>;
-				interrupts = <GIC_SPI 196 IRQ_TYPE_LEVEL_HIGH>;
-				clocks = <&gcc GSBI12_QUP_CLK>,
-					 <&gcc GSBI12_H_CLK>;
-				clock-names = "core", "iface";
-				#address-cells = <1>;
-				#size-cells = <0>;
 			};
 		};
 

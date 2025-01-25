@@ -45,19 +45,6 @@
 			row-hold = <91500>;
 		};*/
 
-		/*pm8038_gpio: gpio@150 {
-
-			compatible = "qcom,pm8921-gpio",
-				     "qcom,ssbi-gpio";
-			reg = <0x150>;
-			interrupt-controller;
-			#interrupt-cells = <2>;
-			gpio-controller;
-			gpio-ranges = <&pm8038_gpio 0 0 44>;
-			#gpio-cells = <2>;
-
-		};*/
-
 		rtc@11d {
 			compatible = "qcom,pm8921-rtc";
 			interrupt-parent = <&pmicintc>;
