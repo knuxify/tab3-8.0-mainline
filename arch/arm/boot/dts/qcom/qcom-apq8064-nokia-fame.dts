@@ -67,6 +67,48 @@
 	};
 };
 
+/*&gsbi3 {
+	qcom,crci = <GSBI_CRCI_QUP>;
+	qcom,mode = <GSBI_PROT_I2C>;
+	status = "okay";
+};
+
+&gsbi3_i2c {
+	clock-frequency = <400000>;
+	qcom,src-freq = <24000000>;
+
+	synaptics@4b {
+		compatible = "syna,rmi4-i2c";
+		reg = <0x4b>;
+
+		interrupts-extended = <&msmgpio 11 IRQ_TYPE_EDGE_FALLING>;
+		vdd-supply = <&pm8038_l17>; // l9
+		//vio-supply = <&pm8038_lvs2>; // TODO
+
+		syna,clip-x-high = <480>;
+		syna,clip-y-high = <800>;
+		syna,sensor-type = <1>;
+
+		syna,startup-delay-ms = <100>;
+		syna,reset-delay-ms = <100>;
+
+		pinctrl-names = "default";
+		pinctrl-0 = <&touch_pins>;
+
+		#address-cells = <1>;
+		#size-cells = <0>;
+
+		rmi4-f01@1 {
+			reg = <0x1>;
+			syna,nosleep-mode = <1>;
+		};
+
+		rmi4-f11@11 {
+			reg = <0x11>;
+			syna,sensor-type = <1>;
+		};
+	};
+};*/
 
 &gsbi5 {
 	qcom,mode = <GSBI_PROT_I2C_UART>;
@@ -427,6 +469,22 @@
 		drive-strength = <2>;
 		bias-pull-down;
 	};
+
+	/*touch_pins: touch_pins {
+		reset {
+			pins = "gpio52";
+			function = "gpio";
+			drive-strength = <6>;
+			bias-pull-up;
+		};
+
+		irq {
+			pins = "gpio11";
+			function = "gpio";
+			drive-strength = <8>;
+			bias-pull-up;
+		};
+	};*/
 };
 
 /* eMMC */
