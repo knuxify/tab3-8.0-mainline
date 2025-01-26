@@ -65,6 +65,14 @@
 			reg = <0x88f00000 0x100000>;
 		};
 	};
+
+	/*touch_reset {
+		compatible = "regulator-fixed";
+		regulator-name = "touch_reset";
+		gpio = <&msmgpio 52 GPIO_ACTIVE_HIGH>;
+		enable-active-high;
+		regulator-always-on;
+	};*/
 };
 
 /*&gsbi3 {
@@ -82,15 +90,8 @@
 		reg = <0x4b>;
 
 		interrupts-extended = <&msmgpio 11 IRQ_TYPE_EDGE_FALLING>;
-		vdd-supply = <&pm8038_l17>; // l9
-		//vio-supply = <&pm8038_lvs2>; // TODO
-
-		syna,clip-x-high = <480>;
-		syna,clip-y-high = <800>;
-		syna,sensor-type = <1>;
-
-		syna,startup-delay-ms = <100>;
-		syna,reset-delay-ms = <100>;
+		vdd-supply = <&pm8038_l9>; // l17
+		vio-supply = <&pm8038_lvs2>; // TODO
 
 		pinctrl-names = "default";
 		pinctrl-0 = <&touch_pins>;
@@ -531,7 +532,7 @@
 /*&usb_hs1_phy {
 	v3p3-supply = <&pm8038_l3>;
 	v1p8-supply = <&pm8038_l4>;
-	qcom,init-seq = /bits/ 8 <0x44 0x80 0x38 0x81 0x3C 0x82 0x13 0x83>;
+	qcom,init-seq = /bits/ 8 <0x44 0x80 0x38 0x81 0x3C 0x82 0x13 0x83 0xff>; // TODO -1?
 };
 
 &usb1 {
