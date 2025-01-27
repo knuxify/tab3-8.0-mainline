@@ -28,24 +28,6 @@
 			reg = <0x4a>;
 		};
 
-		/*keypad@148 {
-			compatible = "qcom,pm8921-keypad";
-			reg = <0x148>;
-			interrupt-parent = <&pmicintc>;
-			interrupts = <74 1>, <75 1>;
-			linux,keymap = <
-				MATRIX_KEY(0, 0, KEY_VOLUMEUP)
-				MATRIX_KEY(0, 1, KEY_VOLUMEDOWN)
-				MATRIX_KEY(0, 2, KEY_CAMERA_FOCUS)
-				MATRIX_KEY(0, 3, KEY_CAMERA)
-			>;
-			keypad,num-rows = <1>;
-			keypad,num-columns = <5>;
-			debounce = <15>;
-			scan-delay = <32>;
-			row-hold = <91500>;
-		};*/
-
 		pm8038_gpio: gpio@150 {
 			compatible = "qcom,pm8038-gpio", "qcom,ssbi-gpio";
 			reg = <0x150 0x160>;
@@ -142,6 +124,7 @@
 			};
 		};
 
+		// TODO: driver
 		smbb: charger@0 {
 			compatible = "qcom,pm8921-charger";
 			reg = <0x0>;
