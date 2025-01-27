@@ -136,7 +136,7 @@
 	};
 
 	// TODO: deprecated
-	/*smd {
+	smd {
 		compatible = "qcom,smd";
 
 		modem@0 {
@@ -174,7 +174,7 @@
 
 			status = "disabled";
 		};
-	};*/
+	};
 
 	smsm {
 		compatible = "qcom,smsm";
@@ -291,7 +291,7 @@
 		};
 
 		// TODO: something wrong with it
-		/*lcc: clock-controller@28000000 {
+		lcc: clock-controller@28000000 {
 			compatible = "qcom,lcc-msm8960";
 			reg = <0x28000000 0x1000>;
 			#clock-cells = <1>;
@@ -310,7 +310,7 @@
 				      "codec_i2s_spkr_codec_clk",
 				      "spare_i2s_spkr_codec_clk",
 				      "pcm_codec_clk";
-		};*/
+		};
 
 		mmcc: clock-controller@4000000 {
 			compatible = "qcom,mmcc-msm8960";

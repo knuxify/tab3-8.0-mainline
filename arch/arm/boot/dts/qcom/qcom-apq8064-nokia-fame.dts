@@ -20,6 +20,11 @@
 		stdout-path = "serial0:115200n8";
 	};
 
+	memory@80000000 {
+		device_type = "memory";
+		reg = <0x80200000 0x8c00000 0x90000000 0x10000000>;
+	};
+
 	reserved-memory {
 		#address-cells = <1>;
 		#size-cells = <1>;
