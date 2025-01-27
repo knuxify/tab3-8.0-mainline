@@ -71,6 +71,41 @@
 		};
 	};
 
+	gpio-keys {
+        compatible = "gpio-keys";
+
+        pinctrl-names = "default";
+        pinctrl-0 = <&gpio_keys_pin_a>;
+
+        key-camera-focus {
+            label = "camera_focus";
+            gpios = <&pm8038_gpio 11 GPIO_ACTIVE_LOW>;
+            linux,input-type = <1>;
+            linux,code = <KEY_CAMERA_FOCUS>;
+        };
+
+        key-camera-snapshot {
+            label = "camera_snapshot";
+            gpios = <&pm8038_gpio 10 GPIO_ACTIVE_LOW>;
+            linux,input-type = <1>;
+            linux,code = <KEY_CAMERA>;
+        };
+
+        key-volume-down {
+            label = "volume_down";
+            gpios = <&pm8038_gpio 8 GPIO_ACTIVE_LOW>;
+            linux,input-type = <1>;
+            linux,code = <KEY_VOLUMEDOWN>;
+        };
+
+        key-volume-up {
+            label = "volume_up";
+            gpios = <&pm8038_gpio 3 GPIO_ACTIVE_LOW>;
+            linux,input-type = <1>;
+            linux,code = <KEY_VOLUMEUP>;
+		};
+    };
+
 	/*touch_reset {
 		compatible = "regulator-fixed";
 		regulator-name = "touch_reset";

@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-2.0
-
+#include <dt-bindings/gpio/gpio.h>
+#include <dt-bindings/pinctrl/qcom,pmic-gpio.h>
 
 &ssbi {
 	pmicintc: pmic@0 {
@@ -44,6 +45,28 @@
 			scan-delay = <32>;
 			row-hold = <91500>;
 		};*/
+
+		pm8038_gpio: gpio@150 {
+			compatible = "qcom,pm8038-gpio", "qcom,ssbi-gpio";
+			reg = <0x150 0x160>;
+			interrupt-controller;
+			#interrupt-cells = <2>;
+			gpio-controller;
+			gpio-ranges = <&pm8038_gpio 0 0 12>;
+			#gpio-cells = <2>;
+
+			gpio_keys_pin_a: gpio-keys-active-state {
+				pins = "gpio3", "gpio8", "gpio10", "gpio11";
+				function = "normal";
+
+				bias-pull-up;
+				drive-push-pull;
+				input-enable;
+				power-source = <2>;
+				qcom,drive-strength = <PMIC_GPIO_STRENGTH_NO>;
+				qcom,pull-up-strength = <0>;
+			};
+		};
 
 		rtc@11d {
 			compatible = "qcom,pm8921-rtc";
