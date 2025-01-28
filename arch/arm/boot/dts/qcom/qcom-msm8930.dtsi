@@ -562,9 +562,6 @@
 				cap-mmc-highspeed;
 				dmas = <&sdcc1bam 2>, <&sdcc1bam 1>;
 				dma-names = "tx", "rx";
-
-				pinctrl-0 = <&sdcc1_pins_active>;
-				pinctrl-names = "default";
 			};
 
 			sdcc3: mmc@12180000 {
@@ -582,10 +579,6 @@
 				no-1-8-v;
 				dmas = <&sdcc3bam 2>, <&sdcc3bam 1>;
 				dma-names = "tx", "rx";
-
-				pinctrl-0 = <&sdcc3_pins_active>;
-				pinctrl-1 = <&sdcc3_pins_sleep>;
-				pinctrl-names = "default", "sleep";
 			};
 		};
 

@@ -486,13 +486,6 @@
 		};
 	};
 
-	sdcc3_det: sdcc3-det {
-		pins = "gpio94";
-		function = "gpio";
-		drive-strength = <2>;
-		bias-pull-down;
-	};
-
 	/*touch_pins: touch_pins {
 		reset {
 			pins = "gpio52";
@@ -526,6 +519,9 @@
 	// Same applies to sdcc3
 	//qcom,vdd-io-always-on;
 
+	pinctrl-0 = <&sdcc1_pins_active>;
+	pinctrl-names = "default";
+
 	status = "okay";
 };
 
@@ -547,11 +543,14 @@
 	qcom,vdd-always-on; // I guess
 	qcom,vdd-lpm_sup;
 
-
 	qcom,vdd-io-voltage-level = <1850000 2950000>;
 	qcom,vdd-io-current_level = <2000 16000>;
 	//qcom,vdd-io-always-on;
 	qcom,vdd-io-lpm_sup;
+
+	pinctrl-0 = <&sdcc3_pins_active>;
+	pinctrl-1 = <&sdcc3_pins_sleep>;
+	pinctrl-names = "default", "sleep";
 
 	status = "okay";
 };
