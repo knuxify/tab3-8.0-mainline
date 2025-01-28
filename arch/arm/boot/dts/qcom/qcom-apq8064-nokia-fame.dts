@@ -30,24 +30,6 @@
 		#size-cells = <1>;
 		ranges;
 
-		// TODO: this looks like fixed value in downstream
-		// In future, should be changed to actual cma reserved memory
-		// TODO: it should be without no-map?
-		/*cma@9c000000 {
-			reg = <0x9c000000 0x800000>;
-			no-map;
-		};*/
-
-		/*cma@98000000 {
-			reg = <0x98000000 0x3800000>;
-			no-map;
-		};*/
-
-		/*cma@9e000000 {
-			reg = <0x9e000000 0x1000000>;
-			no-map;
-		};*/
-
 		// from downstream
 		// TODO: move to msm8930.dtsi?
 		fixed-low-area@97e00000 {
