@@ -10,8 +10,6 @@ dtb-$(CONFIG_ARCH_QCOM) += \
 	qcom-apq8060-dragonboard.dtb \
 	qcom-apq8064-cm-qs600.dtb \
 	qcom-apq8064-ifc6410.dtb \
-	qcom-apq8064-nokia-fame.dtb \
-	#qcom-apq8064-samsung-jfvelte.dtb \
 	qcom-apq8064-sony-xperia-lagan-yuga.dtb \
 	qcom-apq8064-asus-nexus7-flo.dtb \
 	qcom-apq8074-dragonboard.dtb \
@@ -32,6 +30,7 @@ dtb-$(CONFIG_ARCH_QCOM) += \
 	qcom-msm8226-microsoft-moneypenny.dtb \
 	qcom-msm8226-samsung-ms013g.dtb \
 	qcom-msm8226-samsung-s3ve3g.dtb \
+	qcom-msm8227-nokia-fame.dtb \
 	qcom-msm8660-surf.dtb \
 	qcom-msm8916-samsung-e5.dtb \
 	qcom-msm8916-samsung-e7.dtb \
