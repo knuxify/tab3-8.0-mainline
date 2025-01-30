@@ -517,9 +517,7 @@
 
 	qcom,vdd-io-voltage-level = <1800000 1800000>;
 	qcom,vdd-io-current_level = <0 200000>; // no lpm for vdd-io
-	// The SoC with 1.2 or higher revision doesn't require this
-	// Same applies to sdcc3
-	//qcom,vdd-io-always-on;
+	qcom,vdd-io-always-on;
 
 	pinctrl-0 = <&sdcc1_pins_active>;
 	pinctrl-names = "default";
