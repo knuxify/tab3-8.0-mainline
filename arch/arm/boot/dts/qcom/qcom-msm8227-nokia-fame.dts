@@ -107,13 +107,15 @@
 	clock-frequency = <400000>;
 	qcom,src-freq = <24000000>;
 
+	status = "okay";
+
 	synaptics@4b {
 		compatible = "syna,rmi4-i2c";
 		reg = <0x4b>;
 
 		interrupts-extended = <&msmgpio 11 IRQ_TYPE_EDGE_FALLING>;
-		vdd-supply = <&pm8038_l9>; // l17
-		vio-supply = <&pm8038_lvs2>; // TODO
+		vdd-supply = <&pm8038_l9>;
+		vio-supply = <&pm8038_lvs2>;
 
 		pinctrl-names = "default";
 		pinctrl-0 = <&touch_pins>;

@@ -49,7 +49,7 @@
 		#size-cells = <0>;
 		interrupts = <GIC_PPI 14 0x304>;
 
-		cpu@0 {
+		cpu0: cpu@0 {
 			compatible = "qcom,krait";
 			enable-method = "qcom,kpss-acc-v1";
 			device_type = "cpu";
@@ -59,7 +59,7 @@
 			qcom,saw = <&saw0>;
 		};
 
-		cpu@1 {
+		cpu1: cpu@1 {
 			compatible = "qcom,krait";
 			enable-method = "qcom,kpss-acc-v1";
 			device_type = "cpu";
@@ -218,6 +218,39 @@
 			compatible = "qcom,scm-msm8960";
 			clocks = <&rpmcc RPM_DAYTONA_FABRIC_CLK>;
 			clock-names = "core";
+		};
+	};
+
+	replicator {
+		compatible = "arm,coresight-static-replicator";
+
+		clocks = <&rpmcc RPM_QDSS_CLK>;
+		clock-names = "apb_pclk";
+
+		out-ports {
+			#address-cells = <1>;
+			#size-cells = <0>;
+
+			port@0 {
+				reg = <0>;
+				replicator_out0: endpoint {
+					remote-endpoint = <&etb_in>;
+				};
+			};
+			port@1 {
+				reg = <1>;
+				replicator_out1: endpoint {
+					remote-endpoint = <&tpiu_in>;
+				};
+			};
+		};
+
+		in-ports {
+			port {
+				replicator_in: endpoint {
+					remote-endpoint = <&funnel_out>;
+				};
+			};
 		};
 	};
 
@@ -610,6 +643,115 @@
 		tcsr: syscon@1a400000 {
 			compatible = "qcom,tcsr-msm8960", "syscon";
 			reg = <0x1a400000 0x100>;
+		};
+
+		etb@1a01000 {
+			compatible = "arm,coresight-etb10", "arm,primecell";
+			reg = <0x1a01000 0x1000>;
+
+			clocks = <&rpmcc RPM_QDSS_CLK>;
+			clock-names = "apb_pclk";
+
+			in-ports {
+				port {
+					etb_in: endpoint {
+						remote-endpoint = <&replicator_out0>;
+					};
+				};
+			};
+		};
+
+		tpiu@1a03000 {
+			compatible = "arm,coresight-tpiu", "arm,primecell";
+			reg = <0x1a03000 0x1000>;
+
+			clocks = <&rpmcc RPM_QDSS_CLK>;
+			clock-names = "apb_pclk";
+
+			in-ports {
+				port {
+					tpiu_in: endpoint {
+						remote-endpoint = <&replicator_out1>;
+					};
+				};
+			};
+		};
+
+		funnel@1a04000 {
+			compatible = "arm,coresight-dynamic-funnel", "arm,primecell";
+			reg = <0x1a04000 0x1000>;
+
+			clocks = <&rpmcc RPM_QDSS_CLK>;
+			clock-names = "apb_pclk";
+
+			in-ports {
+				#address-cells = <1>;
+				#size-cells = <0>;
+
+				/*
+				 * Not described input ports:
+				 * 2 - connected to STM component
+				 * 3 - not-connected
+				 * 6 - not-connected
+				 * 7 - not-connected
+				 */
+				port@0 {
+					reg = <0>;
+					funnel_in0: endpoint {
+						remote-endpoint = <&etm0_out>;
+					};
+				};
+				port@1 {
+					reg = <1>;
+					funnel_in1: endpoint {
+						remote-endpoint = <&etm1_out>;
+					};
+				};
+			};
+
+			out-ports {
+				port {
+					funnel_out: endpoint {
+						remote-endpoint = <&replicator_in>;
+					};
+				};
+			};
+		};
+
+		etm@1a1c000 {
+			compatible = "arm,coresight-etm3x", "arm,primecell";
+			reg = <0x1a1c000 0x1000>;
+
+			clocks = <&rpmcc RPM_QDSS_CLK>;
+			clock-names = "apb_pclk";
+
+			cpu = <&cpu0>;
+
+			out-ports {
+				port {
+					etm0_out: endpoint {
+						remote-endpoint = <&funnel_in0>;
+					};
+				};
+			};
+		};
+
+		etm@1a1d000 {
+			compatible = "arm,coresight-etm3x", "arm,primecell";
+			reg = <0x1a1d000 0x1000>;
+
+			clocks = <&rpmcc RPM_QDSS_CLK>;
+			clock-names = "apb_pclk";
+
+			cpu = <&cpu1>;
+
+			out-ports {
+				port {
+					etm1_out: endpoint {
+						remote-endpoint = <&funnel_in1>;
+					};
+				};
+			};
 		};
 	};
 };
