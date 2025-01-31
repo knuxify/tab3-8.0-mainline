@@ -333,7 +333,6 @@ int otg_statemachine(struct otg_fsm *fsm)
 
 	state = fsm->otg->state;
 	fsm->state_changed = 0;
-	fsm->id = 0;
 	/* State machine state change judgement */
 
 	switch (state) {
