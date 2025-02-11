@@ -380,6 +380,8 @@ int wcn36xx_rx_skb(struct wcn36xx *wcn, struct sk_buff *skb)
 		status.freq = WCN36XX_CENTER_FREQ(wcn);
 	}
 
+	status.band = NL80211_BAND_2GHZ;
+
 	wcn36xx_update_survey(wcn, status.signal, get_snr(bd),
 			      status.band, status.freq);
 

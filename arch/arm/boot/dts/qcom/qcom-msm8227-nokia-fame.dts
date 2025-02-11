@@ -503,6 +503,19 @@
 			bias-pull-up;
 		};
 	};*/
+
+	riva_wlan_pin_a: riva-wlan-active {
+		pins = "gpio84", "gpio85", "gpio86", "gpio87", "gpio88";
+		function = "wlan";
+
+		drive-strength = <6>;
+		bias-pull-down;
+	};
+
+	riva_bt_pin_a: riva-bt-active {
+		pins = "gpio28", "gpio29", "gpio83"; // 1 extra ?
+		function = "bt";
+	};
 };
 
 /* eMMC */
@@ -563,5 +576,12 @@
 
 &usb1 {
 	dr_mode = "otg";
+	status = "okay";
+};
+
+&riva {
+	pinctrl-0 = <&riva_wlan_pin_a>, <&riva_bt_pin_a>;
+	pinctrl-names = "default";
+
 	status = "okay";
 };

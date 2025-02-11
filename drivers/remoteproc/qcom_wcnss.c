@@ -269,9 +269,9 @@ static int wcnss_start(struct rproc *rproc)
 	if (wcnss->ready_irq > 0 && ret == 0) {
 		/* We have a ready_irq, but it didn't fire in time. */
 		dev_err(wcnss->dev, "start timed out\n");
-		qcom_scm_pas_shutdown(WCNSS_PAS_ID);
-		ret = -ETIMEDOUT;
-		goto disable_iris;
+		//qcom_scm_pas_shutdown(WCNSS_PAS_ID);
+		//ret = -ETIMEDOUT;
+		//goto disable_iris;
 	}
 
 	ret = 0;
@@ -623,12 +623,12 @@ static int wcnss_probe(struct platform_device *pdev)
 	wcnss->stop_ack_irq = ret;
 
 	if (wcnss->stop_ack_irq) {
-		wcnss->state = devm_qcom_smem_state_get(&pdev->dev, "stop",
+		/*wcnss->state = devm_qcom_smem_state_get(&pdev->dev, "stop",
 							&wcnss->stop_bit);
 		if (IS_ERR(wcnss->state)) {
 			ret = PTR_ERR(wcnss->state);
 			goto detach_pds;
-		}
+		}*/
 	}
 
 	qcom_add_smd_subdev(rproc, &wcnss->smd_subdev);
@@ -644,7 +644,7 @@ static int wcnss_probe(struct platform_device *pdev)
 		goto detach_pds;
 	}
 
-	rproc->auto_boot = false;
+	//rproc->auto_boot = false;
 
 	ret = rproc_add(rproc);
 	if (ret)

@@ -52,7 +52,7 @@ static const struct iris_data wcn3660_data = {
 		{ "vdddig", 1200000, 1225000, 10000 },
 	},
 	.num_vregs = 4,
-	.use_48mhz_xo = true,
+	.use_48mhz_xo = false,
 };
 
 static const struct iris_data wcn3680_data = {
