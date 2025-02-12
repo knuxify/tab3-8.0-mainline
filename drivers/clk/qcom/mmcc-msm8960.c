@@ -3158,48 +3158,68 @@ MODULE_DEVICE_TABLE(of, mmcc_msm8960_match_table);
 
 static int mmcc_msm8960_probe(struct platform_device *pdev)
 {
+#define rmw(x, v, m) ({ \
+	tmp = readl_relaxed(ptr + x); \
+	writel_relaxed((tmp & ~m) | v, ptr + x); \
+})
+
 	struct regmap *regmap;
 	struct device *dev = &pdev->dev;
 
 	void *ptr = ioremap(0x4000000, 0x1000);
 	uint32_t tmp;
-	*(volatile uint32_t*) (ptr + 0x204) = 0x0;
-	tmp = *(volatile uint32_t*) (ptr + 0x008);
-	*(volatile uint32_t*) (ptr + 0x008) = (tmp & ~0x6C000103) | 0x40000000;
-	*(volatile uint32_t*) (ptr + 0x038) = 0x3C7097F9;
-	*(volatile uint32_t*) (ptr + 0x020C) = 0x0;
-	*(volatile uint32_t*) (ptr + 0x0200) = 0x0;
-#define rmw(x, v, m) ({ \
-	tmp = *(volatile uint32_t*) (ptr + x); \
-	*(volatile uint32_t*) (ptr + x) = (tmp & ~m) | v; \
-})
-	rmw(0x0018, 0x0003AFF9, 0x0803FFFF);
-	rmw(0x0020, 0x3A27FCFF, 0x3A3FFFFF);
-	rmw(0x002C, 0x0027FCFF, 0x003FFFFF);
-	rmw(0x0114, 0x0027FCFF, 0x017FFFFF);
-	rmw(0x0244, 0x000004FF, 0x00000FFF);
-	rmw(0x0030, 0x00003C38, 0x00003FFF);
-	rmw(0x0040, 0x00000000, 0x00000410);
-	rmw(0x0024, 0x00000000, 0x00000410);
-	rmw(0x0090, 0x80FF0000, 0xE0FF0010);
-	rmw(0x0130, 0x80FF0000, 0xE0FF0010);
-	rmw(0x0080, 0xC0FF0000, 0xE0FF0010);
-	rmw(0x0098, 0x80FF0000, 0xE0FF0010);
-	rmw(0x00C0, 0x80FF0000, 0xE1FF0010);
-	rmw(0x016C, 0x80FF0000, 0xE0FF0010);
-	rmw(0x00E0, 0x80FF0000, 0xE0FF0010);
-	rmw(0x0124, 0x000004FF, 0x000007FF);
-	rmw(0x00F8, 0xC0FF0000, 0xE0FF0010);
-	rmw(0x0104, 0x80FF0000, 0xE0FF4010);
-	rmw(0x023C, 0x800000FF, 0xE00000FF);
-	rmw(0x0110, 0x80FF0000, 0xE0FF0010);
-	rmw(0x00EC, 0x80FF0000, 0xE1FFC010);
-	//*(volatile uint32_t*) (ptr + 0x0210) = 0x0;
-	//*(volatile uint32_t*) (ptr + 0x0214) = 0x0;
-	*(volatile uint32_t*) (ptr + 0x0214) = BIT(11);
-	*(volatile uint32_t*) (ptr + 0x0214) = BIT(15);
-	rmw(0x00B0, 1, 7);
-	rmw(0x011C, 1, 7);
+	writel_relaxed(0, ptr + 0x204); // SW_RESET_ALL_REG
+	/* ptr +       value        mask     */
+	rmw(0x0008, 0x40000000, 0x6C000103); // AHB_EN_REG
+	writel_relaxed(0x000007F9, ptr + 0x038); // AHB_EN2_REG
+
+	rmw(0x020C, 0x00000000, 0xFFF7DFFF); // SW_RESET_AHB_REG
+	rmw(0x0200, 0x00000000, 0x0000000F); // SW_RESET_AHB2_REG
+
+	rmw(0x0018, 0x000007F9, 0x0803FFFF); // MAXI_EN_REG
+	rmw(0x0020, 0x3027FCFF, 0x3A3FFFFF); // MAXI_EN2_REG
+
+	rmw(0x002C, 0x0027FCFF, 0x003FFFFF); // MAXI_EN3_REG
+	rmw(0x0114, 0x0027FCFF, 0x017FFFFF); // MAXI_EN4_REG
+
+	rmw(0x0244, 0x000004FF, 0x00000FFF); // MAXI_EN5_REG
+
+	rmw(0x0030, 0x000003C7, 0x00003FFF); // SAXI_EN_REG
+
+	// TODO: imem clk 0x3
+
+	// mmcc
+	rmw(0x0040, 0x00000000, 0x00000410); // CSI0_CC_REG
+	rmw(0x0024, 0x00000000, 0x00000410); // CSI1_CC_REG
+	rmw(0x0090, 0x80FF0000, 0xE0FF0010); // DSI1_BYTE_CC_REG
+	rmw(0x0130, 0x80FF0000, 0xE0FF0010); // DSI_PIXEL_CC_REG
+	rmw(0x0080, 0xC0FF0000, 0xE0FF0010); // GFX3D_CC_REG
+	rmw(0x0098, 0x80FF0000, 0xE0FF0010); // IJPEG_CC_REG
+	rmw(0x00C0, 0x80FF0000, 0xE1FF0010); // MDP_CC_REG
+	rmw(0x016C, 0x80FF0000, 0xE0FF0010); // MDP_LUT_CC_REG
+	rmw(0x00E0, 0x80FF0000, 0xE0FF0010); // ROT_CC_REG
+	rmw(0x0124, 0x000004FF, 0x000007FF); // TV_CC2_REG
+	rmw(0x00F8, 0xC0FF0000, 0xE0FF0010); // VCODEC_CC_REG
+	rmw(0x0104, 0x80FF0000, 0xE0FF4010); // VFE_CC_REG
+	rmw(0x023C, 0x800000FF, 0xE00000FF); // VFE_CC2_REG
+	rmw(0x0110, 0x80FF0000, 0xE0FF0010); // VPE_CC_REG
+	rmw(0x00EC, 0x80FF0000, 0xE1FFC010); // TV_CC_REG
+
+	// usb
+	//rmw(0x2904, 0x0000004F, 0x0000007F); // USB_HS1_HCLK_FS_REG
+
+	// mmcc?
+	writel_relaxed(0, ptr + 0x0208); // SW_RESET_AXI_REG
+
+	writel_relaxed(0, ptr + 0x0210); // SW_RESET_CORE_REG
+	writel_relaxed(0, ptr + 0x0214); // SW_RESET_CORE2_REG
+
+	// tssc & pdm pxo
+	//writel_relaxed(BIT(11), ptr + 0x2CA0); // TSSC_CLK_CTL_REG
+	//writel_relaxed(BIT(15), ptr + 0x2CC0); // PDM_CLK_NS_REG
+
+	rmw(0x00B0, 0x1, 0x7); // DSI1_BYTE_NS_REG
+	rmw(0x011C, 0x1, 0x7); // DSI1_ESC_NS_REG
 	
 	const struct qcom_cc_desc *desc = device_get_match_data(dev);
 
