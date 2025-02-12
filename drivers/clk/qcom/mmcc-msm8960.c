@@ -3214,9 +3214,13 @@ static int mmcc_msm8960_probe(struct platform_device *pdev)
 	writel_relaxed(0, ptr + 0x0210); // SW_RESET_CORE_REG
 	writel_relaxed(0, ptr + 0x0214); // SW_RESET_CORE2_REG
 
+	void* old = ptr;
+	ptr = ioremap(0xFA010000, 0x4000);
 	// tssc & pdm pxo
-	//writel_relaxed(BIT(11), ptr + 0x2CA0); // TSSC_CLK_CTL_REG
-	//writel_relaxed(BIT(15), ptr + 0x2CC0); // PDM_CLK_NS_REG
+	writel_relaxed(BIT(11), ptr + 0x2CA0); // TSSC_CLK_CTL_REG
+	writel_relaxed(BIT(15), ptr + 0x2CC0); // PDM_CLK_NS_REG
+	iounmap(ptr);
+	ptr = old;
 
 	rmw(0x00B0, 0x1, 0x7); // DSI1_BYTE_NS_REG
 	rmw(0x011C, 0x1, 0x7); // DSI1_ESC_NS_REG
