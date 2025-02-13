@@ -3159,8 +3159,8 @@ MODULE_DEVICE_TABLE(of, mmcc_msm8960_match_table);
 static int mmcc_msm8960_probe(struct platform_device *pdev)
 {
 #define rmw(x, v, m) ({ \
-	tmp = readl_relaxed(ptr + x); \
-	writel_relaxed((tmp & ~m) | v, ptr + x); \
+	tmp = readl(ptr + x); \
+	writel((tmp & ~m) | v, ptr + x); \
 })
 
 	struct regmap *regmap;
@@ -3170,7 +3170,7 @@ static int mmcc_msm8960_probe(struct platform_device *pdev)
 	uint32_t tmp;
 	writel_relaxed(0, ptr + 0x204); // SW_RESET_ALL_REG
 	/* ptr +       value        mask     */
-	rmw(0x0008, 0x40000000, 0x6C000103); // AHB_EN_REG
+	rmw(0x0008, 0x00000003, 0x6C000103); // AHB_EN_REG
 	writel_relaxed(0x000007F9, ptr + 0x038); // AHB_EN2_REG
 
 	rmw(0x020C, 0x00000000, 0xFFF7DFFF); // SW_RESET_AHB_REG
@@ -3203,6 +3203,7 @@ static int mmcc_msm8960_probe(struct platform_device *pdev)
 	rmw(0x0104, 0x80FF0000, 0xE0FF4010); // VFE_CC_REG
 	rmw(0x023C, 0x800000FF, 0xE00000FF); // VFE_CC2_REG
 	rmw(0x0110, 0x80FF0000, 0xE0FF0010); // VPE_CC_REG
+
 	rmw(0x00EC, 0x80FF0000, 0xE1FFC010); // TV_CC_REG
 
 	// usb
