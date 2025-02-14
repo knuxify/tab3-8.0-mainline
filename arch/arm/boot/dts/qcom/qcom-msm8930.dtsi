@@ -403,20 +403,22 @@
 		};
 
 		gsbi1: gsbi@16000000 {
-			compatible = "qcom,gsbi-v1.0.0";
-			cell-index = <1>;
-			reg = <0x16000000 0x4>;
-			clocks = <&gcc GSBI1_H_CLK>;
-			clock-names = "iface";
 			#address-cells = <1>;
 			#size-cells = <1>;
+
+			compatible = "qcom,gsbi-v1.0.0";
+			reg = <0x16000000 0x4>;
 			ranges;
+			cell-index = <1>;
+			clocks = <&gcc GSBI1_H_CLK>;
+			clock-names = "iface";
 			status = "disabled";
 
 			gsbi1_spi: spi@16080000 {
-				compatible = "qcom,spi-qup-v1.1.1";
 				#address-cells = <1>;
 				#size-cells = <0>;
+
+				compatible = "qcom,spi-qup-v1.1.1";
 				reg = <0x16080000 0x1000>;
 				interrupts = <GIC_SPI 147 IRQ_TYPE_LEVEL_HIGH>;
 				cs-gpios = <&msmgpio 8 0>;
@@ -428,39 +430,40 @@
 		};
 
 		gsbi3: gsbi@16200000 {
-			compatible = "qcom,gsbi-v1.0.0";
-			cell-index = <3>;
-			reg = <0x16200000 0x4>;
-			clocks = <&gcc GSBI3_H_CLK>;
-			clock-names = "iface";
 			#address-cells = <1>;
 			#size-cells = <1>;
-			ranges;
 
+			compatible = "qcom,gsbi-v1.0.0";
+			reg = <0x16200000 0x4>;
+			ranges;
+			cell-index = <3>;
+			clocks = <&gcc GSBI3_H_CLK>;
+			clock-names = "iface";
 			status = "disabled";
 
 			gsbi3_i2c: i2c@16280000 {
+				#address-cells = <1>;
+				#size-cells = <0>;
+
 				compatible = "qcom,i2c-qup-v1.1.1";
 				reg = <0x16280000 0x1000>;
 				interrupts = <GIC_SPI 151 IRQ_TYPE_LEVEL_HIGH>;
 				clocks = <&gcc GSBI3_QUP_CLK>, <&gcc GSBI3_H_CLK>;
 				clock-names = "core", "iface";
-				#address-cells = <1>;
-				#size-cells = <0>;
-
 				status = "disabled";
 			};
 		};
 
 		gsbi5: gsbi@16400000 {
-			compatible = "qcom,gsbi-v1.0.0";
-			cell-index = <5>;
-			reg = <0x16400000 0x1000>;
-			clocks = <&gcc GSBI5_H_CLK>;
-			clock-names = "iface";
 			#address-cells = <1>;
 			#size-cells = <1>;
+
+			compatible = "qcom,gsbi-v1.0.0";
+			reg = <0x16400000 0x1000>;
 			ranges;
+			cell-index = <5>;
+			clocks = <&gcc GSBI5_H_CLK>;
+			clock-names = "iface";
 
 			syscon-tcsr = <&tcsr>;
 
@@ -478,52 +481,53 @@
 		};
 
 		gsbi10: gsbi@1a200000 {
-			compatible = "qcom,gsbi-v1.0.0";
-			cell-index = <10>;
-			reg = <0x1a200000 0x4>;
-			clocks = <&gcc GSBI1_H_CLK>;
-			clock-names = "iface";
 			#address-cells = <1>;
 			#size-cells = <1>;
+
+			compatible = "qcom,gsbi-v1.0.0";
+			reg = <0x1a200000 0x4>;
 			ranges;
+			cell-index = <10>;
+			clocks = <&gcc GSBI10_H_CLK>;
+			clock-names = "iface";
 			status = "disabled";
 
 			gsbi10_i2c: i2c@1a280000 {
-				compatible = "qcom,i2c-qup-v1.1.1";
-				reg = <0x1a280000 0x1000>;
-				pinctrl-names = "default", "sleep";
-				interrupts = <GIC_SPI 192 IRQ_TYPE_LEVEL_HIGH>;
-				clocks = <&gcc GSBI3_QUP_CLK>,
-					 <&gcc GSBI3_H_CLK>;
-				clock-names = "core", "iface";
 				#address-cells = <1>;
 				#size-cells = <0>;
+
+				compatible = "qcom,i2c-qup-v1.1.1";
+				reg = <0x1a280000 0x1000>;
+				interrupts = <GIC_SPI 192 IRQ_TYPE_LEVEL_HIGH>;
+				clocks = <&gcc GSBI10_QUP_CLK>,
+					 <&gcc GSBI10_H_CLK>;
+				clock-names = "core", "iface";
 				status = "disabled";
 			};
 		};
 
 
 		gsbi12: gsbi@12480000 {
-			compatible = "qcom,gsbi-v1.0.0";
-			cell-index = <12>;
-			reg = <0x12480000 0x4>;
-			clocks = <&gcc GSBI12_H_CLK>;
-			clock-names = "iface";
 			#address-cells = <1>;
 			#size-cells = <1>;
-			ranges;
 
+			compatible = "qcom,gsbi-v1.0.0";
+			reg = <0x12480000 0x4>;
+			ranges;
+			cell-index = <12>;
+			clocks = <&gcc GSBI12_H_CLK>;
+			clock-names = "iface";
 			status = "disabled";
 
 			gsbi12_i2c: i2c@124a0000 {
+				#address-cells = <1>;
+				#size-cells = <0>;
+
 				compatible = "qcom,i2c-qup-v1.1.1";
 				reg = <0x124a0000 0x1000>;
 				interrupts = <GIC_SPI 196 IRQ_TYPE_LEVEL_HIGH>;
 				clocks = <&gcc GSBI12_QUP_CLK>, <&gcc GSBI12_H_CLK>;
 				clock-names = "core", "iface";
-				#address-cells = <1>;
-				#size-cells = <0>;
-
 				status = "disabled";
 			};
 		};
