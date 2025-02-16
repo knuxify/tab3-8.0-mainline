@@ -148,10 +148,7 @@ static const struct of_device_id rpm_master_table[] = {
 	{ .compatible = "qcom,rpm-master-stats" },
 	{ },
 };
-/*
- * No MODULE_DEVICE_TABLE intentionally: that's a debugging module, to be
- * loaded manually only.
- */
+MODULE_DEVICE_TABLE(of, rpm_master_table);
 
 static struct platform_driver master_stats_driver = {
 	.probe = master_stats_probe,
