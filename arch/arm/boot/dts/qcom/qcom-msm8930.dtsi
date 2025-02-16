@@ -227,6 +227,31 @@
 		ranges;
 		compatible = "simple-bus";
 
+		rpm_msg_ram: sram@10b000 {
+			compatible = "qcom,rpm-msg-ram";
+			reg = <0x10b000 0x1000>; // ?
+			ranges = <0 0x10b000 0x1000>;
+
+			#address-cells = <1>;
+			#size-cells = <1>;
+
+			kpss_master_stats: sram@100 {
+				reg = <0x100 0x32>;
+			};
+
+			mpss_master_stats: sram@132 {
+				reg = <0x132 0x32>;
+			};
+
+			lpass_master_stats: sram@164 {
+				reg = <0x164 0x32>;
+			};
+
+			riva_master_stats: sram@196 {
+				reg = <0x196 0x32>;
+			};
+        };
+
 		intc: interrupt-controller@2000000 {
 			compatible = "qcom,msm-qgic2";
 			interrupt-controller;
@@ -358,6 +383,15 @@
 				#clock-cells = <1>;
 				clocks = <&pxo_board>, <&cxo_board>;
 				clock-names = "pxo", "cxo";
+			};
+
+			master-stats {
+				compatible = "qcom,rpm-master-stats";
+				qcom,rpm-msg-ram = <&kpss_master_stats>,
+						   <&mpss_master_stats>,
+						   <&lpass_master_stats>,
+						   <&riva_master_stats>;
+				qcom,master-names = "KPSS", "MPSS", "LPASS", "RIVA";
 			};
 		};
 
