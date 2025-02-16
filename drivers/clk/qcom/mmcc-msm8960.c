@@ -3245,6 +3245,9 @@ static int mmcc_msm8960_probe(struct platform_device *pdev)
 	printk("a\n");
 	//clk_pll_ops.set_rate(&pll2.clkr.hw, 800000000, 27000000);
 	clk_pll_ops.enable(&pll2.clkr.hw);
+
+	writel_relaxed(0, ptr + 0x034c); // MM_PLL3_TEST_CTL_REG
+
 	printk("b\n");
 	return ret;
 }
