@@ -1301,7 +1301,6 @@ static int wcn36xx_get_survey(struct ieee80211_hw *hw, int idx,
 	sband = wcn->hw->wiphy->bands[NL80211_BAND_2GHZ];
 	band_idx = idx;
 	if (band_idx >= sband->n_channels) {
-		panic("no 5ghz supported for fame");
 		band_idx -= sband->n_channels;
 		sband = wcn->hw->wiphy->bands[NL80211_BAND_5GHZ];
 	}

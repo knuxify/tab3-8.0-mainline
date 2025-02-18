@@ -44,12 +44,14 @@
 
 		// from lk
 		// TODO: I'm not sure, maybe can be removed
-		/*boot1@8ff00000 {
+		boot1@8ff00000 {
 			reg = <0x8ff00000 0x100000>;
-		};*/
+			no-map;
+		};
 
 		appsbl@88f00000 {
 			reg = <0x88f00000 0x100000>;
+			no-map;
 		};
 	};
 
