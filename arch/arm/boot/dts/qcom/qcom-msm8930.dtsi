@@ -216,8 +216,6 @@
 	firmware {
 		scm {
 			compatible = "qcom,scm";
-			clocks = <&rpmcc RPM_DAYTONA_FABRIC_CLK>;
-			clock-names = "core";
 		};
 	};
 
