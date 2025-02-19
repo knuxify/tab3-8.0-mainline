@@ -706,10 +706,6 @@
 			interrupt-names = "wdog", "fatal", "ready", "handover", "stop-ack";
 			memory-region = <&wcnss_mem>;
 
-			vddcx-supply = <&pm8038_s1>;
-			vddmx-supply = <&pm8038_l24>;
-			vddpx-supply = <&pm8038_l11>;
-
 			status = "disabled";
 
 			iris {
@@ -717,12 +713,6 @@
 
 				clocks = <&cxo_board>;
 				clock-names = "xo";
-
-				vddxo-supply = <&pm8038_l4>;
-				vddrfa-supply = <&pm8038_l1>;
-				vddpa-supply = <&pm8038_l10>;
-				vdddig-supply = <&pm8038_l2>;
-				// vddio l11
 			};
 
 			smd-edge {

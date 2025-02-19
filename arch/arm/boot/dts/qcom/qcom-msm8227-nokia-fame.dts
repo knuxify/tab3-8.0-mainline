@@ -582,8 +582,21 @@
 };
 
 &riva {
+	vddcx-supply = <&pm8038_s1>;
+	vddmx-supply = <&pm8038_l24>;
+	vddpx-supply = <&pm8038_l11>;
+
 	pinctrl-0 = <&riva_wlan_pin_a>, <&riva_bt_pin_a>;
 	pinctrl-names = "default";
 
 	status = "okay";
+
+	iris {
+		vddxo-supply = <&pm8038_l4>;
+		vddrfa-supply = <&pm8038_l1>;
+		vddpa-supply = <&pm8038_l10>;
+		vdddig-supply = <&pm8038_l2>;
+		// vddio l11
+	};
+
 };
