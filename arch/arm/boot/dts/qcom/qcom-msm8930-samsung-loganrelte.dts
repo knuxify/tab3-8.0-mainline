@@ -124,6 +124,19 @@
 		drive-strength = <8>;
 		bias-disable;
 	};
+
+	riva_wlan_pin_a: riva-wlan-active {
+		pins = "gpio84", "gpio85", "gpio86", "gpio87", "gpio88";
+		function = "wlan";
+
+		drive-strength = <6>;
+		bias-pull-down;
+	};
+
+	riva_bt_pin_a: riva-bt-active {
+		pins = "gpio28", "gpio29", "gpio83"; // 1 extra ?
+		function = "bt";
+	};
 };
 
 &pm8921 {
@@ -374,4 +387,24 @@
 &usb1 {
 	dr_mode = "otg";
 	status = "okay";
+};
+
+&riva {
+	vddcx-supply = <&pm8921_s1>;
+	vddmx-supply = <&pm8921_l24>;
+	vddpx-supply = <&pm8921_l11>;
+
+	pinctrl-0 = <&riva_wlan_pin_a>, <&riva_bt_pin_a>;
+	pinctrl-names = "default";
+
+	status = "okay";
+
+	iris {
+		vddxo-supply = <&pm8921_l4>;
+		vddrfa-supply = <&pm8921_l1>;
+		vddpa-supply = <&pm8921_l10>;
+		vdddig-supply = <&pm8921_l2>;
+		// vddio l11
+	};
+
 };
