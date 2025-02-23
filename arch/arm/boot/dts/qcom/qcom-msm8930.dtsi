@@ -227,8 +227,8 @@
 
 		rpm_msg_ram: sram@10b000 {
 			compatible = "qcom,rpm-msg-ram";
-			reg = <0x10b000 0x1000>; // ?
-			ranges = <0 0x10b000 0x1000>;
+			reg = <0x10b000 0x2f00>; // TODO: exact size
+			ranges = <0 0x10b000 0x2f00>;
 
 			#address-cells = <1>;
 			#size-cells = <1>;
@@ -247,6 +247,10 @@
 
 			riva_master_stats: sram@196 {
 				reg = <0x196 0x32>;
+			};
+
+			rbcpr_stats: sram@2b00 {
+				reg = <0x2b00 0x2000>;
 			};
         };
 
@@ -390,6 +394,11 @@
 						   <&lpass_master_stats>,
 						   <&riva_master_stats>;
 				qcom,master-names = "KPSS", "MPSS", "LPASS", "RIVA";
+			};
+
+			rbcpr-stats {
+				compatible = "qcom,rpm-rbcpr-stats";
+				qcom,rpm-msg-ram = <&rbcpr_stats>;
 			};
 		};
 

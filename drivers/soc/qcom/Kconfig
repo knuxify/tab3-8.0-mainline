@@ -160,6 +160,15 @@ config QCOM_RPM_MASTER_STATS
 
 	  Say y here if you intend to debug or monitor platform sleep.
 
+config QCOM_RPM_RBCPR_STATS
+	tristate "Qualcomm RPM RapidBridge Core Power Reduction stats"
+	depends on ARCH_QCOM || COMPILE_TEST
+	help
+	  The RPM RapidBridge Core Power Reduction driver provides OPP data,
+	  read from the RPM message RAM.
+
+	  Say y here if you intend to debug or monitor OPP voltages
+
 config QCOM_RPMH
 	tristate "Qualcomm RPM-Hardened (RPMH) Communication"
 	depends on ARCH_QCOM || COMPILE_TEST
