@@ -103,7 +103,7 @@
 			};
 		};
 
-		/*cpu1-thermal {
+		cpu1-thermal {
 			polling-delay-passive = <250>;
 			polling-delay = <1000>;
 
@@ -122,7 +122,7 @@
 					type = "critical";
 				};
 			};
-		};*/
+		};
 	};
 
 	cpu-pmu {
@@ -330,7 +330,7 @@
 		};
 
 		gcc: clock-controller@900000 {
-			compatible = "qcom,gcc-msm8960", "syscon";
+			compatible = "qcom,gcc-apq8064", "syscon";
 			#clock-cells = <1>;
 			#reset-cells = <1>;
 			reg = <0x900000 0x4000>;
