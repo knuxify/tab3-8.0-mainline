@@ -159,6 +159,11 @@ static const struct linear_range pldo_ranges[] = {
 	REGULATOR_LINEAR_RANGE(3100000, 124, 160, 50000),
 };
 
+static const struct linear_range lldo_ranges[] = {
+	REGULATOR_LINEAR_RANGE( 690000,   0,   7, 60000),
+	REGULATOR_LINEAR_RANGE(1380000,   8,  15,120000)
+};
+
 static const struct linear_range nldo_ranges[] = {
 	REGULATOR_LINEAR_RANGE( 750000,   0,  63, 12500),
 };
@@ -529,6 +534,16 @@ static const struct qcom_rpm_reg pm8018_switch = {
 	.parts = &rpm8960_switch_parts,
 };
 
+static const struct qcom_rpm_reg pm8038_lldo = {
+	.desc.linear_ranges = lldo_ranges,
+	.desc.n_linear_ranges = ARRAY_SIZE(lldo_ranges),
+	.desc.n_voltages = 16,
+	.desc.ops = &uV_ops,
+	.parts = &rpm8960_ldo_parts,
+	.supports_force_mode_auto = false,
+	.supports_force_mode_bypass = true,
+};
+
 /*
  * PM8058 regulators
  */
@@ -879,7 +894,7 @@ static const struct rpm_regulator_data rpm_pm8038_regulators[] = {
 	{ "l10",  QCOM_RPM_PM8038_LDO10,  &pm8921_pldo, "vdd_l10" },
 	{ "l11",  QCOM_RPM_PM8038_LDO11,  &pm8921_pldo, "vdd_l7_l11_l21_l23" },
 	{ "l12",  QCOM_RPM_PM8038_LDO12,  &pm8921_nldo, "vdd_l12_l24_l26" },
-//	{ "l13",  QCOM_RPM_PM8038_LDO13,  &pm8921_lldo, "vdd_l4_l13_l14_l18_l25" },
+	{ "l13",  QCOM_RPM_PM8038_LDO13,  &pm8038_lldo, "vdd_l4_l13_l14_l18_l25" },
 	{ "l14",  QCOM_RPM_PM8038_LDO14,  &pm8921_pldo, "vdd_l4_l13_l14_l18_l25" },
 	{ "l15",  QCOM_RPM_PM8038_LDO15,  &pm8921_pldo, "vdd_l3_l9_l15_l17_l22" },
 	{ "l16",  QCOM_RPM_PM8038_LDO16,  &pm8921_nldo1200, "vdd_l16_l19" },
@@ -891,14 +906,12 @@ static const struct rpm_regulator_data rpm_pm8038_regulators[] = {
 	{ "l22",  QCOM_RPM_PM8038_LDO22,  &pm8921_pldo, "vdd_l3_l9_l15_l17_l22" },
 	{ "l23",  QCOM_RPM_PM8038_LDO23,  &pm8921_pldo, "vdd_l7_l11_l21_l23" },
 	{ "l24",  QCOM_RPM_PM8038_LDO24,  &pm8921_nldo1200, "vdd_l12_l24_l26" },
-	// { "l25",  QCOM_RPM_PM8038_LDO25,  &pm8921_lldo, "vdd_l4_l13_l14_l18_l25" },
+	{ "l25",  QCOM_RPM_PM8038_LDO25,  &pm8038_lldo, "vdd_l4_l13_l14_l18_l25" },
 	{ "l26",  QCOM_RPM_PM8038_LDO26,  &pm8921_nldo, "vdd_l12_l24_l26" },
 	{ "l27",  QCOM_RPM_PM8038_LDO27,  &pm8921_nldo1200, "vdd_l27" },
 	{ "lvs1", QCOM_RPM_PM8038_LVS1, &pm8921_switch, "vin_lvs" },
 	{ "lvs2", QCOM_RPM_PM8038_LVS2, &pm8921_switch, "vin_lvs" },
 	{ "corner", QCOM_RPM_VOLTAGE_CORNER, &pm8038_corner, "vdd_corner"},
-	// VDD_DIG_CORNER
-	//{ "ncp",  QCOM_RPM_PM8058_NCP, &pm8058_ncp, "vdd_ncp" },
 	{ "usb-switch", QCOM_RPM_USB_OTG_SWITCH, &pm8921_switch, "vin_5vs" },
 	{ }
 };
