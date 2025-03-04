@@ -3779,12 +3779,12 @@ static int gcc_msm8960_probe(struct platform_device *pdev)
 	if (of_get_available_child_count(pdev->dev.of_node) != 0)
 		return devm_of_platform_populate(&pdev->dev);
 
-	tsens = platform_device_register_data(&pdev->dev, "qcom-tsens", -1,
+	/*tsens = platform_device_register_data(&pdev->dev, "qcom-tsens", -1,
 					      NULL, 0);
 	if (IS_ERR(tsens))
 		return PTR_ERR(tsens);
 
-	platform_set_drvdata(pdev, tsens);
+	platform_set_drvdata(pdev, tsens);*/
 
 	return 0;
 }

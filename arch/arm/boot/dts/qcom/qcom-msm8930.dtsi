@@ -54,6 +54,8 @@
 			enable-method = "qcom,kpss-acc-v1";
 			device_type = "cpu";
 			reg = <0>;
+			operating-points-v2 = <&cpu_opp_table>;
+			clocks = <&kraitcc 0>;
 			next-level-cache = <&l2>;
 			qcom,acc = <&acc0>;
 			qcom,saw = <&saw0>;
@@ -64,6 +66,8 @@
 			enable-method = "qcom,kpss-acc-v1";
 			device_type = "cpu";
 			reg = <1>;
+			operating-points-v2 = <&cpu_opp_table>;
+			clocks = <&kraitcc 1>;
 			next-level-cache = <&l2>;
 			qcom,acc = <&acc1>;
 			qcom,saw = <&saw1>;
@@ -81,6 +85,58 @@
 		reg = <0x80000000 0>;
 	};
 
+	cpu_opp_table: opp-table-cpu {
+	    compatible = "operating-points-v2";
+	    opp-shared;
+
+	    opp-384000000 {
+	        opp-hz = /bits/ 64 <384000000>;
+	    };
+
+	    opp-432000000 {
+	        opp-hz = /bits/ 64 <432000000>;
+	    };
+
+	    opp-486000000 {
+	        opp-hz = /bits/ 64 <486000000>;
+	    };
+
+	    opp-540000000 {
+	        opp-hz = /bits/ 64 <540000000>;
+	    };
+
+	    opp-594000000 {
+	        opp-hz = /bits/ 64 <594000000>;
+	    };
+
+	    opp-648000000 {
+	        opp-hz = /bits/ 64 <648000000>;
+	    };
+
+	    opp-702000000 {
+	        opp-hz = /bits/ 64 <702000000>;
+	    };
+
+	    opp-756000000 {
+	        opp-hz = /bits/ 64 <756000000>;
+	    };
+
+	    opp-810000000 {
+	        opp-hz = /bits/ 64 <810000000>;
+	    };
+
+	    opp-864000000 {
+	        opp-hz = /bits/ 64 <864000000>;
+	    };
+
+	    opp-918000000 {
+	        opp-hz = /bits/ 64 <918000000>;
+	    };
+
+	    opp-972000000 {
+	        opp-hz = /bits/ 64 <972000000>;
+	    };
+	};
 	cpu-pmu {
 		compatible = "qcom,krait-pmu";
 		interrupts = <GIC_PPI 10 0x304>;
@@ -224,6 +280,13 @@
 		#size-cells = <1>;
 		ranges;
 		compatible = "simple-bus";
+
+		kraitcc: clock-controller {
+			compatible = "qcom,krait-cc-v1";
+			clocks = <&gcc PLL9>, <&gcc PLL10>, <&acc0>, <&acc1>;
+			clock-names = "hfpll0", "hfpll1", "acpu0_aux", "acpu1_aux";
+			#clock-cells = <1>;
+		};
 
 		rpm_msg_ram: sram@10b000 {
 			compatible = "qcom,rpm-msg-ram";

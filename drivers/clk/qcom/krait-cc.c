@@ -354,9 +354,9 @@ static int krait_cc_probe(struct platform_device *pdev)
 	bool unique_aux = !!device_get_match_data(dev);
 
 	/* Rate is 1 because 0 causes problems for __clk_mux_determine_rate */
-	clk = clk_register_fixed_rate(dev, "qsb", NULL, 0, 1);
+	/*clk = clk_register_fixed_rate(dev, "qsb", NULL, 0, 1);
 	if (IS_ERR(clk))
-		return PTR_ERR(clk);
+		return PTR_ERR(clk);*/
 
 	if (!unique_aux) {
 		clk = clk_register_fixed_factor(dev, "acpu_aux",
