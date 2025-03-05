@@ -56,6 +56,7 @@
 			reg = <0>;
 			operating-points-v2 = <&cpu_opp_table>;
 			clocks = <&kraitcc 0>;
+			cpu-supply = <&saw0_vreg>;
 			cpu-idle-states = <&cpu_spc>;
 			next-level-cache = <&l2>;
 			qcom,acc = <&acc0>;
@@ -69,6 +70,7 @@
 			reg = <1>;
 			operating-points-v2 = <&cpu_opp_table>;
 			clocks = <&kraitcc 1>;
+			cpu-supply = <&saw1_vreg>;
 			cpu-idle-states = <&cpu_spc>;
 			next-level-cache = <&l2>;
 			qcom,acc = <&acc1>;
