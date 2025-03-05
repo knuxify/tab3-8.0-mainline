@@ -3186,8 +3186,6 @@ static int mmcc_msm8960_probe(struct platform_device *pdev)
 
 	rmw(0x0030, 0x000003C7, 0x00003FFF); // SAXI_EN_REG
 
-	// TODO: imem clk 0x3
-
 	// mmcc
 	rmw(0x0040, 0x00000000, 0x00000410); // CSI0_CC_REG
 	rmw(0x0024, 0x00000000, 0x00000410); // CSI1_CC_REG
@@ -3206,25 +3204,16 @@ static int mmcc_msm8960_probe(struct platform_device *pdev)
 
 	rmw(0x00EC, 0x80FF0000, 0xE1FFC010); // TV_CC_REG
 
-	// usb
-	//rmw(0x2904, 0x0000004F, 0x0000007F); // USB_HS1_HCLK_FS_REG
-
 	// mmcc?
 	writel_relaxed(0, ptr + 0x0208); // SW_RESET_AXI_REG
 
 	writel_relaxed(0, ptr + 0x0210); // SW_RESET_CORE_REG
 	writel_relaxed(0, ptr + 0x0214); // SW_RESET_CORE2_REG
 
-	void* old = ptr;
-	ptr = ioremap(0xFA010000, 0x4000);
-	// tssc & pdm pxo
-	writel_relaxed(BIT(11), ptr + 0x2CA0); // TSSC_CLK_CTL_REG
-	writel_relaxed(BIT(15), ptr + 0x2CC0); // PDM_CLK_NS_REG
-	iounmap(ptr);
-	ptr = old;
-
 	rmw(0x00B0, 0x1, 0x7); // DSI1_BYTE_NS_REG
 	rmw(0x011C, 0x1, 0x7); // DSI1_ESC_NS_REG
+
+	writel_relaxed(0, ptr + 0x034c); // MM_PLL3_TEST_CTL_REG
 	
 	const struct qcom_cc_desc *desc = device_get_match_data(dev);
 
@@ -3245,8 +3234,6 @@ static int mmcc_msm8960_probe(struct platform_device *pdev)
 	printk("a\n");
 	//clk_pll_ops.set_rate(&pll2.clkr.hw, 800000000, 27000000);
 	clk_pll_ops.enable(&pll2.clkr.hw);
-
-	writel_relaxed(0, ptr + 0x034c); // MM_PLL3_TEST_CTL_REG
 
 	printk("b\n");
 	return ret;

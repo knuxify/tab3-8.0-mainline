@@ -482,7 +482,7 @@
 			interrupt-names	= "ack", "err", "wakeup";
 
 			rpmcc: clock-controller {
-				compatible	= "qcom,rpmcc-msm8930", "qcom,rpmcc";
+				compatible = "qcom,rpmcc-msm8930", "qcom,rpmcc";
 				#clock-cells = <1>;
 				clocks = <&pxo_board>, <&cxo_board>;
 				clock-names = "pxo", "cxo";
