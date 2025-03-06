@@ -15,6 +15,7 @@
 #include <linux/smp.h>
 #include <linux/io.h>
 #include <linux/firmware/qcom/qcom_scm.h>
+#include "idle.h"
 
 #include <asm/smp_plat.h>
 
@@ -47,7 +48,8 @@ extern void secondary_startup_arm(void);
 #ifdef CONFIG_HOTPLUG_CPU
 static void qcom_cpu_die(unsigned int cpu)
 {
-	wfi();
+    msm_arch_idle();
+    // echo 0 > /sys/devices/system/cpu/cpu1/online
 }
 #endif
 
