@@ -145,6 +145,14 @@ static int rbcpr_stats_probe(struct platform_device *pdev)
 		snprintf(buf, 20, "corner_%s", name);
 
 		data = devm_kzalloc(dev, sizeof(*data), GFP_KERNEL);
+
+		if (!data) {
+			debugfs_remove_recursive(root);
+			return dev_err_probe(dev, -ENOMEM,
+					     "Failed to allocate memory for %s",
+					     buf);
+		}
+
 		data->index = i;
 		data->num_recommends = num_recommends;
 		data->corner_base =
