@@ -56,7 +56,7 @@
 			reg = <0>;
 			operating-points-v2 = <&cpu_opp_table>;
 			clocks = <&kraitcc 0>;
-			cpu-idle-states = <&cpu_spc>;
+			//cpu-idle-states = <&cpu_spc>;
 			next-level-cache = <&l2>;
 			qcom,acc = <&acc0>;
 			qcom,saw = <&saw0>;
@@ -69,7 +69,7 @@
 			reg = <1>;
 			operating-points-v2 = <&cpu_opp_table>;
 			clocks = <&kraitcc 1>;
-			cpu-idle-states = <&cpu_spc>;
+			//cpu-idle-states = <&cpu_spc>;
 			next-level-cache = <&l2>;
 			qcom,acc = <&acc1>;
 			qcom,saw = <&saw1>;
@@ -352,6 +352,11 @@
 				reg = <0x2b00 0x2000>;
 			};
         };
+
+		sram@2a03f720 {
+			compatible = "qcom,tz-dbg";
+			reg = <0x2a03f720 0x1000>;
+		};
 
 		intc: interrupt-controller@2000000 {
 			compatible = "qcom,msm-qgic2";

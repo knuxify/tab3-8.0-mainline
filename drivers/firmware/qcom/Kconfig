@@ -41,6 +41,13 @@ config QCOM_TZMEM_MODE_SHMBRIDGE
 
 endchoice
 
+config QCOM_TZDBG
+	bool "Qualcomm TrustZone Debug driver"
+	depends on ARCH_QCOM || COMPILE_TEST
+	help
+	  Say Y here to expose TrustZone boot, reset, interrupt, general, vmid stats
+	  and its' log
+
 config QCOM_QSEECOM
 	bool "Qualcomm QSEECOM interface driver"
 	depends on QCOM_SCM=y
