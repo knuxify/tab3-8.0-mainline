@@ -135,9 +135,9 @@ static int rbcpr_stats_probe(struct platform_device *pdev)
 				     num_corners);
 
 	root = debugfs_create_dir("qcom_rpm_rbcpr_stats", NULL);
-	if (IS_ERR(dent))
-		return dev_err_probe(dev, PTR_ERR(dent),
-				     "Failed to create debugfs file\n");
+	if (IS_ERR(root))
+		return dev_err_probe(dev, PTR_ERR(root),
+				     "Failed to create debugfs directory\n");
 	platform_set_drvdata(pdev, root);
 
 	for (i = 0; i < num_corners; i++) {

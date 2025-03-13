@@ -205,10 +205,14 @@ static int qcom_tzdbg_probe(struct platform_device *pdev)
 	if (!root)
 		return dev_err_probe(dev, -ENODEV,
 				     "Failed to create debugfs directory");
+	platform_set_drvdata(pdev, root);
 
 	/* The actual data lives here */
 	real_base = readl_relaxed(base);
 	base = devm_ioremap(dev, real_base, resource_size(r));
+	if (!base)
+		return dev_err_probe(dev, -ENOMEM,
+				     "Failed to ioremap real base address\n");
 
 	for (i = 0; i < ARRAY_SIZE(files); i++) {
 		data = devm_kzalloc(dev, sizeof(*data), GFP_KERNEL);
@@ -230,8 +234,6 @@ static int qcom_tzdbg_probe(struct platform_device *pdev)
 				"Failed to create debugfs file %s\n", files[i]);
 		}
 	}
-
-	platform_set_drvdata(pdev, root);
 
 	return 0;
 }
