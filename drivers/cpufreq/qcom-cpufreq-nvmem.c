@@ -598,6 +598,7 @@ static const struct of_device_id qcom_cpufreq_match_list[] __initconst __maybe_u
 	{ .compatible = "qcom,ipq9574", .data = &match_data_kryo },
 	{ .compatible = "qcom,msm8974", .data = &match_data_krait },
 	{ .compatible = "qcom,msm8960", .data = &match_data_krait },
+	{ .compatible = "qcom,msm8930", .data = &match_data_krait },
 	{},
 };
 MODULE_DEVICE_TABLE(of, qcom_cpufreq_match_list);
