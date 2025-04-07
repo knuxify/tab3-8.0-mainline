@@ -380,6 +380,21 @@
 		};
 	};
 
+	usb_switch: mux-controller {
+		compatible = "gpio-mux";
+		#mux-control-cells = <0>;
+
+		mux-gpios = <&msmgpio 97 GPIO_ACTIVE_HIGH>;
+	};
+
+	usb_5v: gpio-regulator {
+		compatible = "regulator-fixed";
+		regulator-name = "External 5V";
+		gpios = <&msmgpio 63 0>;
+		startup-delay-us = <10000>;
+		enable-active-high;
+	};
+
 	soc: soc {
 		#address-cells = <1>;
 		#size-cells = <1>;
@@ -794,6 +809,9 @@
 			ahb-burst-config = <0>;
 			phys = <&usb_hs1_phy>;
 			phy-names = "usb-phy";
+			vbus-supply = <&usb_5v>;
+			mux-controls = <&usb_switch>;
+			mux-control-names = "usb_switch";
 			#reset-cells = <1>;
 			status = "disabled";
 
