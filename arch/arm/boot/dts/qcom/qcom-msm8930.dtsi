@@ -58,7 +58,6 @@
 			clock-names = "cpu";
 			clock-latency = <100000>;
 			clocks = <&kraitcc 0>;
-			//cpu-idle-states = <&cpu_spc>;
 			next-level-cache = <&l2>;
 			qcom,acc = <&acc0>;
 			qcom,saw = <&saw0>;
@@ -73,7 +72,6 @@
 			clock-names = "cpu";
 			clock-latency = <100000>;
 			clocks = <&kraitcc 1>;
-			//cpu-idle-states = <&cpu_spc>;
 			next-level-cache = <&l2>;
 			qcom,acc = <&acc1>;
 			qcom,saw = <&saw1>;
@@ -83,16 +81,6 @@
 			compatible = "cache";
 			cache-level = <2>;
 			cache-unified;
-		};
-
-		idle-states {
-			cpu_spc: cpu-spc {
-				compatible = "qcom,idle-state-spc",
-						"arm,idle-state";
-				entry-latency-us = <400>;
-				exit-latency-us = <900>;
-				min-residency-us = <3000>;
-			};
 		};
 	};
 
