@@ -249,7 +249,7 @@ static const struct spm_reg_data spm_reg_8064_cpu = {
 	.start_index[PM_SLEEP_MODE_SPC] = 2,
 	.set_vdd = smp_set_vdd_v1_1,
 	.range = &spm_v1_1_regulator_range,
-	.init_uV = 1300000,
+	.init_uV = 1100000,
 	.ramp_delay = 1250,
 };
 
