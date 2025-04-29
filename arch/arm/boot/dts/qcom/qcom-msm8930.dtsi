@@ -233,7 +233,7 @@
 	cpu-pmu {
 		compatible = "qcom,krait-pmu";
 		interrupts = <GIC_PPI 10 0x304>;
-		qcom,no-pc-write; // TODO
+		qcom,no-pc-write;
 	};
 
 	clocks {
@@ -337,7 +337,7 @@
 	usb_5v: gpio-regulator {
 		compatible = "regulator-fixed";
 		regulator-name = "External 5V";
-		gpios = <&msmgpio 63 0>;
+		gpios = <&msmgpio 63 GPIO_ACTIVE_LOW>;
 		startup-delay-us = <10000>;
 		enable-active-high;
 	};
@@ -428,7 +428,6 @@
 			reg = <0x900000 0x4000>;
 			clocks = <&cxo_board>, <&pxo_board>, <&lcc PLL4>;
 			clock-names = "cxo", "pxo", "pll4";
-			// TODO: thermal
 
 			tsens: thermal-sensor {
 				compatible = "qcom,msm8960-tsens";
