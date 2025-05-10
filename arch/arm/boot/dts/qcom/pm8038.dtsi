@@ -21,8 +21,6 @@
 			pull-up;
 		};
 
-		
-
 		vibrator@4a {
 			compatible = "qcom,pm8921-vib";
 			reg = <0x4a>;
@@ -57,23 +55,6 @@
 			reg = <0x11d>;
 			allow-set-time;
 		};
-
-		/* using hacked up pm8941 driver */
-		// TODO: hack it
-		/*wled@25a {
-			compatible = "qcom,pm8xxx-wled";
-			reg = <0x25A>;
-			label = "backlight";
-
-			// dig_mod_gen_en ?
-			// op_fdbck ?
-			qcom,cs-out;
-			qcom,current-limit = <25>;
-			qcom,current-boost-limit = <525>;
-			qcom,switching-freq = <1600>; // ?
-			qcom,ovp = <32>;
-			qcom,num-strings = <2>;
-		};*/
 
 		xoadc: xoadc@197 {
 			compatible = "qcom,pm8038-adc";
@@ -122,31 +103,6 @@
 			ref_muxoff: adc-channel@f {
 				reg = <0x00 0x0f>;
 			};
-		};
-
-		// TODO: driver
-		smbb: charger@0 {
-			compatible = "qcom,pm8921-charger";
-			reg = <0x0>;
-
-			interrupt-parent = <&pmicintc>;
-			interrupts =
-				<8 1>,  <9 1>,  <10 1>, <11 1>, <12 1>, <13 1>, <14 1>, <15 1>,
-				<16 1>, <17 1>, <18 1>, <19 1>, <20 1>, <21 1>, <22 1>, <23 1>,
-				<24 1>, <25 1>, <26 1>, <27 1>, <28 1>, <29 1>, <30 1>, <31 1>,
-				<40 1>, <41 1>, <42 1>, <43 1>, <44 1>, <45 1>,			<47 1>;
-			interrupt-names =
-				"vcp", "chg-wdog", "vbat-ov", "usb-uv", "vbatdet-low", "bat-insert", "usb-ov", "usb-valid",
-				"chg-trkl", "chg-fast", "loopchange", "chg-state", "chg-fail", "chg-done", "atc-fail", "atc-done",
-				"vdd-loop", "course-det-low", "bat-temp-ok", "chg-gone", "bat-temp-cold", "chg-hot", "bat-temp-hot", "bat-remove",
-				"dc-uv", "dc-ov", "dc-valid", "psi", "batfet", "vbatdet", "vreg-ov";
-
-			// usb-otg-in-supply = <&pm8941_5vs1>;
-
-			qcom,disable-dc;
-		// { "bat-present", smbb_bat_present_handler },
-
-			chg_otg: otg-vbus { };
 		};
 	};
 };
