@@ -270,6 +270,7 @@
 		memory-region = <&smem_region>;
 
 		hwlocks = <&sfpb_mutex 3>;
+		qcom,rpm-msg-ram = <&rpm_msg_ram>;
 	};
 
 	smsm {
