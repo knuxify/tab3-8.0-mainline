@@ -23,6 +23,12 @@ Patches as they are submitted to the mailing list; contain the most up-to-date a
 * `b4/exynos-phy-extcon`: patch for extcon-based USB mode switch toggling, not sent yet and likely won't be pending a better way to do this
 * `b4/max17042-soc-threshold-fix`: Fix SOC threshold calculation on MAX17042. Yet to be sent.
 
+## dizi/*
+
+Branches containing work-in-progress code for the Xiaomi Redmi Pad Pro/POCO Pad, as well as SM7435 SoC support. Very WIP, haven't even gotten to compiling it yet... Needs DPU driver, PM6450 driver, and maybe GPU nodes/driver support/GPUCC.
+
+- `dizi/6.14`: Current WIP work.
+
 ## tab3/*
 
 Branches containing work-in-progress code for the Samsung Galaxy Tab 3 8.0. For an up-to-date mainline status, see the [wiki page on the postmarketOS wiki](https://wiki.postmarketos.org/wiki/Samsung_Galaxy_Tab_3_8.0_(SM-T310)_(samsung-lt01wifi)) (pretty much any change I make, or bug I find, I instantly write down there, even if it's not in my repos yet!)
