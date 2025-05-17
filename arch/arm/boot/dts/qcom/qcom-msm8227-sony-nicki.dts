@@ -1,0 +1,36 @@
+// SPDX-License-Identifier: GPL-2.0-only
+#include <dt-bindings/input/input.h>
+#include <dt-bindings/reset/qcom,gcc-msm8960.h>
+#include <dt-bindings/gpio/gpio.h>
+#include <dt-bindings/pinctrl/qcom,pmic-gpio.h>
+#include <dt-bindings/input/gpio-keys.h>
+
+#include "qcom-msm8930.dtsi"
+#include "pm8038.dtsi"
+
+/ {
+	model = "Sony Xperia M";
+	compatible = "sony,nicki", "qcom,msm8930", "qcom,msm8227";
+
+	aliases {
+		serial0 = &gsbi5_serial;
+	};
+
+	chosen {
+		stdout-path = "serial0:115200n8";
+	};
+
+	memory@80000000 {
+		device_type = "memory";
+		reg = <0x80200000 0x8c00000 0x90000000 0x10000000>;
+	};
+};
+
+&gsbi5 {
+	qcom,mode = <GSBI_PROT_I2C_UART>;
+	status = "okay";
+};
+
+&gsbi5_serial {
+	status = "okay";
+};

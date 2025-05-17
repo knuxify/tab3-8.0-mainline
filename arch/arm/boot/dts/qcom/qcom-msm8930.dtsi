@@ -89,7 +89,7 @@
 		reg = <0x80000000 0>;
 	};
 
-	thermal-zones {
+	/*thermal-zones {
 		cpu-thermal {
 			polling-delay-passive = <250>;
 			polling-delay = <1000>;
@@ -111,7 +111,7 @@
 				};
 			};
 		};
-	};
+	};*/
 
 	cpu_opp_table: opp-table-cpu {
 		compatible = "operating-points-v2-krait-cpu", "operating-points-v2";
@@ -269,7 +269,7 @@
 		memory-region = <&smem_region>;
 
 		hwlocks = <&sfpb_mutex 3>;
-		qcom,rpm-msg-ram = <&rpm_msg_ram>;
+		//qcom,rpm-msg-ram = <&rpm_msg_ram>;
 	};
 
 	// TODO: nuke me
@@ -359,7 +359,7 @@
 			#interconnect-cells = <1>;
 		};
 
-		rpm_msg_ram: sram@10b000 {
+		/*rpm_msg_ram: sram@10b000 {
 			compatible = "qcom,rpm-msg-ram";
 			reg = <0x10b000 0x2f00>; // TODO: exact size
 			ranges = <0 0x10b000 0x2f00>;
@@ -392,7 +392,7 @@
 		sram@2a03f720 {
 			compatible = "qcom,tz-dbg";
 			reg = <0x2a03f720 0x1000>;
-		};
+		};*/
 
 		intc: interrupt-controller@2000000 {
 			compatible = "qcom,msm-qgic2";
@@ -434,7 +434,7 @@
 			clocks = <&cxo_board>, <&pxo_board>, <&lcc PLL4>;
 			clock-names = "cxo", "pxo", "pll4";
 
-			tsens: thermal-sensor {
+			/*tsens: thermal-sensor {
 				compatible = "qcom,msm8960-tsens";
 
 				nvmem-cells = <&tsens_calib>, <&tsens_backup>;
@@ -444,7 +444,7 @@
 
 				#qcom,sensors = <10>;
 				#thermal-sensor-cells = <1>;
-			};
+			};*/
 		};
 
 		lcc: clock-controller@28000000 {
@@ -529,7 +529,7 @@
 				clock-names = "pxo", "cxo";
 			};
 
-			master-stats {
+			/*master-stats {
 				compatible = "qcom,rpm-master-stats";
 				qcom,rpm-msg-ram = <&kpss_master_stats>,
 						   <&mpss_master_stats>,
@@ -541,7 +541,7 @@
 			rbcpr-stats {
 				compatible = "qcom,rpm-rbcpr-stats";
 				qcom,rpm-msg-ram = <&rbcpr_stats>;
-			};
+			};*/
 		};
 
 		acc0: clock-controller@2088000 {
