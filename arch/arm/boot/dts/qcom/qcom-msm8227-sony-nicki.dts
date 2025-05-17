@@ -22,7 +22,91 @@
 
 	memory@80000000 {
 		device_type = "memory";
-		reg = <0x80200000 0x8c00000 0x90000000 0x10000000>;
+		reg = <0x80200000 0x8c00000 0x90000000 0x10000000 0xa0000000 0x20000000>;
+	};
+
+	reserved-memory {
+		boot1@8ff00000 {
+			reg = <0x8ff00000 0x100000>;
+			no-map;
+		};
+
+		appsbl@88f00000 {
+			reg = <0x88f00000 0x100000>;
+			no-map;
+		};
+	};
+
+	gpio-keys {
+		compatible = "gpio-keys";
+
+		pinctrl-names = "default";
+		pinctrl-0 = <&gpio_keys_pins>;
+
+		key-camera-focus {
+			label = "camera_focus";
+			gpios = <&msmgpio 39 GPIO_ACTIVE_LOW>;
+			linux,input-type = <1>;
+			linux,code = <KEY_CAMERA_FOCUS>;
+		};
+
+		key-camera-snapshot {
+			label = "camera_snapshot";
+			gpios = <&msmgpio 69 GPIO_ACTIVE_LOW>;
+			linux,input-type = <1>;
+			linux,code = <KEY_CAMERA>;
+		};
+
+		key-volume-down {
+			label = "volume_down";
+			gpios = <&msmgpio 107 GPIO_ACTIVE_LOW>;
+			linux,input-type = <1>;
+			linux,code = <KEY_VOLUMEDOWN>;
+		};
+
+		key-volume-up {
+			label = "volume_up";
+			gpios = <&msmgpio 106 GPIO_ACTIVE_LOW>;
+			linux,input-type = <1>;
+			linux,code = <KEY_VOLUMEUP>;
+		};
+	};
+};
+
+&gsbi3 {
+	status = "okay";
+	qcom,crci = <GSBI_CRCI_QUP>;
+	qcom,mode = <GSBI_PROT_I2C>;
+};
+
+&gsbi3_i2c {
+	clock-frequency = <400000>;
+	qcom,src-freq = <24000000>;
+
+	// TODO: verify functions and supplies
+	synaptics@20 {
+		compatible = "syna,rmi4-i2c";
+		reg = <0x20>;
+
+		interrupts-extended = <&msmgpio 78 IRQ_TYPE_EDGE_FALLING>;
+		vdd-supply = <&pm8038_l9>;
+		vio-supply = <&pm8038_lvs2>;
+
+		pinctrl-names = "default";
+		pinctrl-0 = <&touch_pins>;
+
+		#address-cells = <1>;
+		#size-cells = <0>;
+
+		rmi4-f01@1 {
+			reg = <0x1>;
+			syna,nosleep-mode = <1>;
+		};
+
+		rmi4-f11@11 {
+			reg = <0x11>;
+			syna,sensor-type = <1>;
+		};
 	};
 };
 
@@ -32,5 +116,466 @@
 };
 
 &gsbi5_serial {
+	status = "okay";
+};
+
+&gsbi12 {
+	qcom,crci = <GSBI_CRCI_QUP>;
+	qcom,mode = <GSBI_PROT_I2C>;
+	status = "okay";
+};
+
+&gsbi12_i2c {
+	// TODO: actually a bmm050, but should be compatible
+	magnetometer@10 {
+		compatible = "bosch,bmm150";
+		reg = <0x10>;
+	};
+
+	accel@18 {
+		compatible = "bosch,bma250";
+		reg = <0x18>;
+		interrupts-extended = <&msmgpio 80 IRQ_TYPE_EDGE_FALLING>;
+		pinctrl-names = "default";
+		pinctrl-0 = <&accel_int_pins>;
+	};
+
+	// TODO: CM36283 @ 0x60 (no driver)
+};
+
+&rpm {
+	regulators {
+		compatible = "qcom,rpm-pm8038-regulators";
+
+		vdd_l1-supply = <&pm8038_s2>;
+		vdd_l2_l20-supply = <&pm8038_s2>;
+		vdd_l12_l24_l26-supply = <&pm8038_s2>;
+		vdd_l16_l19-supply = <&pm8038_s3>;
+		vdd_l27-supply = <&pm8038_s3>;
+		vdd_l7_l11_l21_l23-supply = <&pm8038_s4>;
+		vin_lvs-supply = <&pm8038_l11>;
+
+		/* VREG_CORE_V1P15 */
+		pm8038_s1: s1 {
+			regulator-min-microvolt = <500000>;
+			regulator-max-microvolt = <1150000>;
+			qcom,switch-mode-frequency = <4800000>;
+			bias-pull-down;
+		};
+
+		/* VREG_S2_V1P4 */
+		pm8038_s2: s2 {
+			regulator-always-on;
+			regulator-min-microvolt = <1400000>;
+			regulator-max-microvolt = <1400000>;
+			qcom,switch-mode-frequency = <1600000>;
+			bias-pull-down;
+		};
+
+		/* VREG_S3_V1P15 */
+		pm8038_s3: s3 {
+			regulator-min-microvolt = <1150000>;
+			regulator-max-microvolt = <1150000>;
+			qcom,switch-mode-frequency = <3200000>;
+			bias-pull-down;
+		};
+
+		/* VREG_S4_V2P2 */
+		pm8038_s4: s4 {
+			regulator-always-on;
+			// TODO: Downstream lists 1950000 as min uV, but nicki dts has 2.2v; investigate
+			regulator-min-microvolt = <2200000>; // 1950000
+			regulator-max-microvolt = <2200000>;
+			qcom,switch-mode-frequency = <1600000>;
+			bias-pull-down;
+		};
+
+		/* VREG_L1_V1P3 */
+		pm8038_l1: l1 {
+			regulator-min-microvolt = <1300000>;
+			regulator-max-microvolt = <1300000>;
+			bias-pull-down;
+		};
+
+		/* VREG_L2_V1P2 */
+		pm8038_l2: l2 {
+			regulator-min-microvolt = <1200000>;
+			regulator-max-microvolt = <1200000>;
+			bias-pull-down;
+
+			// TODO: where does this come from?
+			//regulator-system-load = <100000>;
+			//regulator-allow-set-load;
+		};
+
+		/* VREG_L3_V3P075 */
+		pm8038_l3: l3 {
+			regulator-min-microvolt = <3075000>;
+			regulator-max-microvolt = <3075000>;
+			bias-pull-down;
+		};
+
+		/* VREG_L4_V1P8 */
+		pm8038_l4: l4 {
+			regulator-always-on;
+			regulator-min-microvolt = <1800000>;
+			regulator-max-microvolt = <1800000>;
+			bias-pull-down;
+
+			regulator-system-load = <10000>;
+			regulator-allow-set-load;
+		};
+
+		/* VREG_EMMC_V2P95 */
+		pm8038_l5: l5 {
+			regulator-min-microvolt = <2950000>;
+			regulator-max-microvolt = <2950000>;
+			bias-pull-down;
+		};
+
+		/* VREG_SD_V2P95 */
+		pm8038_l6: l6 {
+			regulator-min-microvolt = <2950000>;
+			regulator-max-microvolt = <2950000>;
+			bias-pull-down;
+		};
+
+		/* VREG_L7_V2P05 */
+		pm8038_l7: l7 {
+			regulator-min-microvolt = <2050000>;
+			regulator-max-microvolt = <2050000>;
+			bias-pull-down;
+		};
+
+		/* VREG_VDD_V2P8 */
+		pm8038_l8: l8 {
+			// TODO: What does "lcm" mean?
+			regulator-always-on; // lcm
+			regulator-min-microvolt = <2800000>;
+			regulator-max-microvolt = <2800000>;
+			bias-pull-down;
+			// TODO no load in downstream
+			//regulator-system-load = <100000>;
+			//regulator-allow-set-load;
+		};
+
+		/* VREG_L9_V2P85 */
+		pm8038_l9: l9 {
+			regulator-always-on; // accel + proxim, ts
+			regulator-min-microvolt = <2850000>;
+			regulator-max-microvolt = <2850000>;
+			bias-pull-down;
+		};
+
+		/* VREG_L10_V3P0 */
+		pm8038_l10: l10 {
+			regulator-min-microvolt = <2900000>;
+			regulator-max-microvolt = <3000000>; // TODO: nicki dts has 2900000 here, hm
+			bias-pull-down;
+		};
+
+		/* VREG_L11_V1P8 */
+		pm8038_l11: l11 {
+			regulator-always-on;
+			regulator-min-microvolt = <1800000>;
+			regulator-max-microvolt = <1800000>;
+			bias-pull-down;
+
+			regulator-system-load = <100000>;
+			regulator-allow-set-load;
+		};
+
+		/* VREG_L12_V1P2 */
+		pm8038_l12: l12 {
+			regulator-min-microvolt = <1200000>;
+			regulator-max-microvolt = <1200000>;
+			bias-pull-down;
+		};
+
+		/* Unlabeled */
+		pm8038_l13: l13 {
+			regulator-min-microvolt = <2220000>;
+			regulator-max-microvolt = <2220000>;
+		};
+
+		/* VREG_PLL2_V1P8 */
+		pm8038_l14: l14 {
+			regulator-min-microvolt = <1800000>;
+			regulator-max-microvolt = <1800000>;
+			bias-pull-down;
+		};
+
+		/* VREG_L15_UIM1 */
+		pm8038_l15: l15 {
+			regulator-min-microvolt = <1800000>;
+			regulator-max-microvolt = <2950000>;
+			bias-pull-down;
+		};
+
+		/* VREG_L17_UIM2 */
+		pm8038_l17: l17 {
+			regulator-min-microvolt = <1800000>;
+			regulator-max-microvolt = <2950000>;
+			bias-pull-down;
+		};
+
+		/* VREG_IOVDD_V1P8 */
+		pm8038_l18: l18 {
+			regulator-min-microvolt = <1800000>;
+			regulator-max-microvolt = <1800000>;
+			bias-pull-down;
+		};
+
+		// TODO: l20 - adding it makes the system not boot
+
+		/* VREG_A2_V1P9 */
+		pm8038_l21: l21 {
+			regulator-min-microvolt = <1900000>;
+			regulator-max-microvolt = <1900000>;
+			bias-pull-down;
+		};
+
+		/* VREG_SDC3_V2P95 */
+		pm8038_l22: l22 {
+			regulator-always-on;
+			regulator-min-microvolt = <1850000>;
+			regulator-max-microvolt = <2950000>;
+			bias-pull-down;
+
+			regulator-system-load = <100000>;
+			regulator-allow-set-load;
+		};
+
+		/* VREG_PLL2_V1P8 */
+		pm8038_l23: l23 {
+			regulator-always-on;
+			// ss?
+			regulator-min-microvolt = <1800000>;
+			regulator-max-microvolt = <1800000>;
+			bias-pull-down;
+		};
+
+		/* VREG_MEM_V1P15 */
+		pm8038_l24: l24 {
+			// ss?
+			regulator-min-microvolt = <500000>;
+			regulator-max-microvolt = <1150000>;
+			bias-pull-down;
+
+			regulator-system-load = <10000>;
+			regulator-allow-set-load;
+		};
+
+		/* Unlabeled */
+		pm8038_l25: l25 {
+			regulator-min-microvolt = <1740000>;
+			regulator-max-microvolt = <1740000>;
+		};
+
+		// TODO: l26 makes it reboot into fastboot
+
+		/* VREG_QFUSE_V1P8 */
+		pm8038_lvs1: lvs1 {
+			bias-pull-down;
+		};
+
+		/* Unlabeled */
+		pm8038_lvs2: lvs2 {
+			regulator-always-on; // accel + proxim, ts
+			bias-pull-down;
+		};
+	};
+};
+
+&msmgpio {
+	accel_int_pins: accel-int-pins {
+		pins = "gpio80";
+		function = "gpio";
+		drive-strength = <2>;
+		bias-disable;
+	};
+
+	gpio_keys_pins: gpio-keys-pins {
+		camera-focus {
+			pins = "gpio39";
+			function = "gpio";
+			drive-strength = <2>;
+			bias-pull-up;
+		};
+
+		camera-snapshot {
+			pins = "gpio69";
+			function = "gpio";
+			drive-strength = <2>;
+			bias-pull-up;
+		};
+
+		volume-down {
+			pins = "gpio105";
+			function = "gpio";
+			drive-strength = <2>;
+			bias-pull-up;
+		};
+
+		volume-up {
+			pins = "gpio106";
+			function = "gpio";
+			drive-strength = <2>;
+			bias-pull-up;
+		};
+
+		// TODO: Are these needed?
+		volume-down-s1 {
+			pins = "gpio47";
+			function = "gpio";
+			drive-strength = <2>;
+			bias-pull-up;
+		};
+
+		volume-up-s1 {
+			pins = "gpio48";
+			function = "gpio";
+			drive-strength = <2>;
+			bias-pull-up;
+		};
+	};
+
+	sdcc1_pins_active: sdcc1-pins-active {
+		clk {
+			pins = "sdc1_clk";
+			drive-strength = <16>;
+			bias-disable;
+		};
+
+		cmd {
+			pins = "sdc1_cmd";
+			drive-strength = <10>;
+			bias-pull-up;
+		};
+
+		data {
+			pins = "sdc1_data";
+			drive-strength = <10>;
+			bias-pull-up;
+		};
+	};
+
+	sdcc1_pins_sleep: sdcc1-pins-sleep {
+		clk {
+			pins = "sdc1_clk";
+			drive-strength = <2>;
+			bias-disable;
+		};
+
+		cmd {
+			pins = "sdc1_cmd";
+			drive-strength = <2>;
+			bias-pull-up;
+		};
+
+		data {
+			pins = "sdc1_data";
+			drive-strength = <2>;
+			bias-pull-up;
+		};
+	};
+
+	sdcc3_pins_active: sdcc3-pins-active {
+		clk {
+			pins = "sdc3_clk";
+			drive-strength = <8>;
+			bias-disable;
+		};
+
+		cmd {
+			pins = "sdc3_cmd";
+			drive-strength = <8>;
+			bias-pull-up;
+		};
+
+		data {
+			pins = "sdc3_data";
+			drive-strength = <8>;
+			bias-pull-up;
+		};
+	};
+
+	sdcc3_pins_sleep: sdcc3-pins-sleep {
+		clk {
+			pins = "sdc3_clk";
+			drive-strength = <2>;
+			bias-disable;
+		};
+
+		cmd {
+			pins = "sdc3_cmd";
+			drive-strength = <2>;
+			bias-pull-up;
+		};
+
+		data {
+			pins = "sdc3_data";
+			drive-strength = <2>;
+			bias-pull-up;
+		};
+	};
+
+	riva_wlan_pin_a: riva-wlan-active {
+		pins = "gpio84", "gpio85", "gpio86", "gpio87", "gpio88";
+		function = "wlan";
+
+		drive-strength = <6>;
+		bias-pull-down;
+	};
+
+	riva_bt_pin_a: riva-bt-active {
+		pins = "gpio28", "gpio29", "gpio83"; // 1 extra ?
+		function = "bt";
+	};
+
+	touch_pins: touch-pins {
+		pins = "gpio78";
+		function = "gpio";
+		drive-strength = <2>;
+		bias-disable;
+	};
+};
+
+
+/* eMMC */
+&sdcc1 {
+	vmmc-supply = <&pm8038_l5>;
+	vqmmc-supply = <&pm8038_l11>;
+
+	pinctrl-0 = <&sdcc1_pins_active>;
+	pinctrl-names = "default";
+
+	status = "okay";
+};
+
+/* SD card */
+&sdcc3 {
+	vmmc-supply = <&pm8038_l6>;
+	vqmmc-supply = <&pm8038_l22>;
+
+	non-removable;
+
+	pinctrl-0 = <&sdcc3_pins_active>;
+	pinctrl-1 = <&sdcc3_pins_sleep>;
+	pinctrl-names = "default", "sleep";
+
+	cd-gpios = <&msmgpio 94 GPIO_ACTIVE_LOW>;
+
+	status = "okay";
+};
+
+&usb_hs1_phy {
+	v3p3-supply = <&pm8038_l3>;
+	v1p8-supply = <&pm8038_l4>;
+	//qcom,init-seq = /bits/ 8 <0x44 0x80 0x38 0x81 0x3C 0x82 0x13 0x83>; // TODO -1?
+};
+
+&usb1 {
+	dr_mode = "otg";
 	status = "okay";
 };
