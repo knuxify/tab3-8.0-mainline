@@ -1,0 +1,335 @@
+// SPDX-License-Identifier: GPL-2.0-only
+#include <dt-bindings/input/input.h>
+#include <dt-bindings/reset/qcom,gcc-msm8960.h>
+#include <dt-bindings/gpio/gpio.h>
+#include <dt-bindings/pinctrl/qcom,pmic-gpio.h>
+#include <dt-bindings/input/gpio-keys.h>
+
+#include "qcom-msm8227.dtsi"
+
+/ {
+	model = "Sony Xperia M";
+	compatible = "sony,nicki", "qcom,msm8930", "qcom,msm8227";
+
+	aliases {
+		serial0 = &gsbi5_serial;
+	};
+
+	chosen {
+		stdout-path = "serial0:115200n8";
+	};
+
+	memory@80000000 {
+		device_type = "memory";
+		reg = <0x80200000 0x8c00000 0x90000000 0x10000000 0xa0000000 0x20000000>;
+	};
+
+	reserved-memory {
+		boot1@8ff00000 {
+			reg = <0x8ff00000 0x100000>;
+			no-map;
+		};
+
+		appsbl@88f00000 {
+			reg = <0x88f00000 0x100000>;
+			no-map;
+		};
+	};
+
+	gpio-keys {
+		compatible = "gpio-keys";
+
+		pinctrl-names = "default";
+		pinctrl-0 = <&gpio_keys_pins>;
+
+		key-camera-focus {
+			label = "camera_focus";
+			gpios = <&msmgpio 39 GPIO_ACTIVE_LOW>;
+			linux,input-type = <1>;
+			linux,code = <KEY_CAMERA_FOCUS>;
+		};
+
+		key-camera-snapshot {
+			label = "camera_snapshot";
+			gpios = <&msmgpio 69 GPIO_ACTIVE_LOW>;
+			linux,input-type = <1>;
+			linux,code = <KEY_CAMERA>;
+		};
+
+		key-volume-down {
+			label = "volume_down";
+			gpios = <&msmgpio 107 GPIO_ACTIVE_LOW>;
+			linux,input-type = <1>;
+			linux,code = <KEY_VOLUMEDOWN>;
+		};
+
+		key-volume-up {
+			label = "volume_up";
+			gpios = <&msmgpio 106 GPIO_ACTIVE_LOW>;
+			linux,input-type = <1>;
+			linux,code = <KEY_VOLUMEUP>;
+		};
+	};
+};
+
+&gsbi3 {
+	status = "okay";
+	qcom,crci = <GSBI_CRCI_QUP>;
+	qcom,mode = <GSBI_PROT_I2C>;
+};
+
+&gsbi3_i2c {
+	clock-frequency = <400000>;
+	qcom,src-freq = <24000000>;
+
+	// TODO: verify functions and supplies
+	synaptics@20 {
+		compatible = "syna,rmi4-i2c";
+		reg = <0x20>;
+
+		interrupts-extended = <&msmgpio 78 IRQ_TYPE_EDGE_FALLING>;
+		vdd-supply = <&pm8038_l9>;
+		vio-supply = <&pm8038_lvs2>;
+
+		pinctrl-names = "default";
+		pinctrl-0 = <&touch_pins>;
+
+		#address-cells = <1>;
+		#size-cells = <0>;
+
+		rmi4-f01@1 {
+			reg = <0x1>;
+			syna,nosleep-mode = <1>;
+		};
+
+		rmi4-f11@11 {
+			reg = <0x11>;
+			syna,sensor-type = <1>;
+		};
+	};
+};
+
+&gsbi5 {
+	qcom,mode = <GSBI_PROT_I2C_UART>;
+	status = "okay";
+};
+
+&gsbi5_serial {
+	status = "okay";
+};
+
+&gsbi12 {
+	qcom,crci = <GSBI_CRCI_QUP>;
+	qcom,mode = <GSBI_PROT_I2C>;
+	status = "okay";
+};
+
+&gsbi12_i2c {
+	// TODO: actually a bmm050, but should be compatible
+	magnetometer@10 {
+		compatible = "bosch,bmm150";
+		reg = <0x10>;
+	};
+
+	accel@18 {
+		compatible = "bosch,bma250";
+		reg = <0x18>;
+		interrupts-extended = <&msmgpio 80 IRQ_TYPE_EDGE_FALLING>;
+		pinctrl-names = "default";
+		pinctrl-0 = <&accel_int_pins>;
+	};
+
+	// TODO: CM36283 @ 0x60 (no driver)
+};
+
+&msmgpio {
+	accel_int_pins: accel-int-pins {
+		pins = "gpio80";
+		function = "gpio";
+		drive-strength = <2>;
+		bias-disable;
+	};
+
+	gpio_keys_pins: gpio-keys-pins {
+		camera-focus {
+			pins = "gpio39";
+			function = "gpio";
+			drive-strength = <2>;
+			bias-pull-up;
+		};
+
+		camera-snapshot {
+			pins = "gpio69";
+			function = "gpio";
+			drive-strength = <2>;
+			bias-pull-up;
+		};
+
+		volume-down {
+			pins = "gpio105";
+			function = "gpio";
+			drive-strength = <2>;
+			bias-pull-up;
+		};
+
+		volume-up {
+			pins = "gpio106";
+			function = "gpio";
+			drive-strength = <2>;
+			bias-pull-up;
+		};
+
+		// TODO: Are these needed?
+		volume-down-s1 {
+			pins = "gpio47";
+			function = "gpio";
+			drive-strength = <2>;
+			bias-pull-up;
+		};
+
+		volume-up-s1 {
+			pins = "gpio48";
+			function = "gpio";
+			drive-strength = <2>;
+			bias-pull-up;
+		};
+	};
+
+	sdcc1_pins_active: sdcc1-pins-active {
+		clk {
+			pins = "sdc1_clk";
+			drive-strength = <16>;
+			bias-disable;
+		};
+
+		cmd {
+			pins = "sdc1_cmd";
+			drive-strength = <10>;
+			bias-pull-up;
+		};
+
+		data {
+			pins = "sdc1_data";
+			drive-strength = <10>;
+			bias-pull-up;
+		};
+	};
+
+	sdcc1_pins_sleep: sdcc1-pins-sleep {
+		clk {
+			pins = "sdc1_clk";
+			drive-strength = <2>;
+			bias-disable;
+		};
+
+		cmd {
+			pins = "sdc1_cmd";
+			drive-strength = <2>;
+			bias-pull-up;
+		};
+
+		data {
+			pins = "sdc1_data";
+			drive-strength = <2>;
+			bias-pull-up;
+		};
+	};
+
+	sdcc3_pins_active: sdcc3-pins-active {
+		clk {
+			pins = "sdc3_clk";
+			drive-strength = <8>;
+			bias-disable;
+		};
+
+		cmd {
+			pins = "sdc3_cmd";
+			drive-strength = <8>;
+			bias-pull-up;
+		};
+
+		data {
+			pins = "sdc3_data";
+			drive-strength = <8>;
+			bias-pull-up;
+		};
+	};
+
+	sdcc3_pins_sleep: sdcc3-pins-sleep {
+		clk {
+			pins = "sdc3_clk";
+			drive-strength = <2>;
+			bias-disable;
+		};
+
+		cmd {
+			pins = "sdc3_cmd";
+			drive-strength = <2>;
+			bias-pull-up;
+		};
+
+		data {
+			pins = "sdc3_data";
+			drive-strength = <2>;
+			bias-pull-up;
+		};
+	};
+
+	riva_wlan_pin_a: riva-wlan-active {
+		pins = "gpio84", "gpio85", "gpio86", "gpio87", "gpio88";
+		function = "wlan";
+
+		drive-strength = <6>;
+		bias-pull-down;
+	};
+
+	riva_bt_pin_a: riva-bt-active {
+		pins = "gpio28", "gpio29", "gpio83"; // 1 extra ?
+		function = "bt";
+	};
+
+	touch_pins: touch-pins {
+		pins = "gpio78";
+		function = "gpio";
+		drive-strength = <2>;
+		bias-disable;
+	};
+};
+
+
+/* eMMC */
+&sdcc1 {
+	vmmc-supply = <&pm8038_l5>;
+	vqmmc-supply = <&pm8038_l11>;
+
+	pinctrl-0 = <&sdcc1_pins_active>;
+	pinctrl-names = "default";
+
+	status = "okay";
+};
+
+/* SD card */
+&sdcc3 {
+	vmmc-supply = <&pm8038_l6>;
+	vqmmc-supply = <&pm8038_l22>;
+
+	non-removable;
+
+	pinctrl-0 = <&sdcc3_pins_active>;
+	pinctrl-1 = <&sdcc3_pins_sleep>;
+	pinctrl-names = "default", "sleep";
+
+	cd-gpios = <&msmgpio 94 GPIO_ACTIVE_LOW>;
+
+	status = "okay";
+};
+
+&usb_hs1_phy {
+	v3p3-supply = <&pm8038_l3>;
+	v1p8-supply = <&pm8038_l4>;
+};
+
+&usb1 {
+	dr_mode = "otg";
+	status = "okay";
+};
