@@ -16,6 +16,7 @@ dtb-$(CONFIG_ARCH_EXYNOS4) += \
 	exynos4412-i9300.dtb \
 	exynos4412-i9305.dtb \
 	exynos4412-itop-elite.dtb \
+	exynos4412-n5110.dtb \
 	exynos4412-n710x-ea8061.dtb \
 	exynos4412-n710x-s6evr02.dtb \
 	exynos4412-odroidu3.dtb \

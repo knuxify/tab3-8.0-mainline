@@ -1,0 +1,36 @@
+// SPDX-License-Identifier: GPL-2.0
+/*
+ * Samsung's Galaxy Note 8.0 - N5110 (wifi only version)
+ *
+ * Copyright (c) 2013 Samsung Electronics Co., Ltd.
+ *		http://www.samsung.com
+ */
+
+/dts-v1/;
+#include "exynos4412-kona.dtsi"
+
+/ {
+	model = "Samsung Galaxy Note 8.0 (GT-N5110) based on Exynos4412";
+	compatible = "samsung,n5110", "samsung,kona", "samsung,exynos4412", "samsung,exynos4";
+	chassis-type = "tablet";
+
+	/* this is the base variant without any kind of modem */
+
+};
+
+&buttons {
+	key-ok {
+		gpios = <&gpx1 2 GPIO_ACTIVE_LOW>;
+		linux,code = <KEY_OK>;
+		label = "ok";
+		debounce-interval = <10>;
+		wakeup-source;
+	};
+};
+
+&pinctrl_1 {
+	ok-key-pins {
+		samsung,pins = "gpx1-2";
+		samsung,pin-pud = <EXYNOS_PIN_PULL_NONE>;
+	};
+};
