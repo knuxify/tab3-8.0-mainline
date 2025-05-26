@@ -106,6 +106,14 @@ properties:
           - const: samsung,exynos4412
           - const: samsung,exynos4
 
+      - description: Samsung Kona family boards
+        items:
+          - enum:
+              - samsung,n5110                   # Samsung GT-N5110 (Note 8.0 wifi-only version)
+          - const: samsung,kona
+          - const: samsung,exynos4412
+          - const: samsung,exynos4
+
       - description: Samsung p4note family boards
         items:
           - enum:
