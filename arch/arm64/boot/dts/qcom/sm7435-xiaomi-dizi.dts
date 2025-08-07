@@ -5,6 +5,8 @@
 
 /dts-v1/;
 
+#include <dt-bindings/regulator/qcom,rpmh-regulator.h>
+
 #include "sm7435.dtsi"
 #include "pmk8350.dtsi"
 #include "pm6450.dtsi"
@@ -24,7 +26,7 @@
 	status = "okay";
 
 	// TODO: LED subnodes
-}
+};
 
 /*
  * Other PMICs:
