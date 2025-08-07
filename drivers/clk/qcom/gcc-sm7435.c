@@ -40,15 +40,6 @@ enum {
 	P_USB3_PHY_WRAPPER_GCC_USB30_PIPE_CLK,
 };
 
-static struct clk_init_data sm8475_gcc_gpll0_init = {
-	.name = "gcc_gpll0",
-	.parent_data = &(const struct clk_parent_data){
-		.fw_name = "bi_tcxo",
-	},
-	.num_parents = 1,
-	.ops = &clk_alpha_pll_fixed_lucid_ole_ops,
-};
-
 static struct clk_alpha_pll gcc_gpll0 = {
 	.offset = 0x0,
 	.regs = clk_alpha_pll_regs[CLK_ALPHA_PLL_TYPE_LUCID_EVO],
