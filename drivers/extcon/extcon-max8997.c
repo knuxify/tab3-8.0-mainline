@@ -338,7 +338,7 @@ static int max8997_muic_handle_usb(struct max8997_muic_info *info,
 	return 0;
 }
 
-static int max8997_muic_handle_dock(struct max8997_muic_info *info,
+static int __maybe_unused max8997_muic_handle_dock(struct max8997_muic_info *info,
 			int cable_type, bool attached)
 {
 	int ret = 0;
@@ -408,7 +408,7 @@ static int max8997_muic_adc_handler(struct max8997_muic_info *info)
 		break;
 	case MAX8997_MUIC_ADC_AV_CABLE_NOLOAD:
 	case MAX8997_MUIC_ADC_FACTORY_MODE_UART_ON:
-		ret = max8997_muic_handle_dock(info, cable_type, attached);
+		ret = max8997_muic_handle_jig_uart(info, attached);
 		if (ret < 0)
 			return ret;
 		break;
