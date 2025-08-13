@@ -30,9 +30,8 @@
 #define BCM590XX_REG_IRQ1MASK		0x30
 
 static const struct mfd_cell bcm590xx_devs[] = {
-	{
-		.name = "bcm590xx-vregs",
-	},
+	{ .name = "bcm590xx-vregs", },
+	{ .name = "bcm590xx-poweroff", },
 };
 
 static bool bcm590xx_volatile_pri(struct device *dev, unsigned int reg)
