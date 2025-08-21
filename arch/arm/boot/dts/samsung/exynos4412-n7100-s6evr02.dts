@@ -1,0 +1,9 @@
+// SPDX-License-Identifier: GPL-2.0
+/dts-v1/;
+#include "exynos4412-n710x-s6evr02.dtsi"
+
+/ {
+	compatible = "samsung,n7100", "samsung,midas", "samsung,exynos4412", "samsung,exynos4";
+	model = "Samsung Galaxy Note 2 (GT-N7100) based on Exynos4412";
+	chassis-type = "handset";
+};
