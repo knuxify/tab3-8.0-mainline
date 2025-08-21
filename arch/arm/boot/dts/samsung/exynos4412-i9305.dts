@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-2.0
 /dts-v1/;
 #include "exynos4412-galaxy-s3.dtsi"
+#include "exynos4412-midas-lte.dtsi"
 
 / {
 	model = "Samsung Galaxy S3 (GT-I9305) based on Exynos4412";

@@ -540,7 +540,11 @@
 };
 
 &ehci {
+	samsung,vbus-gpio = <&gpf0 7 0>;
 	status = "okay";
+
+	phys = <&exynos_usbphy 2>;
+	phy-names = "hsic0";
 };
 
 &exynos_usbphy {
@@ -896,6 +900,7 @@
 				regulator-name = "VHSIC_1.0V";
 				regulator-min-microvolt = <1000000>;
 				regulator-max-microvolt = <1000000>;
+				regulator-always-on; // Temporarily needed for modem
 				regulator-state-mem {
 					regulator-on-in-suspend;
 				};
@@ -905,6 +910,7 @@
 				regulator-name = "VHSIC_1.8V";
 				regulator-min-microvolt = <1800000>;
 				regulator-max-microvolt = <1800000>;
+				regulator-always-on; // Temporarily needed for modem
 				regulator-state-mem {
 					regulator-on-in-suspend;
 				};

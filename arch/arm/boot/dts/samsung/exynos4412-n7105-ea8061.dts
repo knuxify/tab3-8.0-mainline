@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-2.0
 /dts-v1/;
 #include "exynos4412-n710x-ea8061.dtsi"
+#include "exynos4412-midas-lte.dtsi"
 
 / {
 	compatible = "samsung,n7105", "samsung,midas", "samsung,exynos4412", "samsung,exynos4";
