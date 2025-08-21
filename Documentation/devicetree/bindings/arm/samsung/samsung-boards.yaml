@@ -100,7 +100,8 @@ properties:
           - enum:
               - samsung,i9300                   # Samsung GT-I9300
               - samsung,i9305                   # Samsung GT-I9305
-              - samsung,n710x                   # Samsung GT-N7100/GT-N7105
+              - samsung,n7100                   # Samsung GT-N7100
+              - samsung,n7105                   # Samsung GT-N7105
               - samsung,trats2                  # Samsung Tizen Reference
           - const: samsung,midas
           - const: samsung,exynos4412
