@@ -34,6 +34,7 @@ struct bcm590xx_reg_data {
 	enum bcm590xx_reg_type type;
 	enum bcm590xx_regmap_type regmap;
 	const struct regulator_desc desc;
+	int overcurrent_irq;
 };
 
 struct bcm590xx_reg {
@@ -268,6 +269,7 @@ static const struct bcm590xx_reg_data bcm59056_regs[BCM59056_NUM_REGS] = {
 		.desc = {
 			BCM59056_LDO_DESC(RFLDO, rfldo, ldo_a_table),
 		},
+		.overcurrent_irq = -1,
 	},
 
 	{
@@ -276,6 +278,7 @@ static const struct bcm590xx_reg_data bcm59056_regs[BCM59056_NUM_REGS] = {
 		.desc = {
 			BCM59056_LDO_DESC(CAMLDO1, camldo1, ldo_c_table),
 		},
+		.overcurrent_irq = -1,
 	},
 
 	{
@@ -284,6 +287,7 @@ static const struct bcm590xx_reg_data bcm59056_regs[BCM59056_NUM_REGS] = {
 		.desc = {
 			BCM59056_LDO_DESC(CAMLDO2, camldo2, ldo_c_table),
 		},
+		.overcurrent_irq = -1,
 	},
 
 	{
@@ -292,6 +296,7 @@ static const struct bcm590xx_reg_data bcm59056_regs[BCM59056_NUM_REGS] = {
 		.desc = {
 			BCM59056_LDO_DESC(SIMLDO1, simldo1, ldo_a_table),
 		},
+		.overcurrent_irq = -1,
 	},
 
 	{
@@ -300,6 +305,7 @@ static const struct bcm590xx_reg_data bcm59056_regs[BCM59056_NUM_REGS] = {
 		.desc = {
 			BCM59056_LDO_DESC(SIMLDO2, simldo2, ldo_a_table),
 		},
+		.overcurrent_irq = -1,
 	},
 
 	{
@@ -308,6 +314,7 @@ static const struct bcm590xx_reg_data bcm59056_regs[BCM59056_NUM_REGS] = {
 		.desc = {
 			BCM59056_LDO_DESC(SDLDO, sdldo, ldo_c_table),
 		},
+		.overcurrent_irq = -1,
 	},
 
 	{
@@ -316,6 +323,7 @@ static const struct bcm590xx_reg_data bcm59056_regs[BCM59056_NUM_REGS] = {
 		.desc = {
 			BCM59056_LDO_DESC(SDXLDO, sdxldo, ldo_a_table),
 		},
+		.overcurrent_irq = -1,
 	},
 
 	{
@@ -324,6 +332,7 @@ static const struct bcm590xx_reg_data bcm59056_regs[BCM59056_NUM_REGS] = {
 		.desc = {
 			BCM59056_LDO_DESC(MMCLDO1, mmcldo1, ldo_a_table),
 		},
+		.overcurrent_irq = -1,
 	},
 
 	{
@@ -332,6 +341,7 @@ static const struct bcm590xx_reg_data bcm59056_regs[BCM59056_NUM_REGS] = {
 		.desc = {
 			BCM59056_LDO_DESC(MMCLDO2, mmcldo2, ldo_a_table),
 		},
+		.overcurrent_irq = -1,
 	},
 
 	{
@@ -340,6 +350,7 @@ static const struct bcm590xx_reg_data bcm59056_regs[BCM59056_NUM_REGS] = {
 		.desc = {
 			BCM59056_LDO_DESC(AUDLDO, audldo, ldo_a_table),
 		},
+		.overcurrent_irq = -1,
 	},
 
 	{
@@ -348,6 +359,7 @@ static const struct bcm590xx_reg_data bcm59056_regs[BCM59056_NUM_REGS] = {
 		.desc = {
 			BCM59056_LDO_DESC(MICLDO, micldo, ldo_a_table),
 		},
+		.overcurrent_irq = -1,
 	},
 
 	{
@@ -356,6 +368,7 @@ static const struct bcm590xx_reg_data bcm59056_regs[BCM59056_NUM_REGS] = {
 		.desc = {
 			BCM59056_LDO_DESC(USBLDO, usbldo, ldo_a_table),
 		},
+		.overcurrent_irq = -1,
 	},
 
 	{
@@ -364,6 +377,7 @@ static const struct bcm590xx_reg_data bcm59056_regs[BCM59056_NUM_REGS] = {
 		.desc = {
 			BCM59056_LDO_DESC(VIBLDO, vibldo, ldo_c_table),
 		},
+		.overcurrent_irq = -1,
 	},
 
 	{
@@ -372,6 +386,7 @@ static const struct bcm590xx_reg_data bcm59056_regs[BCM59056_NUM_REGS] = {
 		.desc = {
 			BCM59056_SR_DESC(CSR, csr, dcdc_csr_ranges),
 		},
+		.overcurrent_irq = -1,
 	},
 
 	{
@@ -380,6 +395,7 @@ static const struct bcm590xx_reg_data bcm59056_regs[BCM59056_NUM_REGS] = {
 		.desc = {
 			BCM59056_SR_DESC(IOSR1, iosr1, dcdc_iosr1_ranges),
 		},
+		.overcurrent_irq = -1,
 	},
 
 	{
@@ -388,6 +404,7 @@ static const struct bcm590xx_reg_data bcm59056_regs[BCM59056_NUM_REGS] = {
 		.desc = {
 			BCM59056_SR_DESC(IOSR2, iosr2, dcdc_iosr1_ranges),
 		},
+		.overcurrent_irq = -1,
 	},
 
 	{
@@ -396,6 +413,7 @@ static const struct bcm590xx_reg_data bcm59056_regs[BCM59056_NUM_REGS] = {
 		.desc = {
 			BCM59056_SR_DESC(MSR, msr, dcdc_iosr1_ranges),
 		},
+		.overcurrent_irq = -1,
 	},
 
 	{
@@ -404,6 +422,7 @@ static const struct bcm590xx_reg_data bcm59056_regs[BCM59056_NUM_REGS] = {
 		.desc = {
 			BCM59056_SR_DESC(SDSR1, sdsr1, dcdc_sdsr1_ranges),
 		},
+		.overcurrent_irq = -1,
 	},
 
 	{
@@ -412,6 +431,7 @@ static const struct bcm590xx_reg_data bcm59056_regs[BCM59056_NUM_REGS] = {
 		.desc = {
 			BCM59056_SR_DESC(SDSR2, sdsr2, dcdc_iosr1_ranges),
 		},
+		.overcurrent_irq = -1,
 	},
 
 	{
@@ -420,6 +440,7 @@ static const struct bcm590xx_reg_data bcm59056_regs[BCM59056_NUM_REGS] = {
 		.desc = {
 			BCM59056_SR_DESC(VSR, vsr, dcdc_iosr1_ranges),
 		},
+		.overcurrent_irq = -1,
 	},
 
 	{
@@ -428,6 +449,7 @@ static const struct bcm590xx_reg_data bcm59056_regs[BCM59056_NUM_REGS] = {
 		.desc = {
 			BCM59056_LDO_DESC(GPLDO1, gpldo1, ldo_a_table),
 		},
+		.overcurrent_irq = -1,
 	},
 
 	{
@@ -436,6 +458,7 @@ static const struct bcm590xx_reg_data bcm59056_regs[BCM59056_NUM_REGS] = {
 		.desc = {
 			BCM59056_LDO_DESC(GPLDO2, gpldo2, ldo_a_table),
 		},
+		.overcurrent_irq = -1,
 	},
 
 	{
@@ -444,6 +467,7 @@ static const struct bcm590xx_reg_data bcm59056_regs[BCM59056_NUM_REGS] = {
 		.desc = {
 			BCM59056_LDO_DESC(GPLDO3, gpldo3, ldo_a_table),
 		},
+		.overcurrent_irq = -1,
 	},
 
 	{
@@ -452,6 +476,7 @@ static const struct bcm590xx_reg_data bcm59056_regs[BCM59056_NUM_REGS] = {
 		.desc = {
 			BCM59056_LDO_DESC(GPLDO4, gpldo4, ldo_a_table),
 		},
+		.overcurrent_irq = -1,
 	},
 
 	{
@@ -460,6 +485,7 @@ static const struct bcm590xx_reg_data bcm59056_regs[BCM59056_NUM_REGS] = {
 		.desc = {
 			BCM59056_LDO_DESC(GPLDO5, gpldo5, ldo_a_table),
 		},
+		.overcurrent_irq = -1,
 	},
 
 	{
@@ -468,6 +494,7 @@ static const struct bcm590xx_reg_data bcm59056_regs[BCM59056_NUM_REGS] = {
 		.desc = {
 			BCM59056_LDO_DESC(GPLDO6, gpldo6, ldo_a_table),
 		},
+		.overcurrent_irq = -1,
 	},
 
 	{
@@ -481,6 +508,7 @@ static const struct bcm590xx_reg_data bcm59056_regs[BCM59056_NUM_REGS] = {
 			.enable_reg = BCM59056_OTG_CTRL,
 			.enable_mask = BCM590XX_VBUS_ENABLE,
 		},
+		.overcurrent_irq = -1,
 	},
 };
 
@@ -638,6 +666,7 @@ static const struct bcm590xx_reg_data bcm59054_regs[BCM59054_NUM_REGS] = {
 		.desc = {
 			BCM59054_LDO_DESC(RFLDO, rfldo, ldo_1_table),
 		},
+		.overcurrent_irq = BCM59054_IRQ_RFLDO_OVRI,
 	},
 
 	{
@@ -646,6 +675,7 @@ static const struct bcm590xx_reg_data bcm59054_regs[BCM59054_NUM_REGS] = {
 		.desc = {
 			BCM59054_LDO_DESC(CAMLDO1, camldo1, ldo_2_table),
 		},
+		.overcurrent_irq = BCM59054_IRQ_CAMLDO1_OVRI,
 	},
 
 	{
@@ -654,6 +684,7 @@ static const struct bcm590xx_reg_data bcm59054_regs[BCM59054_NUM_REGS] = {
 		.desc = {
 			BCM59054_LDO_DESC(CAMLDO2, camldo2, ldo_2_table),
 		},
+		.overcurrent_irq = BCM59054_IRQ_CAMLDO2_OVRI,
 	},
 
 	{
@@ -662,6 +693,7 @@ static const struct bcm590xx_reg_data bcm59054_regs[BCM59054_NUM_REGS] = {
 		.desc = {
 			BCM59054_LDO_DESC(SIMLDO1, simldo1, ldo_1_table),
 		},
+		.overcurrent_irq = BCM59054_IRQ_SIMLDO1_OVRI,
 	},
 
 	{
@@ -670,6 +702,7 @@ static const struct bcm590xx_reg_data bcm59054_regs[BCM59054_NUM_REGS] = {
 		.desc = {
 			BCM59054_LDO_DESC(SIMLDO2, simldo2, ldo_1_table),
 		},
+		.overcurrent_irq = BCM59054_IRQ_SIMLDO2_OVRI,
 	},
 
 	{
@@ -678,6 +711,7 @@ static const struct bcm590xx_reg_data bcm59054_regs[BCM59054_NUM_REGS] = {
 		.desc = {
 			BCM59054_LDO_DESC(SDLDO, sdldo, ldo_2_table),
 		},
+		.overcurrent_irq = BCM59054_IRQ_SDLDO_OVRI,
 	},
 
 	{
@@ -686,6 +720,7 @@ static const struct bcm590xx_reg_data bcm59054_regs[BCM59054_NUM_REGS] = {
 		.desc = {
 			BCM59054_LDO_DESC(SDXLDO, sdxldo, ldo_1_table),
 		},
+		.overcurrent_irq = BCM59054_IRQ_SDXLDO_OVRI,
 	},
 
 	{
@@ -694,6 +729,7 @@ static const struct bcm590xx_reg_data bcm59054_regs[BCM59054_NUM_REGS] = {
 		.desc = {
 			BCM59054_LDO_DESC(MMCLDO1, mmcldo1, ldo_1_table),
 		},
+		.overcurrent_irq = BCM59054_IRQ_MMCLDO1_OVRI,
 	},
 
 	{
@@ -702,6 +738,7 @@ static const struct bcm590xx_reg_data bcm59054_regs[BCM59054_NUM_REGS] = {
 		.desc = {
 			BCM59054_LDO_DESC(MMCLDO2, mmcldo2, ldo_1_table),
 		},
+		.overcurrent_irq = -1,
 	},
 
 	{
@@ -710,6 +747,7 @@ static const struct bcm590xx_reg_data bcm59054_regs[BCM59054_NUM_REGS] = {
 		.desc = {
 			BCM59054_LDO_DESC(AUDLDO, audldo, ldo_1_table),
 		},
+		.overcurrent_irq = BCM59054_IRQ_AUDLDO_OVRI,
 	},
 
 	{
@@ -725,6 +763,7 @@ static const struct bcm590xx_reg_data bcm59054_regs[BCM59054_NUM_REGS] = {
 			.enable_mask = BCM590XX_REG_ENABLE,
 			.enable_is_inverted = true,
 		},
+		.overcurrent_irq = BCM59054_IRQ_MICLDO_OVRI,
 	},
 
 	{
@@ -741,6 +780,7 @@ static const struct bcm590xx_reg_data bcm59054_regs[BCM59054_NUM_REGS] = {
 		.desc = {
 			BCM59054_LDO_DESC(VIBLDO, vibldo, ldo_2_table),
 		},
+		.overcurrent_irq = BCM59054_IRQ_VIBLDO_OVRI,
 	},
 
 	{
@@ -749,6 +789,7 @@ static const struct bcm590xx_reg_data bcm59054_regs[BCM59054_NUM_REGS] = {
 		.desc = {
 			BCM59054_SR_DESC(CSR, csr, dcdc_csr_ranges),
 		},
+		.overcurrent_irq = BCM59054_IRQ_CSR_OVRI,
 	},
 
 	{
@@ -757,6 +798,7 @@ static const struct bcm590xx_reg_data bcm59054_regs[BCM59054_NUM_REGS] = {
 		.desc = {
 			BCM59054_SR_DESC(IOSR1, iosr1, dcdc_sr_ranges),
 		},
+		.overcurrent_irq = BCM59054_IRQ_IOSR1_OVRI,
 	},
 
 	{
@@ -765,6 +807,7 @@ static const struct bcm590xx_reg_data bcm59054_regs[BCM59054_NUM_REGS] = {
 		.desc = {
 			BCM59054_SR_DESC(IOSR2, iosr2, dcdc_sr_ranges),
 		},
+		.overcurrent_irq = BCM59054_IRQ_IOSR2_OVRI,
 	},
 
 	{
@@ -773,6 +816,7 @@ static const struct bcm590xx_reg_data bcm59054_regs[BCM59054_NUM_REGS] = {
 		.desc = {
 			BCM59054_SR_DESC(MMSR, mmsr, dcdc_sr_ranges),
 		},
+		.overcurrent_irq = BCM59054_IRQ_MSR_OVRI,
 	},
 
 	{
@@ -781,6 +825,7 @@ static const struct bcm590xx_reg_data bcm59054_regs[BCM59054_NUM_REGS] = {
 		.desc = {
 			BCM59054_SR_DESC(SDSR1, sdsr1, dcdc_sr_ranges),
 		},
+		.overcurrent_irq = BCM59054_IRQ_SDSR1_OVRI,
 	},
 
 	{
@@ -789,6 +834,7 @@ static const struct bcm590xx_reg_data bcm59054_regs[BCM59054_NUM_REGS] = {
 		.desc = {
 			BCM59054_SR_DESC(SDSR2, sdsr2, dcdc_sr_ranges),
 		},
+		.overcurrent_irq = BCM59054_IRQ_SDSR2_OVRI,
 	},
 
 	{
@@ -797,6 +843,7 @@ static const struct bcm590xx_reg_data bcm59054_regs[BCM59054_NUM_REGS] = {
 		.desc = {
 			BCM59054_SR_DESC(VSR, vsr, dcdc_sr_ranges),
 		},
+		.overcurrent_irq = BCM59054_IRQ_VSR_OVRI,
 	},
 
 	{
@@ -805,6 +852,7 @@ static const struct bcm590xx_reg_data bcm59054_regs[BCM59054_NUM_REGS] = {
 		.desc = {
 			BCM59054_LDO_DESC(GPLDO1, gpldo1, ldo_1_table),
 		},
+		.overcurrent_irq = BCM59054_IRQ_GPLDO1_OVRI,
 	},
 
 	{
@@ -813,6 +861,7 @@ static const struct bcm590xx_reg_data bcm59054_regs[BCM59054_NUM_REGS] = {
 		.desc = {
 			BCM59054_LDO_DESC(GPLDO2, gpldo2, ldo_1_table),
 		},
+		.overcurrent_irq = BCM59054_IRQ_GPLDO2_OVRI,
 	},
 
 	{
@@ -821,6 +870,7 @@ static const struct bcm590xx_reg_data bcm59054_regs[BCM59054_NUM_REGS] = {
 		.desc = {
 			BCM59054_LDO_DESC(GPLDO3, gpldo3, ldo_1_table),
 		},
+		.overcurrent_irq = BCM59054_IRQ_GPLDO3_OVRI,
 	},
 
 	{
@@ -829,6 +879,7 @@ static const struct bcm590xx_reg_data bcm59054_regs[BCM59054_NUM_REGS] = {
 		.desc = {
 			BCM59054_LDO_DESC(TCXLDO, tcxldo, ldo_1_table),
 		},
+		.overcurrent_irq = BCM59054_IRQ_TCXLDO_OVRI,
 	},
 
 	{
@@ -837,6 +888,7 @@ static const struct bcm590xx_reg_data bcm59054_regs[BCM59054_NUM_REGS] = {
 		.desc = {
 			BCM59054_LDO_DESC(LVLDO1, lvldo1, ldo_3_table),
 		},
+		.overcurrent_irq = BCM59054_IRQ_LVLDO1_OVRI,
 	},
 
 	{
@@ -845,6 +897,7 @@ static const struct bcm590xx_reg_data bcm59054_regs[BCM59054_NUM_REGS] = {
 		.desc = {
 			BCM59054_LDO_DESC(LVLDO2, lvldo2, ldo_3_table),
 		},
+		.overcurrent_irq = BCM59054_IRQ_LVLDO2_OVRI,
 	},
 
 	{
@@ -858,6 +911,7 @@ static const struct bcm590xx_reg_data bcm59054_regs[BCM59054_NUM_REGS] = {
 			.enable_reg = BCM59054_OTG_CTRL,
 			.enable_mask = BCM590XX_VBUS_ENABLE,
 		},
+		.overcurrent_irq = -1,
 	},
 };
 
@@ -872,6 +926,7 @@ static const struct bcm590xx_reg_data bcm59054_a1_regs[BCM59054_NUM_REGS] = {
 		.desc = {
 			BCM59054_LDO_DESC(RFLDO, rfldo, ldo_1_table),
 		},
+		.overcurrent_irq = BCM59054_IRQ_RFLDO_OVRI,
 	},
 
 	{
@@ -880,6 +935,7 @@ static const struct bcm590xx_reg_data bcm59054_a1_regs[BCM59054_NUM_REGS] = {
 		.desc = {
 			BCM59054_LDO_DESC(CAMLDO1, camldo1, ldo_2_table),
 		},
+		.overcurrent_irq = BCM59054_IRQ_CAMLDO1_OVRI,
 	},
 
 	{
@@ -888,6 +944,7 @@ static const struct bcm590xx_reg_data bcm59054_a1_regs[BCM59054_NUM_REGS] = {
 		.desc = {
 			BCM59054_LDO_DESC(CAMLDO2, camldo2, ldo_2_table),
 		},
+		.overcurrent_irq = BCM59054_IRQ_CAMLDO2_OVRI,
 	},
 
 	{
@@ -896,6 +953,7 @@ static const struct bcm590xx_reg_data bcm59054_a1_regs[BCM59054_NUM_REGS] = {
 		.desc = {
 			BCM59054_LDO_DESC(SIMLDO1, simldo1, ldo_1_table),
 		},
+		.overcurrent_irq = BCM59054_IRQ_SIMLDO1_OVRI,
 	},
 
 	{
@@ -904,6 +962,7 @@ static const struct bcm590xx_reg_data bcm59054_a1_regs[BCM59054_NUM_REGS] = {
 		.desc = {
 			BCM59054_LDO_DESC(SIMLDO2, simldo2, ldo_1_table),
 		},
+		.overcurrent_irq = BCM59054_IRQ_SIMLDO2_OVRI,
 	},
 
 	{
@@ -912,6 +971,7 @@ static const struct bcm590xx_reg_data bcm59054_a1_regs[BCM59054_NUM_REGS] = {
 		.desc = {
 			BCM59054_LDO_DESC(SDLDO, sdldo, ldo_2_table),
 		},
+		.overcurrent_irq = BCM59054_IRQ_SDLDO_OVRI,
 	},
 
 	{
@@ -920,6 +980,7 @@ static const struct bcm590xx_reg_data bcm59054_a1_regs[BCM59054_NUM_REGS] = {
 		.desc = {
 			BCM59054_LDO_DESC(SDXLDO, sdxldo, ldo_1_table),
 		},
+		.overcurrent_irq = BCM59054_IRQ_SDXLDO_OVRI,
 	},
 
 	{
@@ -928,6 +989,7 @@ static const struct bcm590xx_reg_data bcm59054_a1_regs[BCM59054_NUM_REGS] = {
 		.desc = {
 			BCM59054_LDO_DESC(MMCLDO1, mmcldo1, ldo_1_table),
 		},
+		.overcurrent_irq = BCM59054_IRQ_MMCLDO1_OVRI,
 	},
 
 	{
@@ -936,6 +998,7 @@ static const struct bcm590xx_reg_data bcm59054_a1_regs[BCM59054_NUM_REGS] = {
 		.desc = {
 			BCM59054_LDO_DESC(MMCLDO2, mmcldo2, ldo_1_table),
 		},
+		.overcurrent_irq = -1,
 	},
 
 	{
@@ -944,6 +1007,7 @@ static const struct bcm590xx_reg_data bcm59054_a1_regs[BCM59054_NUM_REGS] = {
 		.desc = {
 			BCM59054_LDO_DESC(AUDLDO, audldo, ldo_1_table),
 		},
+		.overcurrent_irq = BCM59054_IRQ_AUDLDO_OVRI,
 	},
 
 	{
@@ -959,6 +1023,7 @@ static const struct bcm590xx_reg_data bcm59054_a1_regs[BCM59054_NUM_REGS] = {
 			.enable_mask = BCM590XX_REG_ENABLE,
 			.enable_is_inverted = true,
 		},
+		.overcurrent_irq = BCM59054_IRQ_MICLDO_OVRI,
 	},
 
 	{
@@ -975,6 +1040,7 @@ static const struct bcm590xx_reg_data bcm59054_a1_regs[BCM59054_NUM_REGS] = {
 		.desc = {
 			BCM59054_LDO_DESC(VIBLDO, vibldo, ldo_2_table),
 		},
+		.overcurrent_irq = BCM59054_IRQ_VIBLDO_OVRI,
 	},
 
 	{
@@ -983,6 +1049,7 @@ static const struct bcm590xx_reg_data bcm59054_a1_regs[BCM59054_NUM_REGS] = {
 		.desc = {
 			BCM59054_SR_DESC(CSR, csr, dcdc_csr_ranges),
 		},
+		.overcurrent_irq = BCM59054_IRQ_CSR_OVRI,
 	},
 
 	{
@@ -991,6 +1058,7 @@ static const struct bcm590xx_reg_data bcm59054_a1_regs[BCM59054_NUM_REGS] = {
 		.desc = {
 			BCM59054_SR_DESC(IOSR1, iosr1, dcdc_sr_ranges),
 		},
+		.overcurrent_irq = BCM59054_IRQ_IOSR1_OVRI,
 	},
 
 	{
@@ -999,6 +1067,7 @@ static const struct bcm590xx_reg_data bcm59054_a1_regs[BCM59054_NUM_REGS] = {
 		.desc = {
 			BCM59054_SR_DESC(IOSR2, iosr2, dcdc_sr_ranges),
 		},
+		.overcurrent_irq = BCM59054_IRQ_IOSR2_OVRI,
 	},
 
 	{
@@ -1007,6 +1076,7 @@ static const struct bcm590xx_reg_data bcm59054_a1_regs[BCM59054_NUM_REGS] = {
 		.desc = {
 			BCM59054_SR_DESC(MMSR, mmsr, dcdc_sr_ranges),
 		},
+		.overcurrent_irq = BCM59054_IRQ_MSR_OVRI,
 	},
 
 	{
@@ -1015,6 +1085,7 @@ static const struct bcm590xx_reg_data bcm59054_a1_regs[BCM59054_NUM_REGS] = {
 		.desc = {
 			BCM59054_SR_DESC(SDSR1, sdsr1, dcdc_sr_ranges),
 		},
+		.overcurrent_irq = BCM59054_IRQ_SDSR1_OVRI,
 	},
 
 	{
@@ -1023,6 +1094,7 @@ static const struct bcm590xx_reg_data bcm59054_a1_regs[BCM59054_NUM_REGS] = {
 		.desc = {
 			BCM59054_SR_DESC(SDSR2, sdsr2, dcdc_sr_ranges),
 		},
+		.overcurrent_irq = BCM59054_IRQ_SDSR2_OVRI,
 	},
 
 	{
@@ -1031,6 +1103,7 @@ static const struct bcm590xx_reg_data bcm59054_a1_regs[BCM59054_NUM_REGS] = {
 		.desc = {
 			BCM59054_SR_DESC(VSR, vsr, dcdc_vsr_a1_ranges),
 		},
+		.overcurrent_irq = BCM59054_IRQ_VSR_OVRI,
 	},
 
 	{
@@ -1039,6 +1112,7 @@ static const struct bcm590xx_reg_data bcm59054_a1_regs[BCM59054_NUM_REGS] = {
 		.desc = {
 			BCM59054_LDO_DESC(GPLDO1, gpldo1, ldo_1_table),
 		},
+		.overcurrent_irq = BCM59054_IRQ_GPLDO1_OVRI,
 	},
 
 	{
@@ -1047,6 +1121,7 @@ static const struct bcm590xx_reg_data bcm59054_a1_regs[BCM59054_NUM_REGS] = {
 		.desc = {
 			BCM59054_LDO_DESC(GPLDO2, gpldo2, ldo_1_table),
 		},
+		.overcurrent_irq = BCM59054_IRQ_GPLDO2_OVRI,
 	},
 
 	{
@@ -1055,6 +1130,7 @@ static const struct bcm590xx_reg_data bcm59054_a1_regs[BCM59054_NUM_REGS] = {
 		.desc = {
 			BCM59054_LDO_DESC(GPLDO3, gpldo3, ldo_1_table),
 		},
+		.overcurrent_irq = BCM59054_IRQ_GPLDO3_OVRI,
 	},
 
 	{
@@ -1063,6 +1139,7 @@ static const struct bcm590xx_reg_data bcm59054_a1_regs[BCM59054_NUM_REGS] = {
 		.desc = {
 			BCM59054_LDO_DESC(TCXLDO, tcxldo, ldo_1_table),
 		},
+		.overcurrent_irq = BCM59054_IRQ_TCXLDO_OVRI,
 	},
 
 	{
@@ -1071,6 +1148,7 @@ static const struct bcm590xx_reg_data bcm59054_a1_regs[BCM59054_NUM_REGS] = {
 		.desc = {
 			BCM59054_LDO_DESC(LVLDO1, lvldo1, ldo_3_table),
 		},
+		.overcurrent_irq = BCM59054_IRQ_LVLDO1_OVRI,
 	},
 
 	{
@@ -1079,6 +1157,7 @@ static const struct bcm590xx_reg_data bcm59054_a1_regs[BCM59054_NUM_REGS] = {
 		.desc = {
 			BCM59054_LDO_DESC(LVLDO2, lvldo2, ldo_3_table),
 		},
+		.overcurrent_irq = BCM59054_IRQ_LVLDO2_OVRI,
 	},
 
 	{
@@ -1092,8 +1171,17 @@ static const struct bcm590xx_reg_data bcm59054_a1_regs[BCM59054_NUM_REGS] = {
 			.enable_reg = BCM59054_OTG_CTRL,
 			.enable_mask = BCM590XX_VBUS_ENABLE,
 		},
+		.overcurrent_irq = -1,
 	},
 };
+
+static irqreturn_t bcm590xx_regulator_overcurrent_isr(int irq, void *dev_id) {
+	struct regulator_dev *rdev = dev_id;
+
+	regulator_notifier_call_chain(rdev, REGULATOR_EVENT_OVER_CURRENT, NULL);
+
+	return IRQ_HANDLED;
+}
 
 static int bcm590xx_probe(struct platform_device *pdev)
 {
@@ -1103,6 +1191,7 @@ static int bcm590xx_probe(struct platform_device *pdev)
 	struct regulator_config config = { };
 	struct regulator_dev *rdev;
 	unsigned int i;
+	int ret;
 
 	pmu = devm_kzalloc(&pdev->dev, sizeof(*pmu), GFP_KERNEL);
 	if (!pmu)
@@ -1157,6 +1246,17 @@ static int bcm590xx_probe(struct platform_device *pdev)
 			return dev_err_probe(bcm590xx->dev, PTR_ERR(rdev),
 					     "failed to register %s regulator\n",
 					     pdev->name);
+
+		if (info->overcurrent_irq >= 0) {
+			ret = bcm590xx_devm_request_irq(&pdev->dev, bcm590xx,
+							info->overcurrent_irq,
+							bcm590xx_regulator_overcurrent_isr,
+							0, pdev->name, &rdev);
+			if (ret < 0)
+				return dev_err_probe(&pdev->dev, ret,
+						"failed to request overcurrent IRQ for %s regulator\n",
+						pdev->name);
+		}
 	}
 
 	return 0;
