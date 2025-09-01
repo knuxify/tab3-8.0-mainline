@@ -29,6 +29,14 @@ config EXTCON_AXP288
 	  Say Y here to enable support for USB peripheral detection
 	  and USB MUX switching by X-Power AXP288 PMIC.
 
+config EXTCON_BCM590XX
+	tristate "Broadcom BCM590xx USB extcon support"
+	depends on MFD_BCM590XX
+	select USB_ROLE_SWITCH
+	help
+	  Say Y here to enable support for USB cable type detection on
+	  Broadcom BCM590xx series PMUs.
+
 config EXTCON_FSA9480
 	tristate "FSA9480 EXTCON Support"
 	depends on INPUT && I2C
