@@ -544,6 +544,14 @@ config AXP288_ADC
 	  To compile this driver as a module, choose M here: the module will be
 	  called axp288_adc.
 
+config BCM590XX_ADC
+	tristate "Broadcom BCM590xx ADC driver"
+	depends on MFD_BCM590XX
+	default MFD_BCM590XX
+	help
+	  Say Y here if you want to add support for the ADC found in the
+	  BCM590xx series of PMUs.
+
 config BCM_IPROC_ADC
 	tristate "Broadcom IPROC ADC driver"
 	depends on (ARCH_BCM_IPROC && OF) || COMPILE_TEST
