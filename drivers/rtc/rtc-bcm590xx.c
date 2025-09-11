@@ -81,8 +81,6 @@ struct bcm590xx_rtc {
 	const struct bcm590xx_rtc_data *data;
 
 	int alarm_irq;
-	int sec_irq;
-	int adj_irq;
 };
 
 static irqreturn_t bcm590xx_rtc_sec_irq_handler(int irq, void *data)
@@ -228,26 +226,15 @@ static int bcm590xx_rtc_set_alarm(struct device *dev, struct rtc_wkalrm *alrm)
 static int bcm590xx_rtc_alarm_irq_enable(struct device *dev, unsigned int enabled)
 {
 	struct bcm590xx_rtc *rtc = dev_get_drvdata(dev);
-	int ret;
 
+	// TODO. Downstream masks the interrupt; I had some hacky code that
+	// requested and freed the IRQ based on whether this was enabled or not,
+	// but I don't know where I got the idea and I'm frankly not sure if
+	// it'll fly. This is probably the best solution for now.
 	if (enabled) {
-		ret = bcm590xx_devm_request_irq(dev, rtc->mfd,
-						rtc->data->alarm_irq,
-						bcm590xx_rtc_alarm_irq_handler,
-						0, "rtc", rtc);
-
-		if (ret) {
-			dev_err(dev, "Failed to request alarm IRQ: %d\n", ret);
-			return ret;
-		}
-
-		rtc->alarm_irq = ret;
+		enable_irq(rtc->alarm_irq);
 	} else {
-		if (rtc->alarm_irq < 0)
-			return 0;
-
-		devm_free_irq(dev, rtc->alarm_irq, rtc);
-		rtc->alarm_irq = -1;
+		disable_irq(rtc->alarm_irq);
 	}
 
 	return 0;
@@ -322,27 +309,38 @@ static int bcm590xx_rtc_probe(struct platform_device *pdev)
 		bcm590xx_rtc_set_time(&pdev->dev, &init_time);
 	}
 
-	/* Alarm IRQ is requested in bcm590xx_rtc_alarm_irq_enable */
-	rtc->alarm_irq = -1;
-
-	rtc->sec_irq = bcm590xx_devm_request_irq(&pdev->dev, bcm590xx,
-						 rtc->data->sec_irq,
-						 bcm590xx_rtc_sec_irq_handler,
-						 0, "rtc-sec", rtc);
-	if (rtc->sec_irq < 0) {
-		dev_err(&pdev->dev, "Failed to request second update IRQ: %d\n",
-			rtc->sec_irq);
-		return rtc->sec_irq;
+	ret = devm_request_threaded_irq(&pdev->dev,
+					regmap_irq_get_virq(bcm590xx->irq_data,
+							    rtc->data->sec_irq),
+					NULL, bcm590xx_rtc_sec_irq_handler,
+					0, "rtc-sec", rtc);
+	if (ret) {
+		dev_err(&pdev->dev, "Failed to request second update IRQ: %d\n", ret);
+		return ret;
 	}
 
-	rtc->adj_irq = bcm590xx_devm_request_irq(&pdev->dev, bcm590xx,
-						 rtc->data->adj_irq,
-						 bcm590xx_rtc_adj_irq_handler,
-						 0, "rtc-sec", rtc);
-	if (rtc->adj_irq < 0) {
-		dev_err(&pdev->dev, "Failed to request adjustment IRQ: %d\n",
-			rtc->adj_irq);
-		return rtc->adj_irq;
+	ret = devm_request_threaded_irq(&pdev->dev,
+					regmap_irq_get_virq(bcm590xx->irq_data,
+							    rtc->data->adj_irq),
+					NULL, bcm590xx_rtc_adj_irq_handler,
+					0, "rtc-adj", rtc);
+	if (ret) {
+		dev_err(&pdev->dev, "Failed to request adjustment IRQ: %d\n", ret);
+		return ret;
+	}
+
+	rtc->alarm_irq = regmap_irq_get_virq(bcm590xx->irq_data,
+					     rtc->data->alarm_irq);
+
+	ret = devm_request_threaded_irq(&pdev->dev, rtc->alarm_irq,
+					NULL, bcm590xx_rtc_alarm_irq_handler,
+					0, "rtc", rtc);
+
+	enable_irq_wake(rtc->alarm_irq);
+
+	if (ret) {
+		dev_err(&pdev->dev, "Failed to request alarm IRQ: %d\n", ret);
+		return ret;
 	}
 
 	rtc->rtc_dev->ops = &bcm590xx_rtc_ops;
