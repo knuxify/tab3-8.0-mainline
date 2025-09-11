@@ -45,13 +45,23 @@ static bool bcm590xx_volatile_pri(struct device *dev, unsigned int reg)
 	 * IRQ registers are clear-on-read, make sure we don't cache them
 	 * so that they get read/cleared correctly
 	 */
-	return (reg >= BCM590XX_REG_IRQ1 && reg <= (BCM590XX_REG_IRQ1 + 15));
+	if (reg >= BCM590XX_REG_IRQ1 && reg <= (BCM590XX_REG_IRQ1 + 15))
+		return true;
+
+	/* ENV registers are updated by the hardware */
+	if (reg >= BCM590XX_REG_ENV1 && reg <= BCM590XX_REG_ENV9)
+		return true;
+
+	return false;
 }
 
 static bool bcm590xx_volatile_sec(struct device *dev, unsigned int reg)
 {
 	/* 0xe0-0xe6 are RTC registers updated by the hardware */
-	return (reg >= 0xe0 && reg <= 0xe6);
+	if (reg >= 0xe0 && reg <= 0xe6)
+		return true;
+
+	return false;
 }
 
 static const struct regmap_config bcm590xx_regmap_config_pri = {

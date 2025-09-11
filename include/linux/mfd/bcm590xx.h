@@ -271,4 +271,26 @@ enum bcm59054_adc_channels {
 	BCM59054_ADC_MAX,
 };
 
+/* Common registers shared across subdevices */
+#define BCM590XX_REG_ENV1	0xe9
+
+#define BCM590XX_REG_ENV2			0xea
+#define BCM590XX_ENV2_USB_PORT_DISABLED_MASK	(1 << 4)
+
+#define BCM590XX_REG_ENV3	0xeb
+
+#define BCM590XX_REG_ENV4	0xec
+#define BCM590XX_ENV4_ID_CODE_SHIFT	3
+#define BCM590XX_ENV4_ID_CODE_MASK	(0x7 << BCM590XX_ENV4_ID_CODE_SHIFT)
+
+#define BCM590XX_REG_ENV5	0xed
+
+#define BCM590XX_REG_ENV6	0xee
+
+#define BCM590XX_REG_ENV7	0xef
+
+#define BCM590XX_REG_ENV8	0xf0
+
+#define BCM590XX_REG_ENV9	0xf1
+
 #endif /*  __LINUX_MFD_BCM590XX_H */
