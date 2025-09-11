@@ -37,9 +37,6 @@ struct bcm590xx_extcon {
 	struct extcon_dev *edev;
 	struct bcm590xx *mfd;
 	const struct bcm590xx_extcon_data *data;
-
-	int usbins_irq;
-	int usbrm_irq;
 };
 
 static const unsigned int bcm590xx_extcon_cable[] = {
@@ -117,24 +114,24 @@ static int bcm590xx_extcon_probe(struct platform_device *pdev)
 		return -ENODEV;
 	}
 
-	extcon->usbins_irq = bcm590xx_devm_request_irq(&pdev->dev, bcm590xx,
-						 extcon->data->usbins_irq,
-						 bcm590xx_extcon_usbins_irq_handler,
-						 0, "extcon-sec", extcon);
-	if (extcon->usbins_irq < 0) {
-		dev_err(&pdev->dev, "Failed to request USB insert IRQ: %d\n",
-			extcon->usbins_irq);
+	ret = devm_request_threaded_irq(&pdev->dev,
+					regmap_irq_get_virq(bcm590xx->irq_data,
+							    extcon->data->usbins_irq),
+					NULL, bcm590xx_extcon_usbins_irq_handler,
+					0, "extcon-sec", extcon);
+	if (ret) {
+		dev_err(&pdev->dev, "Failed to request USB insert IRQ: %d\n", ret);
 		return extcon->usbins_irq;
 	}
 
-	extcon->usbrm_irq = bcm590xx_devm_request_irq(&pdev->dev, bcm590xx,
-						 extcon->data->usbrm_irq,
-						 bcm590xx_extcon_usbrm_irq_handler,
-						 0, "extcon-sec", extcon);
-	if (extcon->usbrm_irq < 0) {
-		dev_err(&pdev->dev, "Failed to request USB remove IRQ: %d\n",
-			extcon->usbrm_irq);
-		return extcon->usbrm_irq;
+	ret = devm_request_threaded_irq(&pdev->dev,
+					regmap_irq_get_virq(bcm590xx->irq_data,
+							    extcon->data->usbrm_irq),
+					NULL, bcm590xx_extcon_usbrm_irq_handler,
+					0, "extcon-sec", extcon);
+	if (ret) {
+		dev_err(&pdev->dev, "Failed to request USB remove IRQ: %d\n", ret);
+		return ret;
 	}
 
 	extcon->edev = devm_extcon_dev_allocate(&pdev->dev, bcm590xx_extcon_cable);
