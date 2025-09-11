@@ -1248,9 +1248,10 @@ static int bcm590xx_probe(struct platform_device *pdev)
 					     pdev->name);
 
 		if (info->overcurrent_irq >= 0) {
-			ret = bcm590xx_devm_request_irq(&pdev->dev, bcm590xx,
-							info->overcurrent_irq,
-							bcm590xx_regulator_overcurrent_isr,
+			ret = devm_request_threaded_irq(&pdev->dev,
+							regmap_irq_get_virq(bcm590xx->irq_data,
+									    info->overcurrent_irq),
+							NULL, bcm590xx_regulator_overcurrent_isr,
 							0, pdev->name, &rdev);
 			if (ret < 0)
 				return dev_err_probe(&pdev->dev, ret,
