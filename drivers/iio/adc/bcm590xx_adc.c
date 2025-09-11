@@ -76,7 +76,6 @@ struct bcm590xx_adc {
 	struct regmap *regmap;
 
 	struct mutex rtm_lock;
-	int rtm_done_irq;
 	struct completion rtm_done_completion;
 };
 
@@ -252,12 +251,14 @@ static int bcm590xx_adc_probe(struct platform_device *pdev) {
 		return -EINVAL;
 	}
 
-	adc->rtm_done_irq = bcm590xx_devm_request_irq(&iodev->dev, bcm590xx,
-			adc->info->rtm_done_irq, bcm590xx_adc_rtm_done_isr,
-			0, "bcm590xx-adc", adc);
-	if (adc->rtm_done_irq < 0) {
-		dev_err(&iodev->dev, "Failed to request RTM read done IRQ: %d\n", adc->rtm_done_irq);
-		return adc->rtm_done_irq;
+	ret = devm_request_threaded_irq(&iodev->dev,
+					regmap_irq_get_virq(bcm590xx->irq_data,
+							    adc->info->rtm_done_irq),
+					NULL, bcm590xx_adc_rtm_done_isr,
+					0, "bcm590xx-adc", adc);
+	if (ret) {
+		dev_err(&iodev->dev, "Failed to request RTM read done IRQ: %d\n", ret);
+		return ret;
 	}
 
 	platform_set_drvdata(pdev, iodev);
