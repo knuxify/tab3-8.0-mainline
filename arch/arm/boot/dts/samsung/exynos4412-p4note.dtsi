@@ -248,6 +248,26 @@
 		};
 	};
 
+	i2c-5 {
+		compatible = "i2c-gpio";
+		sda-gpios = <&gpm1 0 (GPIO_ACTIVE_HIGH | GPIO_OPEN_DRAIN)>;
+		scl-gpios = <&gpm1 1 (GPIO_ACTIVE_HIGH | GPIO_OPEN_DRAIN)>;
+
+		i2c-gpio,delay-us = <2>;
+		#address-cells = <1>;
+		#size-cells = <0>;
+
+		haptic@48 {
+				compatible = "imagis,isa1200";
+				reg = <0x48>;
+				pinctrl-0 = <&motor_enable>;
+				pinctrl-names = "default";
+				len-gpios = <&gpl2 4 GPIO_ACTIVE_HIGH>;
+				pwms = <&pwm 0 38675 0>;
+				imagis,ldo-voltage-millivolt = /bits/ 16 <3000>;
+		};
+	};
+
 	panel {
 		compatible = "samsung,ltl101al01";
 		pinctrl-0 = <&lvds_nshdn>;
@@ -998,6 +1018,12 @@
 		samsung,pin-pud = <EXYNOS_PIN_PULL_DOWN>;
 	};
 
+	motor_enable: motor-enable-pins {
+		samsung,pins = "gpl2-4";
+		samsung,pin-function = <EXYNOS_PIN_FUNC_OUTPUT>;
+		samsung,pin-pud = <EXYNOS_PIN_PULL_DOWN>;
+	};
+
 	uart_sel: uart-sel-pins {
 		samsung,pins = "gpl2-7";
 		samsung,pin-function = <EXYNOS_PIN_FUNC_OUTPUT>;
@@ -1334,9 +1360,9 @@
 };
 
 &pwm {
-	pinctrl-0 = <&pwm1_out>;
+	pinctrl-0 = <&pwm0_out &pwm1_out>;
 	pinctrl-names = "default";
-	samsung,pwm-outputs = <1>;
+	samsung,pwm-outputs = <0>, <1>;
 	status = "okay";
 };
 
