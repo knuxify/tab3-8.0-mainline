@@ -118,7 +118,9 @@ properties:
       - description: Samsung p4note family boards
         items:
           - enum:
+              - samsung,n8000                   # Samsung GT-N8000
               - samsung,n8010                   # Samsung GT-N8010/GT-N8013
+              - samsung,n8020                   # Samsung GT-N8020
           - const: samsung,p4note
           - const: samsung,exynos4412
           - const: samsung,exynos4
