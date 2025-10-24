@@ -1,0 +1,629 @@
+// SPDX-License-Identifier: GPL-2.0-only
+
+/* Actually MSM8930AB (overclocked MSM8930) */
+#include "qcom-msm8930.dtsi"
+#include "pm8917.dtsi"
+
+#include <dt-bindings/gpio/gpio.h>
+#include <dt-bindings/input/gpio-keys.h>
+#include <dt-bindings/input/input.h>
+#include <dt-bindings/mfd/qcom-rpm.h>
+
+/ {
+	model = "Samsung Galaxy S4 Mini (International LTE)";
+	compatible = "samsung,serranolte", "qcom,msm8930";
+	chassis-type = "handset";
+
+	aliases {
+		display0 = &framebuffer0;
+		mmc0 = &sdcc1; /* eMMC */
+		mmc1 = &sdcc3; /* SD card */
+		serial0 = &gsbi5_serial;
+	};
+
+	chosen {
+		stdout-path = "serial0:115200n8";
+	};
+
+	framebuffer0: framebuffer@88300000 {
+		compatible = "simple-framebuffer";
+		reg = <0x88300000 0x300000>;
+
+		clocks = <&mmcc DSI_M_AHB_CLK>,
+			 <&mmcc DSI_S_AHB_CLK>,
+			 <&mmcc AMP_AHB_CLK>,
+			 <&mmcc DSI_CLK>,
+			 <&mmcc DSI1_BYTE_CLK>,
+			 <&mmcc DSI_PIXEL_CLK>,
+			 <&mmcc DSI1_ESC_CLK>,
+			 <&mmcc DSI_M_AHB_CLK>,
+			 <&mmcc MDP_CLK>,
+			 <&mmcc MDP_AHB_CLK>,
+			 <&mmcc MDP_AXI_CLK>,
+			 <&mmcc MDP_LUT_CLK>;
+
+		format = "r8g8b8";
+		width = <540>;
+		height = <960>;
+		stride = <(540 * 3)>;
+	};
+
+	gpio-keys {
+		compatible = "gpio-keys";
+
+		pinctrl-0 = <&gpio_keys_pins_active>;
+		pinctrl-1 = <&gpio_keys_pins_sleep>;
+		pinctrl-names = "default", "sleep";
+
+		key-home {
+			gpios = <&msmgpio 35 GPIO_ACTIVE_LOW>;
+			label = "Home";
+			wakeup-event-action = <EV_ACT_ASSERTED>;
+			wakeup-source;
+			linux,code = <KEY_HOMEPAGE>;
+		};
+
+		key-volume-down {
+			gpios = <&msmgpio 81 GPIO_ACTIVE_LOW>;
+			label = "Volume Down";
+			linux,code = <KEY_VOLUMEDOWN>;
+		};
+
+		key-volume-up {
+			gpios = <&msmgpio 50 GPIO_ACTIVE_LOW>;
+			label = "Volume Up";
+			linux,code = <KEY_VOLUMEUP>;
+		};
+	};
+
+	gpio-lid-hall-sensor {
+		compatible = "gpio-keys";
+
+		pinctrl-0 = <&gpio_lid_hall_sensor_active>;
+		pinctrl-names = "default";
+
+		event-lid-hall-sensor {
+			gpios = <&msmgpio 78 GPIO_ACTIVE_LOW>;
+			Label = "Lid Hall Effect Sensor";
+			wakeup-event-action = <EV_ACT_DEASSERTED>;
+			wakeup-source;
+			linux,code = <SW_LID>;
+			linux,input-type = <EV_SW>;
+		};
+	};
+
+	i2c-proximity {
+		compatible = "i2c-gpio";
+
+		pinctrl-0 = <&proximity_i2c_active>;
+		pinctrl-names = "default";
+		scl-gpios = <&msmgpio 13 (GPIO_ACTIVE_HIGH|GPIO_OPEN_DRAIN)>;
+		sda-gpios = <&msmgpio 12 (GPIO_ACTIVE_HIGH|GPIO_OPEN_DRAIN)>;
+		#address-cells = <1>;
+		#size-cells = <0>;
+
+		proximity@39 {
+			compatible = "sharp,gp2ap020a00f";
+			reg = <0x39>;
+
+			interrupt-parent = <&msmgpio>;
+			interrupts = <49 IRQ_TYPE_NONE>;
+			pinctrl-0 = <&proximity_active>;
+			pinctrl-names = "default";
+			vled-supply = <&pm8917_l16>;
+			/* Driver only supports vled-supply, so l9 (vcc) and
+			   lvs4 (vio) are always on */
+		};
+	};
+
+	i2c-touchkey {
+		compatible = "i2c-gpio";
+
+		pinctrl-0 = <&touchkey_i2c_active>;
+		pinctrl-names = "default";
+		scl-gpios = <&msmgpio 25 (GPIO_ACTIVE_HIGH|GPIO_OPEN_DRAIN)>;
+		sda-gpios = <&msmgpio 24 (GPIO_ACTIVE_HIGH|GPIO_OPEN_DRAIN)>;
+		#address-cells = <1>;
+		#size-cells = <0>;
+
+		touchkey@20 {
+			compatible = "coreriver,tc360-touchkey";
+			reg = <0x20>;
+
+			interrupt-parent = <&msmgpio>;
+			interrupts = <65 IRQ_TYPE_EDGE_FALLING>;
+			pinctrl-0 = <&touchkey_active>;
+			pinctrl-names = "default";
+			vcc-supply = <&pm8917_l30>;
+			/* Key backlight does not work without l36 support */
+			//vdd-supply = <&pm8917_l36>;
+
+			linux,keycodes = <KEY_APPSELECT KEY_BACK>;
+		};
+	};
+
+	reserved-memory {
+		framebuffer@88300000 {
+			reg = <0x88300000 0x300000>;
+			no-map;
+		};
+	};
+};
+
+&gsbi5 {
+	qcom,mode = <GSBI_PROT_I2C_UART>;
+	status = "okay";
+};
+
+&gsbi5_serial {
+	status = "okay";
+};
+
+&gsbi12 {
+	qcom,crci = <GSBI_CRCI_QUP>;
+	qcom,mode = <GSBI_PROT_I2C>;
+	status = "okay";
+};
+
+&gsbi12_i2c {
+	pinctrl-0 = <&gsbi12_i2c_active>;
+	pinctrl-names = "default";
+	status = "okay";
+
+	magnetometer@2e {
+		compatible = "yamaha,yas532";
+		reg = <0x2e>;
+
+		iovdd-supply = <&pm8917_lvs4>;
+		vdd-supply = <&pm8917_l9>;
+
+		/* board_rev >= 3 */
+		mount-matrix = "-1", "0",  "0",
+				"0", "1",  "0",
+				"0", "0", "-1";
+	};
+
+	mpu6500@68 {
+		compatible = "invensense,mpu6500";
+		reg = <0x68>;
+
+		interrupt-parent = <&msmgpio>;
+		interrupts = <67 IRQ_TYPE_EDGE_FALLING>;
+		vdd-supply = <&pm8917_l9>;
+		vddio-supply = <&pm8917_lvs4>;
+
+		/* board_rev >= 3 */
+		mount-matrix =   "0", "1", "0",
+				"-1", "0", "0",
+				 "0", "0", "1";
+	};
+};
+
+&pm8917 {
+	interrupts-extended = <&msmgpio 104 IRQ_TYPE_LEVEL_LOW>;
+
+	/* Vibrator is controlled with l33 */
+	/delete-node/ vibrator@4a;
+};
+
+&rpm {
+	regulators {
+		compatible = "qcom,rpm-pm8917-regulators";
+
+		vdd_l1_l2_l12_l18-supply = <&pm8917_s4>;
+		vdd_l21_l23_l29-supply = <&pm8917_s8>;
+		vdd_l24_l25-supply = <&pm8917_s1>;
+		vin_lvs1_3_4_5_6_7-supply = <&pm8917_s4>;
+
+		/* Downstream kernel controls l26-28, l30-36, boost and
+		   usb_otg directly via SSBI. Controlling them via RPM likely
+		   does not work. l31, l33 und l36 have been confirmed to not
+		   work via RPM. l30 has been confirmed to work via RPM.
+
+		   There is no mainline SSBI regulator driver yet. */
+
+		/* Buck SMPS */
+		pm8917_s1: s1 {
+			regulator-min-microvolt = <1300000>;
+			regulator-max-microvolt = <1300000>;
+			regulator-always-on;
+			bias-pull-down;
+			qcom,switch-mode-frequency = <3200000>;
+		};
+
+		pm8917_s2: s2 {
+			regulator-min-microvolt = <1300000>;
+			regulator-max-microvolt = <1300000>;
+			bias-pull-down;
+			qcom,switch-mode-frequency = <1600000>;
+		};
+
+		pm8917_s3: s3 {
+			regulator-min-microvolt = <500000>;
+			regulator-max-microvolt = <1150000>;
+			bias-pull-down;
+			qcom,switch-mode-frequency = <4800000>;
+		};
+
+		pm8917_s4: s4 {
+			regulator-min-microvolt = <1800000>;
+			regulator-max-microvolt = <1800000>;
+			regulator-always-on;
+			bias-pull-down;
+			qcom,switch-mode-frequency = <1600000>;
+		};
+
+		/* s5 and s6 are SAW regulators controlled via SPM and
+		   defined in SoC DTSI */
+
+		pm8917_s7: s7 {
+			regulator-min-microvolt = <1150000>;
+			regulator-max-microvolt = <1150000>;
+			bias-pull-down;
+			qcom,force-mode = <QCOM_RPM_FORCE_MODE_AUTO>;
+			qcom,switch-mode-frequency = <3200000>;
+		};
+
+		pm8917_s8: s8 {
+			regulator-min-microvolt = <2050000>;
+			regulator-max-microvolt = <2050000>;
+			regulator-always-on;
+			bias-pull-down;
+			qcom,switch-mode-frequency = <1600000>;
+		};
+
+		/* PMOS LDO */
+		pm8917_l1: l1 {
+			regulator-min-microvolt = <1050000>;
+			regulator-max-microvolt = <1050000>;
+			bias-pull-down;
+		};
+
+		pm8917_l2: l2 {
+			regulator-min-microvolt = <1200000>;
+			regulator-max-microvolt = <1200000>;
+			bias-pull-down;
+		};
+
+		pm8917_l3: l3 {
+			regulator-min-microvolt = <3075000>;
+			regulator-max-microvolt = <3075000>;
+			bias-pull-down;
+		};
+
+		pm8917_l4: l4 {
+			regulator-min-microvolt = <1800000>;
+			regulator-max-microvolt = <1800000>;
+			regulator-always-on;
+			bias-pull-down;
+		};
+
+		pm8917_l5: l5 {
+			regulator-min-microvolt = <2950000>;
+			regulator-max-microvolt = <2950000>;
+			bias-pull-down;
+		};
+
+		pm8917_l6: l6 {
+			regulator-min-microvolt = <2950000>;
+			regulator-max-microvolt = <2950000>;
+			bias-pull-down;
+		};
+
+		pm8917_l7: l7 {
+			regulator-min-microvolt = <1850000>;
+			regulator-max-microvolt = <2950000>;
+			regulator-always-on;
+			bias-pull-down;
+		};
+
+		pm8917_l8: l8 {
+			regulator-min-microvolt = <2800000>;
+			regulator-max-microvolt = <3000000>;
+			bias-pull-down;
+		};
+
+		pm8917_l9: l9 {
+			regulator-min-microvolt = <2850000>;
+			regulator-max-microvolt = <2850000>;
+			/* Always on because proximity sensor driver does not
+			   support supplies. Downstream kernel forces sensor
+			   power (l9/lvs4) on in board init code. */
+			regulator-always-on;
+			bias-pull-down;
+		};
+
+		pm8917_l10: l10 {
+			regulator-min-microvolt = <2900000>;
+			regulator-max-microvolt = <2900000>;
+			bias-pull-down;
+		};
+
+		pm8917_l11: l11 {
+			regulator-min-microvolt = <2800000>;
+			regulator-max-microvolt = <2850000>;
+			bias-pull-down;
+		};
+
+		pm8917_l12: l12 {
+			regulator-min-microvolt = <1200000>;
+			regulator-max-microvolt = <1200000>;
+			bias-pull-down;
+		};
+
+		pm8917_l14: l14 {
+			regulator-min-microvolt = <1800000>;
+			regulator-max-microvolt = <1800000>;
+			bias-pull-down;
+		};
+
+		pm8917_l15: l15 {
+			regulator-min-microvolt = <1800000>;
+			regulator-max-microvolt = <2950000>;
+			bias-pull-down;
+		};
+
+		pm8917_l16: l16 {
+			regulator-min-microvolt = <2850000>;
+			regulator-max-microvolt = <3000000>;
+			bias-pull-down;
+		};
+
+		pm8917_l17: l17 {
+			regulator-min-microvolt = <1800000>;
+			regulator-max-microvolt = <2950000>;
+			bias-pull-down;
+		};
+
+		pm8917_l18: l18 {
+			regulator-min-microvolt = <1200000>;
+			regulator-max-microvolt = <1200000>;
+			bias-pull-down;
+		};
+
+		pm8917_l21: l21 {
+			regulator-min-microvolt = <1900000>;
+			regulator-max-microvolt = <1900000>;
+			bias-pull-down;
+		};
+
+		pm8917_l22: l22 {
+			regulator-min-microvolt = <2750000>;
+			regulator-max-microvolt = <2750000>;
+			bias-pull-down;
+		};
+
+		pm8917_l23: l23 {
+			regulator-min-microvolt = <1800000>;
+			regulator-max-microvolt = <1800000>;
+			regulator-always-on;
+			bias-pull-down;
+		};
+
+		pm8917_l24: l24 {
+			regulator-min-microvolt = <500000>;
+			regulator-max-microvolt = <1150000>;
+			bias-pull-down;
+		};
+
+		pm8917_l25: l25 {
+			regulator-min-microvolt = <1250000>;
+			regulator-max-microvolt = <1250000>;
+			regulator-always-on;
+			bias-pull-down;
+		};
+
+		/* l26-28 are controlled via SSBI */
+
+		/* Downstream kernel configures l29 both via RPM and via SSBI
+		   (as 8921_l29) and is inconsistent in its usage */
+		pm8917_l29: l29 {
+			regulator-min-microvolt = <1800000>;
+			regulator-max-microvolt = <1800000>;
+			bias-pull-down;
+		};
+
+		/* Downstream kernel controls l30 via SSBI, but RPM works */
+		pm8917_l30: l30 {
+			regulator-min-microvolt = <1800000>;
+			regulator-max-microvolt = <2800000>;
+			bias-pull-down;
+		};
+
+		/* l31-36 are controlled via SSBI */
+
+		/* Low Voltage Switch */
+		pm8917_lvs1: lvs1 {
+			bias-pull-down;
+		};
+
+		pm8917_lvs2: lvs2 {
+			bias-pull-down;
+		};
+
+		pm8917_lvs3: lvs3 {
+			bias-pull-down;
+		};
+
+		pm8917_lvs4: lvs4 {
+			/* Always on because proximity sensor driver does not
+			   support supplies. mpu6500 driver works with an
+			   enable delay of 100ms. Downstream kernel forces
+			   sensor power (l9/lvs4) on in board init code. */
+			regulator-always-on;
+			bias-pull-down;
+		};
+
+		pm8917_lvs5: lvs5 {
+			bias-pull-down;
+		};
+
+		pm8917_lvs6: lvs6 {
+			bias-pull-down;
+		};
+
+		pm8917_lvs7: lvs7 {
+			bias-pull-down;
+		};
+
+		/* boost and usb_otg are controlled via SSBI */
+	};
+};
+
+&msmgpio {
+	gpio_keys_pins_active: gpio-keys-pins-active {
+		pins = "gpio35", "gpio50", "gpio81";
+		bias-pull-up;
+		drive-strength = <8>;
+		function = "gpio";
+	};
+
+	gpio_keys_pins_sleep: gpio-keys-pins-sleep {
+		pins = "gpio50";
+		bias-disable;
+		drive-strength = <8>;
+		function = "gpio";
+	};
+
+	gpio_lid_hall_sensor_active: gpio-lid-hall-sensor-active {
+		pins = "gpio78";
+		bias-disable;
+		drive-strength = <2>;
+		function = "gpio";
+	};
+
+	gsbi12_i2c_active: gsbi12-i2c-active {
+		pins = "gpio44", "gpio45";
+		bias-disable;
+		drive-strength = <8>;
+		function = "gsbi12";
+	};
+
+	proximity_active: proximity-active {
+		pins = "gpio49";
+		bias-pull-down;
+		drive-strength = <2>;
+		function = "gpio";
+	};
+
+	proximity_i2c_active: proximity-i2c-active {
+		pins = "gpio12", "gpio13";
+		bias-pull-down;
+		drive-strength = <2>;
+		function = "gpio";
+	};
+
+	sdcc1_pins_active: sdcc1-pins-active {
+		clk {
+			pins = "sdc1_clk";
+			bias-disable;
+			drive-strengh = <16>;
+		};
+		cmd {
+			pins = "sdc1_cmd";
+			bias-pull-up;
+			drive-strengh = <10>;
+		};
+		data {
+			pins = "sdc1_data";
+			bias-pull-up;
+			drive-strengh = <10>;
+		};
+	};
+
+	sdcc1_pins_sleep: sdcc1-pins-sleep {
+		clk {
+			pins = "sdc1_clk";
+			bias-disable;
+			drive-strengh = <2>;
+		};
+		cmd {
+			pins = "sdc1_cmd";
+			bias-pull-up;
+			drive-strengh = <2>;
+		};
+		data {
+			pins = "sdc1_data";
+			bias-pull-up;
+			drive-strengh = <2>;
+		};
+	};
+
+	sdcc3_pins_active: sdcc3-pins-active {
+		clk {
+			pins = "sdc3_clk";
+			bias-disable;
+			drive-strengh = <8>;
+		};
+		cmd {
+			pins = "sdc3_cmd";
+			bias-pull-up;
+			drive-strengh = <8>;
+		};
+		data {
+			pins = "sdc3_data";
+			bias-pull-up;
+			drive-strengh = <8>;
+		};
+	};
+
+	sdcc3_pins_sleep: sdcc3-pins-sleep {
+		clk {
+			pins = "sdc3_clk";
+			bias-pull-down;
+			drive-strengh = <2>;
+		};
+		cmd {
+			pins = "sdc3_cmd";
+			bias-pull-down;
+			drive-strengh = <2>;
+		};
+		data {
+			pins = "sdc3_data";
+			bias-pull-down;
+			drive-strengh = <2>;
+		};
+	};
+
+	touchkey_active: touchkey-active {
+		pins = "gpio65";
+		bias-disable;
+		drive-strength = <2>;
+		function = "gpio";
+	};
+
+	touchkey_i2c_active: touchkey-i2c-active {
+		pins = "gpio24", "gpio25";
+		bias-pull-down;
+		drive-strength = <2>;
+		function = "gpio";
+	};
+};
+
+&sdcc1 {
+	pinctrl-0 = <&sdcc1_pins_active>;
+	pinctrl-1 = <&sdcc1_pins_sleep>;
+	pinctrl-names = "default", "sleep";
+	vmmc-supply = <&pm8917_l5>;
+	vqmmc-supply = <&pm8917_s4>;
+	status = "okay";
+};
+
+&sdcc3 {
+	pinctrl-0 = <&sdcc3_pins_active>;
+	pinctrl-1 = <&sdcc3_pins_sleep>;
+	pinctrl-names = "default", "sleep";
+	vmmc-supply = <&pm8917_l6>;
+	vqmmc-supply = <&pm8917_l7>;
+	status = "okay";
+};
+
+&usb1 {
+	dr_mode = "otg";
+	status = "okay";
+};
+
+&usb_hs1_phy {
+	v1p8-supply = <&pm8917_l4>;
+	v3p3-supply = <&pm8917_l3>;
+};
