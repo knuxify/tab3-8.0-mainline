@@ -15,7 +15,9 @@ description:
 
 properties:
   compatible:
-    const: qcom,msm8960-pinctrl
+    enum:
+        - qcom,msm8930-pinctrl
+        - qcom,msm8960-pinctrl
 
   reg:
     maxItems: 1
