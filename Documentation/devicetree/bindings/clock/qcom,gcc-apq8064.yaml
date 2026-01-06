@@ -28,10 +28,12 @@ properties:
           - enum:
               - qcom,gcc-apq8064
               - qcom,gcc-msm8960
+              - qcom,gcc-msm8930
           - const: syscon
       - enum:
           - qcom,gcc-apq8064
           - qcom,gcc-msm8960
+          - qcom,gcc-msm8930
         deprecated: true
 
   thermal-sensor:
