@@ -16,6 +16,7 @@ properties:
       - qcom,lcc-ipq8064
       - qcom,lcc-mdm9615
       - qcom,lcc-msm8960
+      - qcom,lcc-msm8930
 
   clocks:
     maxItems: 8
