@@ -443,6 +443,7 @@ static const struct qcom_cc_desc lcc_msm8960_desc = {
 };
 
 static const struct of_device_id lcc_msm8960_match_table[] = {
+	{ .compatible = "qcom,lcc-msm8930" },
 	{ .compatible = "qcom,lcc-msm8960" },
 	{ .compatible = "qcom,lcc-apq8064" },
 	{ .compatible = "qcom,lcc-mdm9615" },
