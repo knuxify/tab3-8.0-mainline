@@ -1,0 +1,6 @@
+#include "qcom-msm8930.dtsi"
+#include "pm8917.dtsi"
+
+&rpm {
+	compatible = "qcom,rpm-msm8930-pm8917";
+};
