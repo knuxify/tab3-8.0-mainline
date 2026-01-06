@@ -1,0 +1,145 @@
+// SPDX-License-Identifier: GPL-2.0
+#include <dt-bindings/pinctrl/qcom,pmic-gpio.h>
+
+&ssbi {
+	pm8038: pmic {
+		compatible = "qcom,pm8038";
+		interrupt-parent = <&msmgpio>;
+		interrupts = <104 IRQ_TYPE_LEVEL_LOW>;
+		#interrupt-cells = <2>;
+		interrupt-controller;
+		#address-cells = <1>;
+		#size-cells = <0>;
+
+		pwrkey@1c {
+			compatible = "qcom,pm8921-pwrkey";
+			reg = <0x1c>;
+			interrupts-extended = <&pm8038 50 IRQ_TYPE_EDGE_RISING>, <&pm8038 51 IRQ_TYPE_EDGE_RISING>;
+			debounce = <15625>;
+			pull-up;
+			wakeup-source;
+		};
+
+		vibrator@4a {
+			compatible = "qcom,pm8921-vib";
+			reg = <0x4a>;
+		};
+
+		pm8038_gpio: gpio@150 {
+			compatible = "qcom,pm8038-gpio", "qcom,ssbi-gpio";
+			reg = <0x150>;
+			interrupt-controller;
+			#interrupt-cells = <2>;
+			gpio-controller;
+			gpio-ranges = <&pm8038_gpio 0 0 12>;
+			#gpio-cells = <2>;
+
+			gpio_keys_pin_a: gpio-keys-active-state {
+				pins = "gpio3", "gpio8", "gpio10", "gpio11";
+				function = "normal";
+
+				bias-pull-up;
+				drive-push-pull;
+				input-enable;
+				power-source = <2>;
+				qcom,drive-strength = <PMIC_GPIO_STRENGTH_NO>;
+				qcom,pull-up-strength = <0>;
+			};
+		};
+
+		rtc@11d {
+			compatible = "qcom,pm8921-rtc";
+			reg = <0x11d>;
+			interrupts-extended = <&pm8038 39 IRQ_TYPE_EDGE_RISING>;
+			allow-set-time;
+		};
+
+		pm8038_xoadc: xoadc@197 {
+			compatible = "qcom,pm8038-adc";
+			reg = <0x197>;
+			interrupts-extended = <&pm8038 78 IRQ_TYPE_EDGE_RISING>;
+			#address-cells = <2>;
+			#size-cells = <0>;
+			#io-channel-cells = <2>;
+
+			vcoin: adc-channel@0 {
+				reg = <0x00 0x00>;
+			};
+			vbat: adc-channel@1 {
+				reg = <0x00 0x01>;
+			};
+			dcin: adc-channel@2 {
+				reg = <0x00 0x02>;
+			};
+			ichg: adc-channel@3 {
+				reg = <0x00 0x03>;
+			};
+			vph_pwr: adc-channel@4 {
+				reg = <0x00 0x04>;
+			};
+			batt_therm: adc-channel@8 {
+				reg = <0x00 0x08>;
+			};
+			batt_id: adc-channel@9 {
+				reg = <0x00 0x09>;
+			};
+			usb_vbus: adc-channel@a {
+				reg = <0x00 0x0a>;
+			};
+			die_temp: adc-channel@b {
+				reg = <0x00 0x0b>;
+			};
+			ref_625mv: adc-channel@c {
+				reg = <0x00 0x0c>;
+			};
+			ref_1250mv: adc-channel@d {
+				reg = <0x00 0x0d>;
+			};
+			chg_temp: adc-channel@e {
+				reg = <0x00 0x0e>;
+			};
+			ref_muxoff: adc-channel@f {
+				reg = <0x00 0x0f>;
+			};
+		};
+	};
+};
+
+&usb1 {
+	vbus-supply = <&usb_5v>;
+	mux-controls = <&usb_switch>;
+	mux-control-names = "usb_switch";
+};
+
+/ {
+    /*
+	 * These channels from the ADC are simply hardware monitors.
+	 * That is why the ADC is referred to as "HKADC" - HouseKeeping
+	 * ADC.
+	 */
+	iio-hwmon {
+		compatible = "iio-hwmon";
+		io-channels = <&pm8038_xoadc 0x00 0x01>, /* Battery */
+			    <&pm8038_xoadc 0x00 0x02>, /* DC in (charger) */
+			    <&pm8038_xoadc 0x00 0x04>, /* VPH the main system voltage */
+			    <&pm8038_xoadc 0x00 0x0b>, /* Die temperature */
+			    <&pm8038_xoadc 0x00 0x0c>, /* Reference voltage 1.25V */
+			    <&pm8038_xoadc 0x00 0x0d>, /* Reference voltage 0.625V */
+			    <&pm8038_xoadc 0x00 0x0e>; /* Charger temperature */
+	};
+
+	usb_switch: mux-controller {
+		compatible = "gpio-mux";
+		#mux-control-cells = <0>;
+
+		mux-gpios = <&msmgpio 97 GPIO_ACTIVE_HIGH>;
+	};
+
+	usb_5v: gpio-regulator {
+		compatible = "regulator-fixed";
+		regulator-name = "External 5V";
+		gpios = <&msmgpio 63 GPIO_ACTIVE_HIGH>;
+		startup-delay-us = <10000>; // TODO: verify me
+		enable-active-high;
+	};
+};
