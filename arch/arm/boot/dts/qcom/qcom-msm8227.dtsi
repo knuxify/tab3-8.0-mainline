@@ -1,0 +1,381 @@
+// SPDX-License-Identifier: GPL-2.0
+/dts-v1/;
+
+#include "qcom-msm8930-pm8038.dtsi"
+
+/ {
+	model = "Qualcomm MSM8227";
+	compatible = "qcom,msm8227", "qcom,msm8930";
+
+	cpu_opp_table: opp-table-cpu {
+		compatible = "operating-points-v2-krait-cpu", "operating-points-v2";
+		nvmem-cells = <&pvs_efuse>;
+
+		/*
+		 * pvs represents the 'quality' of the cores, the bigger value - the better:
+		 * 0 - slow, 1 - nominal, 3 - fast
+		 *
+		 * speed is always 0 for msm8227
+		 *
+		 * Downstream declares all pvs, so let's assume there's small
+		 * chance that some SoCs have different value, and we handle them
+		 * correctly.
+		*/
+		opp-384000000 {
+			opp-microvolt-speed0-pvs0 = <900000 900000 900000>;
+			opp-microvolt-speed0-pvs1 = <900000 900000 900000>;
+			opp-microvolt-speed0-pvs3 = <900000 900000 900000>;
+			opp-supported-hw = <0x01>;
+		};
+
+		opp-432000000 {
+			opp-hz = /bits/ 64 <432000000>;
+			opp-microvolt-speed0-pvs0 = <925000 925000 925000>;
+			opp-microvolt-speed0-pvs1 = <925000 925000 925000>;
+			opp-microvolt-speed0-pvs3 = <925000 925000 925000>;
+			opp-supported-hw = <0x01>;
+			opp-level = <1>;
+		};
+
+		opp-486000000 {
+			opp-microvolt-speed0-pvs0 = <925000 925000 925000>;
+			opp-microvolt-speed0-pvs1 = <925000 925000 925000>;
+			opp-microvolt-speed0-pvs3 = <925000 925000 925000>;
+			opp-supported-hw = <0x01>;
+			opp-level = <1>;
+		};
+
+		opp-540000000 {
+			opp-hz = /bits/ 64 <540000000>;
+			opp-microvolt-speed0-pvs0 = <937500 937500 937500>;
+			opp-microvolt-speed0-pvs1 = <937500 937500 937500>;
+			opp-microvolt-speed0-pvs3 = <937500 937500 937500>;
+			opp-supported-hw = <0x01>;
+			opp-level = <2>;
+		};
+
+		opp-594000000 {
+			opp-microvolt-speed0-pvs0 = <962500 962500 962500>;
+			opp-microvolt-speed0-pvs1 = <962500 962500 962500>;
+			opp-microvolt-speed0-pvs3 = <962500 962500 962500>;
+			opp-supported-hw = <0x01>;
+		};
+
+		opp-648000000 {
+			opp-hz = /bits/ 64 <648000000>;
+			opp-microvolt-speed0-pvs0 = <987500 987500 987500>;
+			opp-microvolt-speed0-pvs1 = <987500 987500 987500>;
+			opp-microvolt-speed0-pvs3 = <987500 987500 987500>;
+			opp-supported-hw = <0x01>;
+			opp-level = <2>;
+		};
+
+		opp-702000000 {
+			opp-microvolt-speed0-pvs0 = <1000000 1000000 1000000>;
+			opp-microvolt-speed0-pvs1 = <1000000 1000000 1000000>;
+			opp-microvolt-speed0-pvs3 = <1000000 1000000 1000000>;
+			opp-supported-hw = <0x01>;
+		};
+
+		opp-756000000 {
+			opp-hz = /bits/ 64 <756000000>;
+			opp-microvolt-speed0-pvs0 = <1025000 1025000 1025000>;
+			opp-microvolt-speed0-pvs1 = <1025000 1025000 1025000>;
+			opp-microvolt-speed0-pvs3 = <1025000 1025000 1025000>;
+			opp-supported-hw = <0x01>;
+			opp-level = <3>;
+		};
+
+		opp-810000000 {
+			opp-microvolt-speed0-pvs0 = <1062500 1062500 1062500>;
+			opp-microvolt-speed0-pvs1 = <1062500 1062500 1062500>;
+			opp-microvolt-speed0-pvs3 = <1062500 1062500 1062500>;
+			opp-supported-hw = <0x01>;
+			opp-level = <3>;
+		};
+
+		opp-864000000 {
+			opp-hz = /bits/ 64 <864000000>;
+			opp-microvolt-speed0-pvs0 = <1062500 1062500 1062500>;
+			opp-microvolt-speed0-pvs1 = <1062500 1062500 1062500>;
+			opp-microvolt-speed0-pvs3 = <1062500 1062500 1062500>;
+			opp-supported-hw = <0x01>;
+			opp-level = <4>;
+		};
+
+		opp-918000000 {
+			opp-microvolt-speed0-pvs0 = <1087500 1087500 1087500>;
+			opp-microvolt-speed0-pvs1 = <1087500 1087500 1087500>;
+			opp-microvolt-speed0-pvs3 = <1087500 1087500 1087500>;
+			opp-supported-hw = <0x01>;
+			opp-level = <4>;
+		};
+
+		opp-972000000 {
+			opp-hz = /bits/ 64 <972000000>;
+			opp-microvolt-speed0-pvs0 = <1100000 1100000 1100000>;
+			opp-microvolt-speed0-pvs1 = <1100000 1100000 1100000>;
+			opp-microvolt-speed0-pvs3 = <1100000 1100000 1100000>;
+			opp-supported-hw = <0x01>;
+			opp-level = <4>;
+		};
+
+		/delete-node/ opp-1026000000;
+		/delete-node/ opp-1134000000;
+		/delete-node/ opp-1188000000;
+	};
+};
+
+/*
+ * So far we haven't added support for the msm8930 device with pm8038,
+ * and there's only few known devices which have msm8227 - Nokia Lumia series and
+ * Sony Xperia M. The Android4Lumia project uses downstream kernel from the
+ * Xperia M, and decompiling ACPI tables from the Windows didn't give any meaningful
+ * result, so we can't really tell if regulators are *actually* the same. The phone
+ * is still working though, so let's assume *all* msm8227 devices share the same
+ * regulator values.
+*/
+&rpm {
+	regulators {
+		compatible = "qcom,rpm-pm8038-regulators";
+		vdd_l1-supply = <&pm8038_s2>;
+		vdd_l2_l20-supply = <&pm8038_s2>;
+		vdd_l7_l11_l21_l23-supply = <&pm8038_s4>;
+		vdd_l12_l24_l26-supply = <&pm8038_s2>;
+		vdd_l16_l19-supply = <&pm8038_s3>;
+		vdd_l25-supply = <&pm8038_l13>;
+		vdd_l27-supply = <&pm8038_s3>;
+		vin_lvs-supply = <&pm8038_l11>;
+
+		pm8038_s1: s1 {
+			regulator-min-microvolt = <500000>;
+			regulator-max-microvolt = <1150000>;
+			qcom,switch-mode-frequency = <4800000>;
+			bias-pull-down;
+		};
+
+		pm8038_s2: s2 {
+		    regulator-always-on;
+			regulator-min-microvolt = <1400000>;
+			regulator-max-microvolt = <1400000>;
+			qcom,switch-mode-frequency = <1600000>;
+			bias-pull-down;
+		};
+
+		pm8038_s3: s3 {
+			regulator-min-microvolt = <1150000>;
+			regulator-max-microvolt = <1150000>;
+			qcom,switch-mode-frequency = <3200000>;
+			bias-pull-down;
+			qcom,force-mode = <QCOM_RPM_FORCE_MODE_AUTO>;
+		};
+
+		pm8038_s4: s4 {
+			regulator-always-on;
+			regulator-min-microvolt = <1950000>;
+			regulator-max-microvolt = <2200000>;
+			qcom,switch-mode-frequency = <1600000>;
+			bias-pull-down;
+		};
+
+		pm8038_l1: l1 {
+			regulator-min-microvolt = <1300000>;
+			regulator-max-microvolt = <1300000>;
+			bias-pull-down;
+		};
+
+		pm8038_l2: l2 {
+			regulator-min-microvolt = <1200000>;
+			regulator-max-microvolt = <1200000>;
+			bias-pull-down;
+		};
+
+		pm8038_l3: l3 {
+			regulator-min-microvolt = <3075000>;
+			regulator-max-microvolt = <3075000>;
+			bias-pull-down;
+		};
+
+		pm8038_l4: l4 {
+			regulator-always-on;
+			regulator-min-microvolt = <1800000>;
+			regulator-max-microvolt = <1800000>;
+			bias-pull-down;
+
+			regulator-system-load = <100000>;
+			regulator-allow-set-load;
+		};
+
+		pm8038_l5: l5 {
+			regulator-min-microvolt = <2950000>;
+			regulator-max-microvolt = <2950000>;
+			bias-pull-down;
+		};
+
+		pm8038_l6: l6 {
+			regulator-min-microvolt = <2950000>;
+			regulator-max-microvolt = <2950000>;
+			bias-pull-down;
+		};
+
+		pm8038_l7: l7 {
+			regulator-min-microvolt = <2050000>;
+			regulator-max-microvolt = <2050000>;
+			bias-pull-down;
+		};
+
+		pm8038_l8: l8 {
+			regulator-min-microvolt = <2800000>;
+			regulator-max-microvolt = <2800000>;
+			bias-pull-down;
+
+			regulator-system-load = <100000>;
+			regulator-allow-set-load;
+		};
+
+		pm8038_l9: l9 {
+		    regulator-always-on;
+			regulator-min-microvolt = <2850000>;
+			regulator-max-microvolt = <2850000>;
+			bias-pull-down;
+		};
+
+		pm8038_l10: l10 {
+			regulator-min-microvolt = <2900000>;
+			regulator-max-microvolt = <3000000>;
+			bias-pull-down;
+		};
+
+		pm8038_l11: l11 {
+		    regulator-always-on;
+			regulator-min-microvolt = <1800000>;
+			regulator-max-microvolt = <1800000>;
+			bias-pull-down;
+
+			regulator-system-load = <100000>;
+			regulator-allow-set-load;
+		};
+
+		pm8038_l12: l12 {
+			regulator-min-microvolt = <1200000>;
+			regulator-max-microvolt = <1200000>;
+			bias-pull-down;
+		};
+
+		pm8038_l13: l13 {
+			regulator-min-microvolt = <2220000>;
+			regulator-max-microvolt = <2220000>;
+		};
+
+		pm8038_l14: l14 {
+			regulator-min-microvolt = <1800000>;
+			regulator-max-microvolt = <1800000>;
+			bias-pull-down;
+		};
+
+		pm8038_l15: l15 {
+			regulator-min-microvolt = <1800000>;
+			regulator-max-microvolt = <2950000>;
+			bias-pull-down;
+		};
+
+		pm8038_l16: l16 {
+			regulator-min-microvolt = <375000>;
+			regulator-max-microvolt = <1050000>;
+			bias-pull-down;
+		};
+
+		pm8038_l17: l17 {
+			regulator-min-microvolt = <1800000>;
+			regulator-max-microvolt = <2950000>;
+			bias-pull-down;
+		};
+
+		pm8038_l18: l18 {
+			regulator-min-microvolt = <1800000>;
+			regulator-max-microvolt = <1800000>;
+			bias-pull-down;
+		};
+
+		pm8038_l19: l19 {
+			regulator-min-microvolt = <375000>;
+			regulator-max-microvolt = <1050000>;
+			bias-pull-down;
+		};
+
+		pm8038_l20: l20 {
+		    regulator-always-on;
+			regulator-min-microvolt = <1250000>;
+			regulator-max-microvolt = <1250000>;
+			bias-pull-down;
+
+			/*regulator-system-load = <100000>;
+			regulator-allow-set-load;*/
+		};
+
+		pm8038_l21: l21 {
+			regulator-min-microvolt = <1900000>;
+			regulator-max-microvolt = <1900000>;
+			bias-pull-down;
+		};
+
+		pm8038_l22: l22 {
+		    regulator-always-on;
+			regulator-min-microvolt = <1850000>;
+			regulator-max-microvolt = <2950000>;
+			bias-pull-down;
+
+			regulator-system-load = <100000>;
+			regulator-allow-set-load;
+		};
+
+		pm8038_l23: l23 {
+			regulator-always-on;
+			regulator-min-microvolt = <1800000>;
+			regulator-max-microvolt = <1800000>;
+			bias-pull-down;
+		};
+
+		pm8038_l24: l24 {
+			regulator-min-microvolt = <500000>;
+			regulator-max-microvolt = <1150000>;
+			bias-pull-down;
+
+			regulator-system-load = <100000>;
+			regulator-allow-set-load;
+
+			system-critical-regulator;
+		};
+
+		pm8038_l25: l25 {
+			regulator-min-microvolt = <1740000>;
+			regulator-max-microvolt = <1740000>;
+		};
+
+		pm8038_l26: l26 {
+			regulator-always-on;
+			regulator-min-microvolt = <1050000>;
+			regulator-max-microvolt = <1050000>;
+			bias-pull-down;
+
+			// TODO: in downstream this seems to be enabled
+			// but here it causes reboot
+			/*regulator-system-load = <100000>;
+			regulator-allow-set-load;*/
+		};
+
+		pm8038_l27: l27 {
+			bias-pull-down;
+			regulator-min-microvolt = <375000>;
+			regulator-max-microvolt = <1050000>;
+		};
+
+		pm8038_lvs1: lvs1 {
+			bias-pull-down;
+		};
+
+		pm8038_lvs2: lvs2 {
+			bias-pull-down;
+		};
+	};
+};
