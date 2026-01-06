@@ -1,0 +1,112 @@
+// SPDX-License-Identifier: GPL-2.0
+#include <dt-bindings/pinctrl/qcom,pmic-gpio.h>
+
+&ssbi {
+	pm8917: pmic@0 {
+		compatible = "qcom,pm8917";
+		#interrupt-cells = <2>;
+		interrupt-controller;
+		#address-cells = <1>;
+		#size-cells = <0>;
+
+		pwrkey@1c {
+			compatible = "qcom,pm8921-pwrkey";
+			reg = <0x1c>;
+			interrupt-parent = <&pm8917>;
+			interrupts = <50 IRQ_TYPE_EDGE_RISING>, <51 IRQ_TYPE_EDGE_RISING>;
+			debounce = <15625>;
+			pull-up;
+		};
+
+		vibrator@4a {
+			compatible = "qcom,pm8921-vib";
+			reg = <0x4a>;
+		};
+
+		pm8917_gpio: gpio@150 {
+			compatible = "qcom,pm8917-gpio", "qcom,ssbi-gpio";
+			reg = <0x150>;
+			interrupt-controller;
+			#interrupt-cells = <2>;
+			gpio-controller;
+			gpio-ranges = <&pm8917_gpio 0 0 38>;
+			#gpio-cells = <2>;
+		};
+
+		rtc@11d {
+			compatible = "qcom,pm8921-rtc";
+			interrupt-parent = <&pm8917>;
+			interrupts = <39 IRQ_TYPE_EDGE_RISING>;
+			reg = <0x11d>;
+			allow-set-time;
+		};
+
+		xoadc: xoadc@197 {
+			compatible = "qcom,pm8917-adc";
+			reg = <197>;
+			interrupts-extended = <&pm8917 78 IRQ_TYPE_EDGE_RISING>;
+			#address-cells = <2>;
+			#size-cells = <0>;
+			#io-channel-cells = <2>;
+
+			vcoin: adc-channel@0 {
+				reg = <0x00 0x00>;
+			};
+			vbat: adc-channel@1 {
+				reg = <0x00 0x01>;
+			};
+			dcin: adc-channel@2 {
+				reg = <0x00 0x02>;
+			};
+			ichg: adc-channel@3 {
+				reg = <0x00 0x03>;
+			};
+			vph_pwr: adc-channel@4 {
+				reg = <0x00 0x04>;
+			};
+			batt_therm: adc-channel@8 {
+				reg = <0x00 0x08>;
+			};
+			batt_id: adc-channel@9 {
+				reg = <0x00 0x09>;
+			};
+			usb_vbus: adc-channel@a {
+				reg = <0x00 0x0a>;
+			};
+			die_temp: adc-channel@b {
+				reg = <0x00 0x0b>;
+			};
+			ref_625mv: adc-channel@c {
+				reg = <0x00 0x0c>;
+			};
+			ref_1250mv: adc-channel@d {
+				reg = <0x00 0x0d>;
+			};
+			chg_temp: adc-channel@e {
+				reg = <0x00 0x0e>;
+			};
+			ref_muxoff: adc-channel@f {
+				reg = <0x00 0x0f>;
+			};
+		};
+	};
+};
+
+/ {
+    /*
+	 * These channels from the ADC are simply hardware monitors.
+	 * That is why the ADC is referred to as "HKADC" - HouseKeeping
+	 * ADC.
+	 */
+	iio-hwmon {
+		compatible = "iio-hwmon";
+		io-channels = <&xoadc 0x00 0x01>, /* Battery */
+			    <&xoadc 0x00 0x02>, /* DC in (charger) */
+			    <&xoadc 0x00 0x04>, /* VPH the main system voltage */
+			    <&xoadc 0x00 0x0b>, /* Die temperature */
+			    <&xoadc 0x00 0x0c>, /* Reference voltage 1.25V */
+			    <&xoadc 0x00 0x0d>, /* Reference voltage 0.625V */
+			    <&xoadc 0x00 0x0e>; /* Charger temperature */
+	};
+};
+
