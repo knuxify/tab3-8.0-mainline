@@ -54,6 +54,7 @@ properties:
               - qcom,kpss-wdt-apq8064
               - qcom,kpss-wdt-ipq8064
               - qcom,kpss-wdt-mdm9615
+              - qcom,kpss-wdt-msm8930
               - qcom,kpss-wdt-msm8960
           - const: qcom,kpss-timer
           - const: qcom,msm-timer
