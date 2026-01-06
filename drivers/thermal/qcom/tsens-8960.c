@@ -33,6 +33,13 @@
 
 #define INT_STATUS_ADDR		0x363c
 
+#define STATUS_CNTL_ADDR 0x3660
+/* STATUS_CNTL_ADDR bitmasks */
+#define MIN_MASK   BIT(0)
+#define LOWER_CLR  BIT(1)
+#define UPPER_CLR  BIT(2)
+#define MAX_MASK   BIT(3)
+
 #define S0_STATUS_OFF		0x3628
 #define S1_STATUS_OFF		0x362c
 #define S2_STATUS_OFF		0x3630
@@ -175,6 +182,27 @@ static void disable_8960(struct tsens_priv *priv)
 	regmap_write(priv->tm_map, CNTL_ADDR, reg_cntl);
 }
 
+static int __init init_8960(struct tsens_priv* priv) {
+	int ret;
+	u32 reg_status_cntl;
+
+	ret = init_common(priv);
+	if (ret)
+		return ret;
+
+	ret = regmap_read(priv->tm_map, STATUS_CNTL_ADDR, &reg_status_cntl);
+	if (ret)
+		return ret;
+
+	reg_status_cntl |= LOWER_CLR | UPPER_CLR | MIN_MASK | MAX_MASK;
+
+	ret = regmap_write(priv->tm_map, STATUS_CNTL_ADDR, reg_status_cntl);
+	if (ret)
+		return ret;
+
+	return 0;
+}
+
 static int calibrate_8960(struct tsens_priv *priv)
 {
 	int i;
@@ -257,7 +285,7 @@ static const struct reg_field tsens_8960_regfields[MAX_REGFIELDS] = {
 };
 
 static const struct tsens_ops ops_8960 = {
-	.init		= init_common,
+	.init		= init_8960,
 	.calibrate	= calibrate_8960,
 	.get_temp	= get_temp_common,
 	.enable		= enable_8960,
