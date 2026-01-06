@@ -1,0 +1,299 @@
+// SPDX-License-Identifier: GPL-2.0-only
+#include <dt-bindings/input/input.h>
+#include <dt-bindings/reset/qcom,gcc-msm8960.h>
+
+#include "qcom-msm8227.dtsi"
+#include <dt-bindings/gpio/gpio.h>
+#include <dt-bindings/pinctrl/qcom,pmic-gpio.h>
+#include <dt-bindings/input/gpio-keys.h>
+
+/ {
+	model = "Nokia Lumia 520";
+	compatible = "nokia,fame", "qcom,msm8227", "qcom,msm8930";
+
+	aliases {
+		serial0 = &gsbi5_serial;
+	};
+
+	chosen {
+		stdout-path = "serial0:115200n8";
+	};
+
+	memory@80000000 {
+		device_type = "memory";
+		reg = <0x80200000 0x8c00000 0x90000000 0x10000000>;
+	};
+
+	reserved-memory {
+		#address-cells = <1>;
+		#size-cells = <1>;
+		ranges;
+		// from lk
+		// TODO: I'm not sure, maybe can be removed
+		boot1@8ff00000 {
+			reg = <0x8ff00000 0x100000>;
+			no-map;
+		};
+
+		appsbl@88f00000 {
+			reg = <0x88f00000 0x100000>;
+			no-map;
+		};
+	};
+
+	gpio-keys {
+        compatible = "gpio-keys";
+
+        pinctrl-names = "default";
+        pinctrl-0 = <&gpio_keys_pin_a>;
+
+        key-camera-focus {
+            label = "camera_focus";
+            gpios = <&pm8038_gpio 11 GPIO_ACTIVE_LOW>;
+            linux,input-type = <1>;
+            linux,code = <KEY_CAMERA_FOCUS>;
+        };
+
+        key-camera-snapshot {
+            label = "camera_snapshot";
+            gpios = <&pm8038_gpio 10 GPIO_ACTIVE_LOW>;
+            linux,input-type = <1>;
+            linux,code = <KEY_CAMERA>;
+        };
+
+        key-volume-down {
+            label = "volume_down";
+            gpios = <&pm8038_gpio 8 GPIO_ACTIVE_LOW>;
+            linux,input-type = <1>;
+            linux,code = <KEY_VOLUMEDOWN>;
+        };
+
+        key-volume-up {
+            label = "volume_up";
+            gpios = <&pm8038_gpio 3 GPIO_ACTIVE_LOW>;
+            linux,input-type = <1>;
+            linux,code = <KEY_VOLUMEUP>;
+		};
+    };
+
+	/*touch_reset {
+		compatible = "regulator-fixed";
+		regulator-name = "touch_reset";
+		gpio = <&msmgpio 52 GPIO_ACTIVE_HIGH>;
+		enable-active-high;
+		regulator-always-on;
+	};*/
+};
+
+/*&gsbi3 {
+	qcom,crci = <GSBI_CRCI_QUP>;
+	qcom,mode = <GSBI_PROT_I2C>;
+	status = "okay";
+};
+
+&gsbi3_i2c {
+	clock-frequency = <400000>;
+	qcom,src-freq = <24000000>;
+
+	status = "okay";
+
+	synaptics@4b {
+		compatible = "syna,rmi4-i2c";
+		reg = <0x4b>;
+
+		interrupts-extended = <&msmgpio 11 IRQ_TYPE_EDGE_FALLING>;
+		vdd-supply = <&pm8038_l9>;
+		vio-supply = <&pm8038_lvs2>;
+
+		pinctrl-names = "default";
+		pinctrl-0 = <&touch_pins>;
+
+		#address-cells = <1>;
+		#size-cells = <0>;
+
+		rmi4-f01@1 {
+			reg = <0x1>;
+			syna,nosleep-mode = <1>;
+		};
+
+		rmi4-f11@11 {
+			reg = <0x11>;
+			syna,sensor-type = <1>;
+		};
+	};
+};*/
+
+&gsbi5 {
+	qcom,mode = <GSBI_PROT_I2C_UART>;
+	status = "okay";
+};
+
+&gsbi5_serial {
+	status = "okay";
+};
+
+&msmgpio {
+	sdcc1_pins_active: sdcc1-pins-active {
+		clk {
+			pins = "sdc1_clk";
+			drive-strengh = <16>;
+			bias-disable;
+		};
+
+		cmd {
+			pins = "sdc1_cmd";
+			drive-strengh = <10>;
+			bias-pull-up;
+		};
+
+		data {
+			pins = "sdc1_data";
+			drive-strengh = <10>;
+			bias-pull-up;
+		};
+	};
+
+	sdcc1_pins_sleep: sdcc1-pins-sleep {
+		clk {
+			pins = "sdc1_clk";
+			drive-strengh = <2>;
+			bias-disable;
+		};
+
+		cmd {
+			pins = "sdc1_cmd";
+			drive-strengh = <2>;
+			bias-pull-up;
+		};
+
+		data {
+			pins = "sdc1_data";
+			drive-strengh = <2>;
+			bias-pull-up;
+		};
+	};
+
+	sdcc3_pins_active: sdcc3-pins-active {
+		clk {
+			pins = "sdc3_clk";
+			drive-strengh = <8>;
+			bias-disable;
+		};
+
+		cmd {
+			pins = "sdc3_cmd";
+			drive-strengh = <8>;
+			bias-pull-up;
+		};
+
+		data {
+			pins = "sdc3_data";
+			drive-strengh = <8>;
+			bias-pull-up;
+		};
+	};
+
+	sdcc3_pins_sleep: sdcc3-pins-sleep {
+		clk {
+			pins = "sdc3_clk";
+			drive-strengh = <2>;
+			bias-disable;
+		};
+
+		cmd {
+			pins = "sdc3_cmd";
+			drive-strengh = <2>;
+			bias-pull-up;
+		};
+
+		data {
+			pins = "sdc3_data";
+			drive-strengh = <2>;
+			bias-pull-up;
+		};
+	};
+
+	/*touch_pins: touch_pins {
+		reset {
+			pins = "gpio52";
+			function = "gpio";
+			drive-strength = <6>;
+			bias-pull-up;
+		};
+
+		irq {
+			pins = "gpio11";
+			function = "gpio";
+			drive-strength = <8>;
+			bias-pull-up;
+		};
+	};*/
+
+	riva_wlan_pin_a: riva-wlan-active {
+		pins = "gpio84", "gpio85", "gpio86", "gpio87", "gpio88";
+		function = "wlan";
+
+		drive-strength = <6>;
+		bias-pull-down;
+	};
+
+	riva_bt_pin_a: riva-bt-active {
+		pins = "gpio28", "gpio29", "gpio83"; // 1 extra ?
+		function = "bt";
+	};
+};
+
+/* eMMC */
+&sdcc1 {
+	vmmc-supply = <&pm8038_l5>;
+	vqmmc-supply = <&pm8038_l11>;
+
+	pinctrl-0 = <&sdcc1_pins_active>;
+	pinctrl-names = "default";
+
+	status = "okay";
+};
+
+/* SD card */
+&sdcc3 {
+	vmmc-supply = <&pm8038_l6>;
+	vqmmc-supply = <&pm8038_l22>;
+
+	non-removable;
+
+	pinctrl-0 = <&sdcc3_pins_active>;
+	pinctrl-1 = <&sdcc3_pins_sleep>;
+	pinctrl-names = "default", "sleep";
+
+	status = "okay";
+};
+
+&usb_hs1_phy {
+	v3p3-supply = <&pm8038_l3>;
+	v1p8-supply = <&pm8038_l4>;
+};
+
+&usb1 {
+	dr_mode = "otg";
+	status = "okay";
+};
+
+&riva {
+	vddcx-supply = <&pm8038_s1>;
+	vddmx-supply = <&pm8038_l24>;
+	vddpx-supply = <&pm8038_l11>;
+
+	pinctrl-0 = <&riva_wlan_pin_a>, <&riva_bt_pin_a>;
+	pinctrl-names = "default";
+
+	status = "okay";
+
+	iris {
+		vddxo-supply = <&pm8038_l4>;
+		vddrfa-supply = <&pm8038_l1>;
+		vddpa-supply = <&pm8038_l10>;
+		vdddig-supply = <&pm8038_l2>;
+		// vddio l11
+	};
+};
+
