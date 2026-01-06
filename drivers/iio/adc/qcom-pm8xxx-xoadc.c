@@ -305,6 +305,29 @@ static const struct xoadc_channel pm8058_xoadc_channels[] = {
 };
 
 /*
+ * Taken from arch/arm/mach-msm/board-8930-pmic.c in the vendor tree
+ * TODO: incomplete, needs testing.
+ */
+static const struct xoadc_channel pm8917_xoadc_channels[] = {
+	XOADC_CHAN(VCOIN, 0x00, 0x00, IIO_VOLTAGE, 1, 3, SCALE_DEFAULT, AMUX_RSV1),
+	XOADC_CHAN(VBAT, 0x00, 0x01, IIO_VOLTAGE, 1, 3, SCALE_DEFAULT, AMUX_RSV1),
+	XOADC_CHAN(DCIN, 0x00, 0x02, IIO_VOLTAGE, 1, 6, SCALE_DEFAULT, AMUX_RSV1),
+	XOADC_CHAN(ICHG, 0x00, 0x03, IIO_VOLTAGE, 1, 1, SCALE_DEFAULT, AMUX_RSV1),
+	XOADC_CHAN(VPH_PWR, 0x00, 0x04, IIO_VOLTAGE, 1, 3, SCALE_DEFAULT, AMUX_RSV1),
+	XOADC_CHAN(IBAT, 0x00, 0x05, IIO_VOLTAGE, 1, 1, SCALE_DEFAULT, AMUX_RSV1),
+	XOADC_CHAN(BATT_THERM, 0x00, 0x08, IIO_TEMP, 1, 1, SCALE_THERM_100K_PULLUP, AMUX_RSV1),
+	XOADC_CHAN(BATT_ID, 0x00, 0x09, IIO_VOLTAGE, 1, 1, SCALE_DEFAULT, AMUX_RSV1),
+	XOADC_CHAN(USB_VBUS, 0x00, 0x0a, IIO_VOLTAGE, 1, 4, SCALE_DEFAULT, AMUX_RSV1),
+	XOADC_CHAN(DIE_TEMP, 0x00, 0x0b, IIO_TEMP, 1, 1, SCALE_PMIC_THERM, AMUX_RSV1),
+	XOADC_CHAN(INTERNAL, 0x00, 0x0c, IIO_VOLTAGE, 1, 1, SCALE_DEFAULT, AMUX_RSV1),
+	XOADC_CHAN(125V, 0x00, 0x0d, IIO_VOLTAGE, 1, 1, SCALE_DEFAULT, AMUX_RSV1),
+	XOADC_CHAN(CHG_TEMP, 0x00, 0x0e, IIO_TEMP, 1, 1, SCALE_DEFAULT, AMUX_RSV1),
+	XOADC_CHAN(MUXOFF, 0x00, 0x0f, IIO_TEMP, 1, 1, SCALE_XOTHERM, AMUX_RSV0),
+	// TODO: thermal at AMUX3, 6, 8 (???)
+	{ }, /* Sentinel */
+};
+
+/*
  * The PM8921 has some pre-muxing on its channels, this comes from the vendor tree
  * include/linux/mfd/pm8xxx/pm8xxx-adc.h
  * board-flo-pmic.c (Nexus 7) and board-8064-pmic.c
@@ -981,6 +1004,12 @@ static const struct xoadc_variant pm8058_variant = {
 	.prescaling = true,
 };
 
+static const struct xoadc_variant pm8917_variant = {
+	.name = "PM8917-XOADC",
+	.channels = pm8917_xoadc_channels,
+	.second_level_mux = true,
+};
+
 static const struct xoadc_variant pm8921_variant = {
 	.name = "PM8921-XOADC",
 	.channels = pm8921_xoadc_channels,
@@ -999,6 +1028,10 @@ static const struct of_device_id pm8xxx_xoadc_id_table[] = {
 	{
 		.compatible = "qcom,pm8058-adc",
 		.data = &pm8058_variant,
+	},
+	{
+		.compatible = "qcom,pm8917-adc",
+		.data = &pm8917_variant,
 	},
 	{
 		.compatible = "qcom,pm8921-adc",
