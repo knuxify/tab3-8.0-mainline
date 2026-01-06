@@ -3707,6 +3707,7 @@ static const struct qcom_cc_desc gcc_apq8064_desc = {
 };
 
 static const struct of_device_id gcc_msm8960_match_table[] = {
+	{ .compatible = "qcom,gcc-msm8930", .data = &gcc_msm8960_desc },
 	{ .compatible = "qcom,gcc-msm8960", .data = &gcc_msm8960_desc },
 	{ .compatible = "qcom,gcc-apq8064", .data = &gcc_apq8064_desc },
 	{ }
