@@ -17,9 +17,11 @@ properties:
   compatible:
     oneOf:
       - enum:
+          - qcom,pm8038
           - qcom,pm8058
           - qcom,pm8821
           - qcom,pm8901
+          - qcom,pm8917
           - qcom,pm8921
       - items:
           - enum:
