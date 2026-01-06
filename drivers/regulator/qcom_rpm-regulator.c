@@ -801,6 +801,45 @@ static const struct rpm_regulator_data rpm_pm8018_regulators[] = {
 	{ }
 };
 
+static const struct rpm_regulator_data rpm_pm8038_regulators[] = {
+	{ "s1",   QCOM_RPM_PM8038_SMPS1,  &pm8921_smps, "vdd_s1" },
+	{ "s2",   QCOM_RPM_PM8038_SMPS2,  &pm8921_smps, "vdd_s2" },
+	{ "s3",   QCOM_RPM_PM8038_SMPS3,  &pm8921_smps, "vdd_s3" },
+	{ "s4",   QCOM_RPM_PM8038_SMPS4,  &pm8921_smps, "vdd_s4" },
+
+	{ "l1",   QCOM_RPM_PM8038_LDO1,   &pm8921_nldo1200, "vdd_l1" },
+	{ "l2",   QCOM_RPM_PM8038_LDO2,   &pm8921_nldo, "vdd_l2_l20" },
+	{ "l3",   QCOM_RPM_PM8038_LDO3,   &pm8921_pldo, "vdd_l3_l9_l15_l17_l22" },
+	{ "l4",   QCOM_RPM_PM8038_LDO4,   &pm8921_pldo, "vdd_l4_l13_l14_l18_l25" },
+	{ "l5",   QCOM_RPM_PM8038_LDO5,   &pm8921_pldo, "vdd_l5_l6" },
+	{ "l6",   QCOM_RPM_PM8038_LDO6,   &pm8921_pldo, "vdd_l5_l6" },
+	{ "l7",   QCOM_RPM_PM8038_LDO7,   &pm8921_pldo, "vdd_l7_l11_l21_l23" },
+	{ "l8",   QCOM_RPM_PM8038_LDO8,   &pm8921_pldo, "vdd_l8" },
+	{ "l9",   QCOM_RPM_PM8038_LDO9,   &pm8921_pldo, "vdd_l3_l9_l15_l17_l22" },
+	{ "l10",  QCOM_RPM_PM8038_LDO10,  &pm8921_pldo, "vdd_l10" },
+	{ "l11",  QCOM_RPM_PM8038_LDO11,  &pm8921_pldo, "vdd_l7_l11_l21_l23" },
+	{ "l12",  QCOM_RPM_PM8038_LDO12,  &pm8921_nldo, "vdd_l12_l24_l26" },
+	{ "l14",  QCOM_RPM_PM8038_LDO14,  &pm8921_pldo, "vdd_l4_l13_l14_l18_l25" },
+	{ "l15",  QCOM_RPM_PM8038_LDO15,  &pm8921_pldo, "vdd_l3_l9_l15_l17_l22" },
+	{ "l16",  QCOM_RPM_PM8038_LDO16,  &pm8921_nldo1200, "vdd_l16_l19" },
+	{ "l17",  QCOM_RPM_PM8038_LDO17,  &pm8921_pldo, "vdd_l3_l9_l15_l17_l22" },
+	{ "l18",  QCOM_RPM_PM8038_LDO18,  &pm8921_pldo, "vdd_l4_l13_l14_l18_l25" },
+	{ "l19",  QCOM_RPM_PM8038_LDO19,  &pm8921_nldo1200, "vdd_l16_l19" },
+	{ "l20",  QCOM_RPM_PM8038_LDO20,  &pm8921_nldo1200, "vdd_l2_l20" },
+	{ "l21",  QCOM_RPM_PM8038_LDO21,  &pm8921_pldo, "vdd_l7_l11_l21_l23" },
+	{ "l22",  QCOM_RPM_PM8038_LDO22,  &pm8921_pldo, "vdd_l3_l9_l15_l17_l22" },
+	{ "l23",  QCOM_RPM_PM8038_LDO23,  &pm8921_pldo, "vdd_l7_l11_l21_l23" },
+	{ "l24",  QCOM_RPM_PM8038_LDO24,  &pm8921_nldo1200, "vdd_l12_l24_l26" },
+	{ "l26",  QCOM_RPM_PM8038_LDO26,  &pm8921_nldo, "vdd_l12_l24_l26" },
+	{ "l27",  QCOM_RPM_PM8038_LDO27,  &pm8921_nldo1200, "vdd_l27" },
+
+	{ "lvs1", QCOM_RPM_PM8038_LVS1, &pm8921_switch, "vin_lvs" },
+	{ "lvs2", QCOM_RPM_PM8038_LVS2, &pm8921_switch, "vin_lvs" },
+
+	{ "usb-switch", QCOM_RPM_USB_OTG_SWITCH, &pm8921_switch, "vin_5vs" },
+	{ }
+};
+
 static const struct rpm_regulator_data rpm_pm8058_regulators[] = {
 	{ "s0",   QCOM_RPM_PM8058_SMPS0,  &pm8058_smps, "vdd_s0" },
 	{ "s1",   QCOM_RPM_PM8058_SMPS1,  &pm8058_smps, "vdd_s1" },
@@ -866,6 +905,59 @@ static const struct rpm_regulator_data rpm_pm8901_regulators[] = {
 	{ }
 };
 
+static const struct rpm_regulator_data rpm_pm8917_regulators[] = {
+	{ "s1",  QCOM_RPM_PM8917_SMPS1, &pm8921_smps, "vdd_s1" },
+	{ "s2",  QCOM_RPM_PM8917_SMPS2, &pm8921_smps, "vdd_s2" },
+	{ "s3",  QCOM_RPM_PM8917_SMPS3, &pm8921_smps },
+	{ "s4",  QCOM_RPM_PM8917_SMPS4, &pm8921_smps, "vdd_s4" },
+	{ "s7",  QCOM_RPM_PM8917_SMPS7, &pm8921_smps, "vdd_s7" },
+	{ "s8",  QCOM_RPM_PM8917_SMPS8, &pm8921_smps, "vdd_s8" },
+
+	{ "l1",  QCOM_RPM_PM8917_LDO1, &pm8921_nldo, "vdd_l1_l2_l12_l18" },
+	{ "l2",  QCOM_RPM_PM8917_LDO2, &pm8921_nldo, "vdd_l1_l2_l12_l18" },
+	{ "l3",  QCOM_RPM_PM8917_LDO3, &pm8921_pldo, "vdd_l3_l15_l17_l32" },
+	{ "l4",  QCOM_RPM_PM8917_LDO4, &pm8921_pldo, "vdd_l4_l14" },
+	{ "l5",  QCOM_RPM_PM8917_LDO5, &pm8921_pldo, "vdd_l5_l8_l9_l11_l16_l33" },
+	{ "l6",  QCOM_RPM_PM8917_LDO6, &pm8921_pldo, "vdd_l6_l7" },
+	{ "l7",  QCOM_RPM_PM8917_LDO7, &pm8921_pldo, "vdd_l6_l7" },
+	{ "l8",  QCOM_RPM_PM8917_LDO8, &pm8921_pldo, "vdd_l5_l8_l9_l11_l16_l33" },
+	{ "l9",  QCOM_RPM_PM8917_LDO9, &pm8921_pldo, "vdd_l5_l8_l9_l11_l16_l33" },
+	{ "l10", QCOM_RPM_PM8917_LDO10, &pm8921_pldo, "vdd_l10_l22_l30_l31_l36" },
+	{ "l11", QCOM_RPM_PM8917_LDO11, &pm8921_pldo, "vdd_l5_l8_l9_l11_l16_l33" },
+	{ "l12", QCOM_RPM_PM8917_LDO12, &pm8921_nldo, "vdd_l1_l2_l12_l18" },
+	{ "l14", QCOM_RPM_PM8917_LDO14, &pm8921_pldo, "vdd_l4_l14" },
+	{ "l15", QCOM_RPM_PM8917_LDO15, &pm8921_pldo, "vdd_l3_l15_l17_l32" },
+	{ "l16", QCOM_RPM_PM8917_LDO16, &pm8921_pldo, "vdd_l5_l8_l9_l11_l16_l33" },
+	{ "l17", QCOM_RPM_PM8917_LDO17, &pm8921_pldo, "vdd_l3_l15_l17_l32" },
+	{ "l18", QCOM_RPM_PM8917_LDO18, &pm8921_nldo, "vdd_l1_l2_l12_l18" },
+	{ "l21", QCOM_RPM_PM8917_LDO21, &pm8921_pldo, "vdd_l21_l23_l29" },
+	{ "l22", QCOM_RPM_PM8917_LDO22, &pm8921_pldo, "vdd_l10_l22_l30_l31_l36" },
+	{ "l23", QCOM_RPM_PM8917_LDO23, &pm8921_pldo, "vdd_l21_l23_l29" },
+	{ "l24", QCOM_RPM_PM8917_LDO24, &pm8921_nldo1200, "vdd_l24_l25" },
+	{ "l25", QCOM_RPM_PM8917_LDO25, &pm8921_nldo1200, "vdd_l24_l25" },
+	{ "l26", QCOM_RPM_PM8917_LDO26, &pm8921_nldo1200, "vdd_l26_l27_l28" },
+	{ "l27", QCOM_RPM_PM8917_LDO27, &pm8921_nldo1200, "vdd_l26_l27_l28" },
+	{ "l28", QCOM_RPM_PM8917_LDO28, &pm8921_nldo1200, "vdd_l26_l27_l28" },
+	{ "l29", QCOM_RPM_PM8917_LDO29, &pm8921_pldo, "vdd_l21_l23_l29" },
+	{ "l30", QCOM_RPM_PM8917_LDO30, &pm8921_pldo, "vdd_l10_l22_l30_l31_l36" },
+	{ "l31", QCOM_RPM_PM8917_LDO31, &pm8921_pldo, "vdd_l10_l22_l30_l31_l36" },
+	{ "l32", QCOM_RPM_PM8917_LDO32, &pm8921_pldo, "vdd_l3_l15_l17_l32" },
+	{ "l33", QCOM_RPM_PM8917_LDO33, &pm8921_pldo, "vdd_l5_l8_l9_l11_l16_l33" },
+	{ "l34", QCOM_RPM_PM8917_LDO34, &pm8921_pldo, "vdd_l34_l35" },
+	{ "l35", QCOM_RPM_PM8917_LDO35, &pm8921_pldo, "vdd_l34_l35" },
+	{ "l36", QCOM_RPM_PM8917_LDO36, &pm8921_pldo, "vdd_l10_l22_l30_l31_l36" },
+
+	{ "lvs1", QCOM_RPM_PM8917_LVS1, &pm8921_switch, "vin_lvs1_3_4_5_6_7" },
+	{ "lvs3", QCOM_RPM_PM8917_LVS3, &pm8921_switch, "vin_lvs1_3_4_5_6_7" },
+	{ "lvs4", QCOM_RPM_PM8917_LVS4, &pm8921_switch, "vin_lvs1_3_4_5_6_7" },
+	{ "lvs5", QCOM_RPM_PM8917_LVS5, &pm8921_switch, "vin_lvs1_3_4_5_6_7" },
+	{ "lvs6", QCOM_RPM_PM8917_LVS6, &pm8921_switch, "vin_lvs1_3_4_5_6_7" },
+	{ "lvs7", QCOM_RPM_PM8917_LVS7, &pm8921_switch, "vin_lvs1_3_4_5_6_7" },
+
+	{ "usb-switch", QCOM_RPM_USB_OTG_SWITCH, &pm8921_switch, "vin_5vs" },
+	{ }
+};
+
 static const struct rpm_regulator_data rpm_pm8921_regulators[] = {
 	{ "s1",  QCOM_RPM_PM8921_SMPS1, &pm8921_smps, "vdd_s1" },
 	{ "s2",  QCOM_RPM_PM8921_SMPS2, &pm8921_smps, "vdd_s2" },
@@ -924,10 +1016,11 @@ static const struct rpm_regulator_data rpm_smb208_regulators[] = {
 };
 
 static const struct of_device_id rpm_of_match[] = {
-	{ .compatible = "qcom,rpm-pm8018-regulators",
-		.data = &rpm_pm8018_regulators },
+	{ .compatible = "qcom,rpm-pm8018-regulators", .data = &rpm_pm8018_regulators },
+	{ .compatible = "qcom,rpm-pm8038-regulators", .data = &rpm_pm8038_regulators },
 	{ .compatible = "qcom,rpm-pm8058-regulators", .data = &rpm_pm8058_regulators },
 	{ .compatible = "qcom,rpm-pm8901-regulators", .data = &rpm_pm8901_regulators },
+	{ .compatible = "qcom,rpm-pm8917-regulators", .data = &rpm_pm8917_regulators },
 	{ .compatible = "qcom,rpm-pm8921-regulators", .data = &rpm_pm8921_regulators },
 	{ .compatible = "qcom,rpm-smb208-regulators", .data = &rpm_smb208_regulators },
 	{ }
