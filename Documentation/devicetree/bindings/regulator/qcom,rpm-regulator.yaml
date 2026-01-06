@@ -16,12 +16,19 @@ description:
   Each sub-node is identified using the node's name, with valid values listed
   for each of the pmics below.
 
+  For pm8038 s1, s2, s3, s4, l1, l2, l3, l4, l5, l6, l7, l8, l9, l10, l11, l12, l14,
+  l15, l16, l17, l18, l19, l20, l21, l22, l23, l24, l26, l27, lvs1, lvs2, usb-switch
+
   For pm8058 l0, l1, l2, l3, l4, l5, l6, l7, l8, l9, l10, l11, l12, l13, l14, l15,
   l16, l17, l18, l19, l20, l21, l22, l23, l24, l25, s0, s1, s2, s3, s4,
   lvs0, lvs1, ncp
 
   For pm8901 l0, l1, l2, l3, l4, l5, l6, s0, s1, s2, s3, s4, lvs0, lvs1, lvs2, lvs3,
   mvs
+
+  For pm8917 s1, s2, s3, s4, s7, s8, l1, l2, l3, l4, l5, l6, l7, l8, l9, l10, l11,
+  l12, l14, l15, l16, l17, l18, l21, l22, l23, l24, l25, l26, l27, l28, l29, l30,
+  l31, l32, l33, l34, l35, l36, lvs1, lvs2, lvs3, lvs4, lvs5, lvs6, lvs7, usb-switch
 
   For pm8921 s1, s2, s3, s4, s7, s8, l1, l2, l3, l4, l5, l6, l7, l8, l9, l10, l11,
   l12, l14, l15, l16, l17, l18, l21, l22, l23, l24, l25, l26, l27, l28,
@@ -39,8 +46,10 @@ maintainers:
 properties:
   compatible:
     enum:
+      - qcom,rpm-pm8038-regulators
       - qcom,rpm-pm8058-regulators
       - qcom,rpm-pm8901-regulators
+      - qcom,rpm-pm8917-regulators
       - qcom,rpm-pm8921-regulators
       - qcom,rpm-pm8018-regulators
       - qcom,rpm-smb208-regulators
