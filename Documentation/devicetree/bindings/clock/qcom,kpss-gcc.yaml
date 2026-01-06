@@ -22,6 +22,7 @@ properties:
           - qcom,kpss-gcc-apq8064
           - qcom,kpss-gcc-msm8974
           - qcom,kpss-gcc-msm8960
+          - qcom,kpss-gcc-msm8930
           - qcom,kpss-gcc-msm8660
           - qcom,kpss-gcc-mdm9615
       - const: qcom,kpss-gcc
