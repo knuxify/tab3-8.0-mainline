@@ -3148,6 +3148,7 @@ static const struct qcom_cc_desc mmcc_apq8064_desc = {
 };
 
 static const struct of_device_id mmcc_msm8960_match_table[] = {
+	{ .compatible = "qcom,mmcc-msm8930", .data = &mmcc_msm8960_desc },
 	{ .compatible = "qcom,mmcc-msm8960", .data = &mmcc_msm8960_desc },
 	{ .compatible = "qcom,mmcc-apq8064", .data = &mmcc_apq8064_desc },
 	{ }
