@@ -21,6 +21,7 @@ properties:
       - qcom,mmcc-apq8084
       - qcom,mmcc-msm8226
       - qcom,mmcc-msm8660
+      - qcom,mmcc-msm8930
       - qcom,mmcc-msm8960
       - qcom,mmcc-msm8974
       - qcom,mmcc-msm8992
