@@ -296,6 +296,15 @@
 	};
 };
 
+&pm8038_wled {
+	qcom,current-boost-limit = <525>;
+	qcom,cs-out;
+	qcom,ext-gen;
+	qcom,num-strings = <1>;
+	qcom,ovp = <35>;
+
+	status = "okay";
+};
 
 /* eMMC */
 &sdcc1 {
