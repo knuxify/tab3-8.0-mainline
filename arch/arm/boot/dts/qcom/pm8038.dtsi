@@ -102,6 +102,14 @@
 				reg = <0x00 0x0f>;
 			};
 		};
+
+		pm8038_wled: wled@25a {
+			compatible = "qcom,pm8038-wled";
+			reg = <0x25a>;
+			label = "backlight";
+
+			status = "disabled";
+		};
 	};
 };
 
