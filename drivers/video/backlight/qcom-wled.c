@@ -24,6 +24,33 @@
 #define WLED5_SINK_REG_BRIGHT_MAX_12B			0xFFF
 #define WLED5_SINK_REG_BRIGHT_MAX_15B			0x7FFF
 
+/* WLED2 control registers */
+#define WLED2_CTRL_REG_MOD				0x00
+#define  WLED2_CTRL_REG_MOD_EN_MASK			BIT(0)
+#define  WLED2_CTRL_REG_MOD_EN_SHIFT			0
+#define  WLED2_CTRL_REG_MOD_CS_OUT_MASK			GENMASK(3, 1)
+#define  WLED2_CTRL_REG_MOD_DIG_GEN_MASK		GENMASK(6, 4)
+
+#define WLED2_CTRL_REG_ILIMIT(n)			(n + 1)
+
+#define WLED2_CTRL_REG_BRIGHT(n)			((2*n) + 4)
+
+#define WLED2_CTRL_REG_SYNC				0x0a
+#define  WLED2_CTRL_REG_SYNC_CLEAR			0x00
+#define  WLED2_CTRL_REG_SYNC_CABC_MASK			GENMASK(5, 3)
+#define  WLED2_CTRL_REG_SYNC_CABC_SHIFT			3
+
+#define WLED2_CTRL_REG_OVP				0x0c
+#define  WLED2_CTRL_REG_OVP_MASK			GENMASK(5, 4)
+
+#define WLED2_CTRL_REG_BOOST				0x0d
+#define  WLED2_CTRL_REG_BOOST_FEEDBACK_MASK		GENMASK(4, 2)
+#define  WLED2_CTRL_REG_BOOST_LIMIT_MASK		GENMASK(7, 5)
+
+#define WLED2_CTRL_REG_RESISTOR_COMP			0x0e
+
+#define WLED2_CTRL_REG_HIGH_POLE_CAP			0x0f
+
 /* WLED3/WLED4 control registers */
 #define WLED3_CTRL_REG_FAULT_STATUS			0x08
 #define  WLED3_CTRL_REG_ILIM_FAULT_BIT			BIT(0)
@@ -203,7 +230,7 @@ struct wled {
 	struct wled_config cfg;
 	struct delayed_work ovp_work;
 
-	/* Configures the brightness. Applicable for wled3, wled4 and wled5 */
+	/* Configures the brightness. Applicable for wled2, wled3, wled4 and wled5 */
 	int (*wled_set_brightness)(struct wled *wled, u16 brightness);
 
 	/* Configures the cabc register. Applicable for wled4 and wled5 */
@@ -211,7 +238,7 @@ struct wled {
 
 	/*
 	 * Toggles the sync bit for the brightness update to take place.
-	 * Applicable for WLED3, WLED4 and WLED5.
+	 * Applicable for WLED2, WLED3, WLED4 and WLED5.
 	 */
 	int (*wled_sync_toggle)(struct wled *wled);
 
@@ -227,6 +254,24 @@ struct wled {
 	 */
 	bool (*wled_auto_detection_required)(struct wled *wled);
 };
+
+static int wled2_set_brightness(struct wled *wled, u16 brightness)
+{
+	int rc, i;
+	__be16 v;
+
+	v = cpu_to_be16((brightness & WLED3_SINK_REG_BRIGHT_MAX) | 0x7000);
+
+	for (i = 0; i < wled->cfg.num_strings; ++i) {
+		rc = regmap_bulk_write(wled->regmap, wled->ctrl_addr +
+				       WLED2_CTRL_REG_BRIGHT(wled->cfg.enabled_strings[i]),
+				       &v, sizeof(v));
+		if (rc < 0)
+			return rc;
+	}
+
+	return 0;
+}
 
 static int wled3_set_brightness(struct wled *wled, u16 brightness)
 {
@@ -304,10 +349,17 @@ static int wled_module_enable(struct wled *wled, int val)
 	if (wled->disabled_by_short)
 		return -ENXIO;
 
-	rc = regmap_update_bits(wled->regmap, wled->ctrl_addr +
-				WLED3_CTRL_REG_MOD_EN,
-				WLED3_CTRL_REG_MOD_EN_MASK,
-				val << WLED3_CTRL_REG_MOD_EN_SHIFT);
+	if (wled->version == 2)
+		rc = regmap_update_bits(wled->regmap, wled->ctrl_addr +
+					WLED2_CTRL_REG_MOD,
+					WLED2_CTRL_REG_MOD_EN_MASK,
+					val << WLED2_CTRL_REG_MOD_EN_SHIFT);
+	else
+		rc = regmap_update_bits(wled->regmap, wled->ctrl_addr +
+					WLED3_CTRL_REG_MOD_EN,
+					WLED3_CTRL_REG_MOD_EN_MASK,
+					val << WLED3_CTRL_REG_MOD_EN_SHIFT);
+
 	if (rc < 0)
 		return rc;
 
@@ -327,6 +379,24 @@ static int wled_module_enable(struct wled *wled, int val)
 	}
 
 	return 0;
+}
+
+static int wled2_sync_toggle(struct wled *wled)
+{
+	int rc;
+	unsigned int mask = GENMASK(wled->max_string_count - 1, 0);
+
+	rc = regmap_update_bits(wled->regmap,
+				wled->ctrl_addr + WLED2_CTRL_REG_SYNC,
+				mask, mask);
+	if (rc < 0)
+		return rc;
+
+	rc = regmap_update_bits(wled->regmap,
+				wled->ctrl_addr + WLED2_CTRL_REG_SYNC,
+				mask, WLED2_CTRL_REG_SYNC_CLEAR);
+
+	return rc;
 }
 
 static int wled3_sync_toggle(struct wled *wled)
@@ -870,6 +940,88 @@ static irqreturn_t wled_ovp_irq_handler(int irq, void *_wled)
 	return IRQ_HANDLED;
 }
 
+static int wled2_setup(struct wled *wled)
+{
+	u16 addr;
+	u8 cabc = 0, mod_val = 0;
+	int rc, i, j;
+
+	rc = regmap_update_bits(wled->regmap,
+				wled->ctrl_addr + WLED2_CTRL_REG_OVP,
+				WLED2_CTRL_REG_OVP_MASK, wled->cfg.ovp << 4);
+	if (rc)
+		return rc;
+
+	rc = regmap_update_bits(wled->regmap,
+				wled->ctrl_addr + WLED2_CTRL_REG_BOOST,
+				WLED2_CTRL_REG_BOOST_LIMIT_MASK,
+				wled->cfg.boost_i_limit << 5);
+	if (rc)
+		return rc;
+
+	rc = regmap_set_bits(wled->regmap,
+			     wled->ctrl_addr + WLED2_CTRL_REG_BOOST,
+			     WLED2_CTRL_REG_BOOST_FEEDBACK_MASK);
+	if (rc)
+		return rc;
+
+	if (wled->cfg.cs_out_en)
+		mod_val |= WLED2_CTRL_REG_MOD_CS_OUT_MASK;
+
+	if (wled->cfg.ext_gen)
+		mod_val |= WLED2_CTRL_REG_MOD_DIG_GEN_MASK;
+
+	mod_val |= WLED2_CTRL_REG_MOD_EN_MASK;
+
+	rc = regmap_update_bits(wled->regmap,
+				wled->ctrl_addr + WLED2_CTRL_REG_MOD,
+				WLED2_CTRL_REG_MOD_CS_OUT_MASK |
+				WLED2_CTRL_REG_MOD_DIG_GEN_MASK |
+				WLED2_CTRL_REG_MOD_EN_MASK,
+				mod_val);
+	if (rc)
+		return rc;
+
+	for (i = 0; i < wled->cfg.num_strings; ++i) {
+		j = wled->cfg.enabled_strings[i];
+
+		addr = wled->ctrl_addr + WLED2_CTRL_REG_ILIMIT(j);
+		rc = regmap_update_bits(wled->regmap, addr,
+					WLED3_SINK_REG_STR_FULL_SCALE_CURR_MASK,
+					wled->cfg.string_i_limit);
+		if (rc)
+			return rc;
+
+		if (wled->cfg.cabc)
+			cabc |= BIT(j + WLED2_CTRL_REG_SYNC_CABC_SHIFT);
+	}
+
+	rc = regmap_update_bits(wled->regmap,
+				wled->ctrl_addr + WLED2_CTRL_REG_SYNC,
+				WLED2_CTRL_REG_SYNC_CABC_MASK,
+				cabc);
+	if (rc)
+		return rc;
+
+	rc = regmap_set_bits(wled->regmap,
+			     wled->ctrl_addr + WLED2_CTRL_REG_RESISTOR_COMP,
+			     0x3F);
+	if (rc)
+		return rc;
+
+	return 0;
+}
+
+static const struct wled_config wled2_config_defaults = {
+	.boost_i_limit = 3,
+	.string_i_limit = 20,
+	.ovp = 2,
+	.num_strings = 3,
+	.cs_out_en = false,
+	.cabc = false,
+	.enabled_strings = {0, 1, 2},
+};
+
 static int wled3_setup(struct wled *wled)
 {
 	u16 addr;
@@ -1311,6 +1463,25 @@ static int wled_configure(struct wled *wled)
 	int rc, i, j, string_len;
 
 	const struct wled_u32_opts *u32_opts = NULL;
+
+	const struct wled_u32_opts wled2_opts[] = {
+		{
+			.name = "qcom,current-boost-limit",
+			.val_ptr = &cfg->boost_i_limit,
+			.cfg = &wled3_boost_i_limit_cfg,
+		},
+		{
+			.name = "qcom,current-limit",
+			.val_ptr = &cfg->string_i_limit,
+			.cfg = &wled3_string_i_limit_cfg,
+		},
+		{
+			.name = "qcom,ovp",
+			.val_ptr = &cfg->ovp,
+			.cfg = &wled3_ovp_cfg,
+		},
+	};
+
 	const struct wled_u32_opts wled3_opts[] = {
 		{
 			.name = "qcom,current-boost-limit",
@@ -1412,6 +1583,16 @@ static int wled_configure(struct wled *wled)
 			return -ENOMEM;
 	}
 	switch (wled->version) {
+	case 2:
+		u32_opts = wled2_opts;
+		size = ARRAY_SIZE(wled2_opts);
+		*cfg = wled2_config_defaults;
+		wled->wled_set_brightness = wled2_set_brightness;
+		wled->wled_sync_toggle = wled2_sync_toggle;
+		wled->max_string_count = 3;
+		wled->sink_addr = wled->ctrl_addr;
+		break;
+
 	case 3:
 		u32_opts = wled3_opts;
 		size = ARRAY_SIZE(wled3_opts);
@@ -1661,6 +1842,15 @@ static int wled_probe(struct platform_device *pdev)
 	wled->max_brightness = val;
 
 	switch (wled->version) {
+	case 2:
+		wled->cfg.auto_detection_enabled = false;
+		rc = wled2_setup(wled);
+		if (rc) {
+			dev_err(&pdev->dev, "wled2_setup failed\n");
+			return rc;
+		}
+		break;
+
 	case 3:
 		wled->cfg.auto_detection_enabled = false;
 		rc = wled3_setup(wled);
@@ -1702,9 +1892,11 @@ static int wled_probe(struct platform_device *pdev)
 	if (rc < 0)
 		return rc;
 
-	rc = wled_configure_ovp_irq(wled, pdev);
-	if (rc < 0)
-		return rc;
+	if (wled->version > 2) {
+		rc = wled_configure_ovp_irq(wled, pdev);
+		if (rc < 0)
+			return rc;
+	}
 
 	val = WLED_DEFAULT_BRIGHTNESS;
 	of_property_read_u32(pdev->dev.of_node, "default-brightness", &val);
@@ -1730,6 +1922,7 @@ static void wled_remove(struct platform_device *pdev)
 }
 
 static const struct of_device_id wled_match_table[] = {
+	{ .compatible = "qcom,pm8038-wled", .data = (void *)2 },
 	{ .compatible = "qcom,pm8941-wled", .data = (void *)3 },
 	{ .compatible = "qcom,pmi8950-wled", .data = (void *)4 },
 	{ .compatible = "qcom,pmi8994-wled", .data = (void *)4 },
