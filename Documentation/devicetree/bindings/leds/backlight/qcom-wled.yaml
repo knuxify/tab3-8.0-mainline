@@ -18,6 +18,7 @@ description: |
 properties:
   compatible:
     enum:
+      - qcom,pm8038-wled
       - qcom,pm8941-wled
       - qcom,pmi8950-wled
       - qcom,pmi8994-wled
@@ -43,7 +44,7 @@ properties:
   qcom,cs-out:
     description: |
       enable current sink output.
-      This property is supported only for WLED3.
+      This property is supported only for WLED2 and WLED3.
     type: boolean
 
   qcom,cabc:
@@ -54,13 +55,13 @@ properties:
   qcom,ext-gen:
     description: |
       use externally generated modulator signal to dim.
-      This property is supported only for WLED3.
+      This property is supported only for WLED2 and WLED3.
     type: boolean
 
   qcom,current-limit:
     description: |
       mA; per-string current limit.
-      This property is supported only for WLED3.
+      This property is supported only for WLED2 and WLED3.
     $ref: /schemas/types.yaml#/definitions/uint32
     default: 20
     minimum: 0
@@ -89,7 +90,7 @@ properties:
   qcom,ovp:
     description: |
       V; Over-voltage protection limit.
-      This property is supported only for WLED3.
+      This property is supported only for WLED2 and WLED3.
     $ref: /schemas/types.yaml#/definitions/uint32
     enum: [ 27, 29, 32, 35 ]
     default: 29
@@ -126,17 +127,17 @@ properties:
   qcom,auto-string-detection:
     description: |
       Enables auto-detection of the WLED string configuration.
-      This feature is not supported for WLED3.
+      This feature is not supported for WLED2 and WLED3.
     type: boolean
 
   interrupts:
-    minItems: 1
+    minItems: 2
     items:
       - description: over voltage protection interrupt.
       - description: short circuit interrupt.
 
   interrupt-names:
-    minItems: 1
+    minItems: 2
     items:
       - const: ovp
       - const: short
@@ -169,7 +170,9 @@ allOf:
       properties:
         compatible:
           contains:
-            const: qcom,pm8941-wled
+            enum:
+              - qcom,pm8038-wled
+              - qcom,pm8941-wled
 
     then:
       properties:
@@ -186,12 +189,6 @@ allOf:
         qcom,num-strings:
           enum: [ 1, 2, 3 ]
 
-        interrupts:
-          maxItems: 1
-
-        interrupt-names:
-          maxItems: 1
-
     else:
       properties:
         reg:
@@ -207,11 +204,31 @@ allOf:
         qcom,num-strings:
           enum: [ 1, 2, 3, 4 ]
 
+  - if:
+      properties:
+        compatible:
+          const: qcom,pm8038-led
+
+    then:
+      properties:
+        interrupts: false
+        interrupt-names: false
+
+  - if:
+      properties:
+        compatible:
+          const: qcom,pm8941-wled
+
+    then:
+      properties:
         interrupts:
-          minItems: 2
+          minItems: 1
+          maxItems: 1
 
         interrupt-names:
-          minItems: 2
+          minItems: 1
+          maxItems: 1
+
   - if:
       properties:
         compatible:
