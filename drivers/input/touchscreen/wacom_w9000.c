@@ -460,9 +460,16 @@ static const struct wacom_w9000_variant w9007a_v1 = {
 	.name = "Wacom W9007 V1 Digitizer",
 };
 
+static const struct wacom_w9000_variant w9002_kona = {
+	.cmd_query_num  = 9,
+	.msg_coord_num  = 7,
+	.name = "Wacom W9002 KONA Digitizer",
+};
+
 static const struct of_device_id wacom_w9000_of_match[] = {
 	{ .compatible = "wacom,w9007a-lt03", .data = &w9007a_lt03, },
 	{ .compatible = "wacom,w9007a-v1", .data = &w9007a_v1, },
+	{ .compatible = "wacom,w9002-kona", .data = &w9002_kona, },
 	{ }
 };
 MODULE_DEVICE_TABLE(of, wacom_w9000_of_match);
@@ -470,6 +477,7 @@ MODULE_DEVICE_TABLE(of, wacom_w9000_of_match);
 static const struct i2c_device_id wacom_w9000_id[] = {
 	{ .name = "w9007a-lt03", .driver_data = (kernel_ulong_t)&w9007a_lt03 },
 	{ .name = "w9007a-v1", .driver_data = (kernel_ulong_t)&w9007a_v1 },
+	{ .name = "w9002-kona", .driver_data = (kernel_ulong_t)&w9002_kona },
 	{ }
 };
 MODULE_DEVICE_TABLE(i2c, wacom_w9000_id);
