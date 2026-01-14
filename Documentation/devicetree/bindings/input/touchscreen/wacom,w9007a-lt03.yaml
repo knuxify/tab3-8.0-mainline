@@ -23,6 +23,7 @@ properties:
     enum:
       - wacom,w9007a-lt03
       - wacom,w9007a-v1
+      - wacom,w9002-kona
 
   reg:
     maxItems: 1
