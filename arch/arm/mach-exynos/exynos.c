@@ -12,6 +12,7 @@
 #include <linux/of_fdt.h>
 #include <linux/platform_device.h>
 #include <linux/irqchip.h>
+#include <linux/memblock.h>
 #include <linux/soc/samsung/exynos-regs-pmu.h>
 
 #include <asm/cacheflush.h>
@@ -165,8 +166,29 @@ static void __init exynos_init_irq(void)
 	exynos_map_pmu();
 }
 
+#define TAB3_PAGE_HOLE_REGION_START	0x80000000
+#define TAB3_PAGE_HOLE_REGION_SIZE	(1 * 1024 * 1024 * 1024)
+#define TAB3_PAGE_HOLE_SIZE		0x1000
+
 static void __init exynos_dt_machine_init(void)
 {
+	/*
+	 * Due to a hardware quirk involving memory interleaving and mismatched
+	 * RAM chip sizes, the upper 512Mb of the RAM in the Samsung Galaxy Tab 3 8.0
+	 * is exposed as a 1GiB region where every second RAM page (4K) is skipped.
+	 *
+	 * We reserve the upper 1GiB region in DT, then unreserve the working pages here.
+	 */
+
+	if (of_machine_is_compatible("samsung,tab3")) {
+		for (phys_addr_t addr = TAB3_PAGE_HOLE_REGION_START;
+		     addr < TAB3_PAGE_HOLE_REGION_START + TAB3_PAGE_HOLE_REGION_SIZE;
+		     addr += 2 * TAB3_PAGE_HOLE_SIZE)
+		{
+			free_reserved_page(pfn_to_page(addr >> PAGE_SHIFT));
+		}
+	}
+
 	/*
 	 * This is called from smp_prepare_cpus if we've built for SMP, but
 	 * we still need to set it up for PM and firmware ops if not.
