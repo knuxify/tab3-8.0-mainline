@@ -44,6 +44,14 @@ config BCM_KONA_TIMER
 	help
 	  Enables the support for the BCM Kona mobile timer driver.
 
+config BCM215XX_GPT
+	bool "BCM215XX General Purpose Timer (GPTIMER) driver" if COMPILE_TEST
+	default y if ARCH_BCM215XX
+	select TIMER_OF
+	select CLKSRC_MMIO
+	help
+	  Enables the support for the BCM215xx timer driver.
+
 config DAVINCI_TIMER
 	bool "Texas Instruments DaVinci timer driver" if COMPILE_TEST
 	help
