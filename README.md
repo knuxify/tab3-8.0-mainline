@@ -21,7 +21,6 @@ Patches as they are submitted to the mailing list; contain the most up-to-date a
 
 * `b4/max77693-charger-extcon`: MAX77693 charger extcon + OTG support patches. https://lists.sr.ht/~postmarketos/upstreaming/patches/53020
 * `b4/exynos-phy-extcon`: patch for extcon-based USB mode switch toggling, not sent yet and likely won't be pending a better way to do this
-* `b4/max17042-soc-threshold-fix`: Fix SOC threshold calculation on MAX17042. Yet to be sent.
 
 ## dizi/*
 
@@ -55,4 +54,10 @@ Branches containing work-in-progress code for Broadcom Kona support. Stable bran
 - `baffinlite/bcm59054-ponkey`: Named PONKEY after the power-on key driver, but actually has a whole bunch of BCM59054 device drivers.
 - `baffinlite/cs02-mmc-experiments`: Random patches from when I was trying to figure out MMC issues on the BCM21664.
 - `baffinlite/6.10`: Old in-dev tree for Grand Neo, might be removed soon
+
+## totoro/*
+
+BCM215xx and Samsung Galaxy Y (GT-S5360) support patches. Mostly done as a bit of a learning exercise to learn the ins and outs of ARM SoCs, as it's a very simple platform that also uses nearly no standard parts (so I get to write all the drivers myself :D).
+
+* `totoro/7.0` - current main work branch.
 
