@@ -147,6 +147,14 @@ config ARCH_BCM_MOBILE_SMP
 
 comment "Other Architectures"
 
+config ARCH_BCM215XX
+	bool "Broadcom BCM215xx SoC series support"
+	depends on ARCH_MULTI_V6
+	select ARM_ERRATA_411920
+	select CACHE_L2X0
+	help
+	  This enables support for the BCM215xx series of SoCs.
+
 config ARCH_BCM2835
 	bool "Broadcom BCM2835 family"
 	depends on ARCH_MULTI_V6 || ARCH_MULTI_V7

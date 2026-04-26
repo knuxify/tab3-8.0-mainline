@@ -270,6 +270,11 @@ choice
 		  mobile SoCs in the Kona family of chips (e.g. bcm28155,
 		  bcm11351, etc...)
 
+	config DEBUG_BCM215XX_UARTA
+		bool "Kernel low-level debugging on BCM215XX UART A"
+		depends on ARCH_BCM215XX
+		select DEBUG_UART_8250
+
 	config DEBUG_BCM63XX_UART
 		bool "Kernel low-level debugging on BCM63XX UART"
 		depends on ARCH_BCMBCA
@@ -1554,6 +1559,7 @@ config DEBUG_UART_PHYS
 	default 0x02531000 if DEBUG_KEYSTONE_UART1
 	default 0x03010fe0 if ARCH_RPC
 	default 0x07000000 if DEBUG_SUN9I_UART0
+	default 0x08820000 if DEBUG_BCM215XX_UARTA
 	default 0x09530000 if DEBUG_STIH418_SBC_ASC0
 	default 0x10009000 if DEBUG_REALVIEW_STD_PORT || \
 				DEBUG_VEXPRESS_UART0_CA9
@@ -1712,6 +1718,7 @@ config DEBUG_UART_VIRT
 	default 0xf8007000 if DEBUG_HIP04_UART
 	default 0xf8009000 if DEBUG_VEXPRESS_UART0_CA9
 	default 0xf8090000 if DEBUG_VEXPRESS_UART0_RS1
+	default 0xf8820000 if DEBUG_BCM215XX_UARTA
 	default 0xf8ffee00 if DEBUG_AT91_SAM9263_DBGU
 	default 0xf8fff200 if DEBUG_AT91_RM9200_DBGU
 	default 0xf9530000 if DEBUG_STIH418_SBC_ASC0
