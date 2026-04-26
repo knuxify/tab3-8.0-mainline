@@ -130,3 +130,5 @@ dtb-$(CONFIG_ARCH_BCM_NSP) += \
 	bcm958625k.dtb
 dtb-$(CONFIG_ARCH_BRCMSTB) += \
 	bcm7445-bcm97445svmb.dtb
+dtb-$(CONFIG_ARCH_BCM215XX) += \
+	bcm21553-samsung-totoro.dtb

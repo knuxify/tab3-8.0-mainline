@@ -1,0 +1,56 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+
+/dts-v1/;
+
+#include "bcm215xx.dtsi"
+
+/ {
+	model = "Samsung Galaxy Y";
+	compatible = "samsung,totoro", "brcm,bcm21553", "brcm,bcm215xx";
+
+	chosen {
+		stdout-path = &uart_a;
+	};
+
+	memory@81600000 {
+		device_type = "memory";
+		reg = <0x81600000 0x16a00000>; /* 362 MB */
+	};
+
+	reserved-memory {
+		#address-cells = <1>;
+		#size-cells = <1>;
+		ranges;
+
+		/* TODO this causes a kernel freeze when ATAGS are enabled.
+		   and does not seem to be the actual fb address? */
+		/*simplefb: framebuffer@91500000 {
+			reg = <0x91500000 (240 * 320 * 8)>;  // 0x96000
+			no-map;
+		};*/
+	};
+
+	/*
+	simple-framebuffer {
+		compatible = "simple-framebuffer";
+		reg = <0x91500000 (240 * 320 * 8)>;  // 0x96000
+		width = <240>;
+		height = <320>;
+		stride = <(240 * 8)>;
+		format = "a8r8g8b8";
+		memory-region = <&simplefb>;
+	};
+	*/
+};
+
+&uart_a {
+	status = "okay";
+};
+
+/*&uart_b {
+	status = "okay";
+};
+
+&uart_c {
+	status = "okay";
+};*/
