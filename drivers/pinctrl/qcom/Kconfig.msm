@@ -397,6 +397,14 @@ config PINCTRL_MILOS
 	  Qualcomm Technologies Inc TLMM block found on the Qualcomm
 	  Technologies Inc Milos platform.
 
+config PINCTRL_NETRANI
+	tristate "Qualcomm Technologies Inc Netrani pin controller driver"
+	depends on ARM64 || COMPILE_TEST
+	help
+	  This is the pinctrl, pinmux, pinconf and gpiolib driver for the
+	  Qualcomm Technologies Inc TLMM block found on the Qualcomm
+	  Technologies Inc Netrani platform.
+
 config PINCTRL_SM8150
 	tristate "Qualcomm Technologies Inc SM8150 pin controller driver"
 	depends on ARM64 || COMPILE_TEST
