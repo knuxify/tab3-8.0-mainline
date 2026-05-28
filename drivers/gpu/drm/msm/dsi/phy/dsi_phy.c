@@ -579,6 +579,8 @@ static const struct of_device_id dsi_phy_dt_match[] = {
 	  .data = &dsi_phy_3nm_8750_cfgs },
 	{ .compatible = "qcom,kaanapali-dsi-phy-3nm",
 	  .data = &dsi_phy_3nm_kaanapali_cfgs },
+	{ .compatible = "qcom,netrani-dsi-phy-5nm",
+	  .data = &dsi_phy_5nm_netrani_cfgs },
 #endif
 	{}
 };
