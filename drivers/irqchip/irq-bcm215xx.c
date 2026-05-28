@@ -183,19 +183,21 @@ static const struct irq_domain_ops bcm215xx_intc_domain_ops = {
 static int __init bcm215xx_intc_of_init(struct device_node *node,
 			      struct device_node *parent)
 {
-	unsigned int i;
+	void *block_base;
+	int i;
 
 	intc.base = of_iomap(node, 0);
 	if (WARN_ON(!intc.base))
 		return -ENOMEM;
 
 	/* Clear and disable all interrupts by default */
-	for (i = 0; i < NUM_IRQ_BLOCKS; i++) {
-		writel(0, intc.base + (i * 0x100) + INTC_IMR);
-		writel(~0, intc.base + (i * 0x100) + INTC_ICR);
-		writel(0, intc.base + (i * 0x100) + INTC_ISR);
-		writel(0, intc.base + (i * 0x100) + INTC_IMSR);
-		writel(0, intc.base + (i * 0x100) + INTC_ISELR);
+	for (i = 0; i < NUM_IRQ_BLOCKS * NUM_IRQS_IN_BLOCK; i += NUM_IRQS_IN_BLOCK) {
+		block_base = intc.base + _intc_hwirq_to_offset(i);
+		writel(0, block_base + INTC_IMR);
+		writel(~0, block_base + INTC_ICR);
+		writel(0, block_base + INTC_ISR);
+		writel(0, block_base + INTC_IMSR);
+		writel(0, block_base + INTC_ISELR);
 	}
 
 	intc.domain = irq_domain_create_linear(of_fwnode_handle(node), 96,
