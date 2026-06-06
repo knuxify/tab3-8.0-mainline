@@ -4,15 +4,15 @@
  */
 
 #include <dt-bindings/interrupt-controller/arm-gic.h>
-#include <dt-bindings/clock/qcom,gcc-sm7435.h>
+#include <dt-bindings/clock/qcom,netrani-gcc.h>
 #include <dt-bindings/clock/qcom,rpmh.h>
-#include <dt-bindings/clock/qcom,sm7435-dispcc.h>
+/*#include <dt-bindings/clock/qcom,netrani-dispcc.h>*/
 #include <dt-bindings/gpio/gpio.h>
 #include <dt-bindings/mailbox/qcom-ipcc.h>
 #include <dt-bindings/power/qcom,rpmhpd.h>
 #include <dt-bindings/power/qcom-rpmpd.h>
 #include <dt-bindings/interconnect/qcom,icc.h>
-#include <dt-bindings/interconnect/qcom,sm7435.h>
+#include <dt-bindings/interconnect/qcom,netrani-rpmh.h>
 #include <dt-bindings/soc/qcom,rpmh-rsc.h>
 #include <dt-bindings/firmware/qcom,scm.h>
 #include <dt-bindings/dma/qcom-gpi.h>
@@ -285,7 +285,7 @@
 
 	firmware {
 		scm: scm {
-			compatible = "qcom,scm-sm7435", "qcom,scm";
+			compatible = "qcom,scm-netrani", "qcom,scm";
 			qcom,dload-mode = <&tcsr 0x13000>;
 			interconnects = <&aggre2_noc MASTER_CRYPTO 0 &mc_virt SLAVE_EBI1 0>;
 			#reset-cells = <1>;
@@ -293,13 +293,13 @@
 	};
 
 	clk_virt: interconnect-0 {
-		compatible = "qcom,sm7435-clk-virt";
+		compatible = "qcom,netrani-clk-virt";
 		#interconnect-cells = <2>;
 		qcom,bcm-voters = <&apps_bcm_voter>;
 	};
 
 	mc_virt: interconnect-1 {
-		compatible = "qcom,sm7435-mc-virt";
+		compatible = "qcom,netrani-mc-virt";
 		#interconnect-cells = <2>;
 		qcom,bcm-voters = <&apps_bcm_voter>;
 	};
@@ -587,7 +587,7 @@
 		compatible = "simple-bus";
 
 		gcc: clock-controller@100000 {
-			compatible = "qcom,gcc-sm7435";
+			compatible = "qcom,gcc-netrani";
 			reg = <0x0 0x00100000 0x0 0x1f4200>;
 			#clock-cells = <1>;
 			#reset-cells = <1>;
@@ -606,7 +606,7 @@
 
 		gpi_dma0: dma-controller@900000 {
 			// TODO: might need to drop the 2nd compatible
-			compatible = "qcom,sm7435-gpi-dma", "qcom,sm6350-gpi-dma";
+			compatible = "qcom,netrani-gpi-dma", "qcom,sm6350-gpi-dma";
 			#dma-cells = <3>;
 			reg = <0 0x00900000 0 0x60000>;
 			interrupts = <GIC_SPI 244 IRQ_TYPE_LEVEL_HIGH>,
@@ -627,7 +627,7 @@
 			status = "disabled";
 		};
 
-		qupv3_id_0: geniqup@9c0000 {
+		/*qupv3_id_0: geniqup@9c0000 {
 			compatible = "qcom,geni-se-qup";
 			reg = <0x0 0x009c0000 0x0 0x2000>;
 			clock-names = "m-ahb", "s-ahb";
@@ -1039,7 +1039,7 @@
 				dma-names = "tx", "rx";
 				status = "disabled";
 			};
-		};
+		};*/
 
 		rng: rng@10c3000 {
 			compatible = "qcom,trng";
@@ -1047,35 +1047,35 @@
 		};
 
 		cnoc2_noc: interconnect@1500000 {
-			compatible = "qcom,sm7435-cnoc2-noc";
+			compatible = "qcom,netrani-cnoc2-noc";
 			reg = <0 0x01500000 0 0x1000>;
 			#interconnect-cells = <2>;
 			qcom,bcm-voters = <&apps_bcm_voter>;
 		};
 
 		cnoc3_noc: interconnect@1502000 {
-			compatible = "qcom,sm7435-cnoc3-noc";
+			compatible = "qcom,netrani-cnoc3-noc";
 			reg = <0 0x01502000 0 0x1000>;
 			#interconnect-cells = <2>;
 			qcom,bcm-voters = <&apps_bcm_voter>;
 		};
 
 		system_noc: interconnect@1680000 {
-			compatible = "qcom,sm7435-system-noc";
+			compatible = "qcom,netrani-system-noc";
 			reg = <0 0x01680000 0 0x1e200>;
 			#interconnect-cells = <2>;
 			qcom,bcm-voters = <&apps_bcm_voter>;
 		};
 
 		pcie_noc: interconnect@16c0000 {
-			compatible = "qcom,sm7435-pcie-anoc";
+			compatible = "qcom,netrani-pcie-anoc";
 			reg = <0 0x016c0000 0 0xe280>;
 			#interconnect-cells = <2>;
 			qcom,bcm-voters = <&apps_bcm_voter>;
 		};
 
 		aggre1_noc: interconnect@16e0000 {
-			compatible = "qcom,sm7435-aggre1-noc";
+			compatible = "qcom,netrani-aggre1-noc";
 			reg = <0 0x016e0000 0 0x1c080>;
 			#interconnect-cells = <2>;
 			clocks = <&gcc GCC_AGGRE_UFS_PHY_AXI_CLK>,
@@ -1084,7 +1084,7 @@
 		};
 
 		aggre2_noc: interconnect@1700000 {
-			compatible = "qcom,sm7435-aggre2-noc";
+			compatible = "qcom,netrani-aggre2-noc";
 			reg = <0 0x01700000 0 0x31080>;
 			#interconnect-cells = <2>;
 			qcom,bcm-voters = <&apps_bcm_voter>;
@@ -1094,7 +1094,7 @@
 		};
 
 		mmss_noc: interconnect@1740000 {
-			compatible = "qcom,sm7435-mmss-noc";
+			compatible = "qcom,netrani-mmss-noc";
 			reg = <0 0x01740000 0 0x1f080>;
 			#interconnect-cells = <2>;
 			qcom,bcm-voters = <&apps_bcm_voter>;
@@ -1107,7 +1107,7 @@
 		};
 
 		tcsr: syscon@1fc0000 {
-			compatible = "qcom,sm7435-tcsr", "syscon";
+			compatible = "qcom,netrani-tcsr", "syscon";
 			reg = <0x0 0x1fc0000 0x0 0x30000>;
 		};
 
@@ -1121,8 +1121,8 @@
 
 		// TODO: MDSS
 
-		dispcc: clock-controller@af00000 {
-			compatible = "qcom,sm7435-dispcc";
+		/*dispcc: clock-controller@af00000 {
+			compatible = "qcom,netrani-dispcc";
 			reg = <0 0x0af00000 0 0x20000>;
 			clocks = <&rpmhcc RPMH_CXO_CLK>,
 				 <&rpmhcc RPMH_CXO_CLK_A>,
@@ -1130,18 +1130,18 @@
 				 <&sleep_clk>,
 				 // <&mdss_dsi0_phy 0>,
 				 // <&mdss_dsi0_phy 1>,
-				 <0>, /* dp1 */
+				 <0>, // dp1 
 				 <0>,
-				 <0>, /* dp2 */
+				 <0>, // dp2
 				 <0>,
-				 <0>, /* dp3 */
+				 <0>, // dp3
 				 <0>;
 			power-domains = <&rpmhpd RPMHPD_MMCX>;
 			required-opps = <&rpmhpd_opp_low_svs>;
 			#clock-cells = <1>;
 			#reset-cells = <1>;
 			#power-domain-cells = <1>;
-		};
+		};*/
 
 		pdc: interrupt-controller@b220000 {
 			compatible = "qcom,pdc";
@@ -1175,15 +1175,15 @@
 			#size-cells = <0>;
 		};
 
-		tlmm: pinctrl@f000000 {
-			compatible = "qcom,sm7435-tlmm";
-			reg = <0 0x0f000000 0 0x1000000>;
+		tlmm: pinctrl@f100000 {
+			compatible = "qcom,netrani-tlmm";
+			reg = <0 0x0f100000 0 0x300000>;
 			interrupts = <GIC_SPI 208 IRQ_TYPE_LEVEL_HIGH>;
 			gpio-controller;
 			#gpio-cells = <2>;
 			interrupt-controller;
 			#interrupt-cells = <2>;
-			gpio-ranges = <&tlmm 0 0 211>;
+			gpio-ranges = <&tlmm 0 0 141>;
 			wakeup-parent = <&pdc>;
 
 			sdc2_default_state: sdc2-default-state {
@@ -1584,7 +1584,7 @@
 
 		sram@146aa000 {
 			// TODO: add compatible to dt-bindings
-			compatible = "qcom,sm7435-imem", "syscon", "simple-mfd";
+			compatible = "qcom,netrani-imem", "syscon", "simple-mfd";
 			reg = <0 0x146aa000 0 0x1000>;
 			ranges = <0 0 0x146aa000 0x1000>;
 
@@ -1796,14 +1796,14 @@
 			};
 
 			rpmhcc: clock-controller {
-				compatible = "qcom,sm7435-rpmh-clk";
+				compatible = "qcom,netrani-rpmh-clk";
 				#clock-cells = <1>;
 				clock-names = "xo";
 				clocks = <&xo_board>;
 			};
 
 			rpmhpd: power-controller {
-				compatible = "qcom,sm7435-rpmhpd";
+				compatible = "qcom,netrani-rpmhpd";
 				#power-domain-cells = <1>;
 				operating-points-v2 = <&rpmhpd_opp_table>;
 
@@ -1885,7 +1885,7 @@
 		};
 
 		gem_noc: interconnect@19100000 {
-			compatible = "qcom,sm7435-gem-noc";
+			compatible = "qcom,netrani-gem-noc";
 			reg = <0 0x19100000 0 0xbb800>;
 			#interconnect-cells = <2>;
 			qcom,bcm-voters = <&apps_bcm_voter>;
@@ -1938,7 +1938,7 @@
 				<0 0>,
 				<0 0>,
 				<0 0>;
-			qcom,ice = <&ice>;
+			//qcom,ice = <&ice>;
 
 			status = "disabled";
 		};
@@ -1964,12 +1964,12 @@
 			status = "disabled";
 		};
 
-		ice: crypto@1d88000 {
+		/*ice: crypto@1d88000 {
 			compatible = "qcom,sm8450-inline-crypto-engine",
 				     "qcom,inline-crypto-engine";
 			reg = <0 0x01d88000 0 0x8000>;
 			clocks = <&gcc GCC_UFS_PHY_ICE_CORE_CLK>;
-		};
+		};*/
 
 		cryptobam: dma-controller@1dc4000 {
 			compatible = "qcom,bam-v1.7.4", "qcom,bam-v1.7.0";
@@ -2123,14 +2123,14 @@
 		};
 
 		nsp_noc: interconnect@320c0000 {
-			compatible = "qcom,sm7435-nsp-noc";
+			compatible = "qcom,netrani-nsp-noc";
 			reg = <0 0x320c0000 0 0x10000>;
 			#interconnect-cells = <2>;
 			qcom,bcm-voters = <&apps_bcm_voter>;
 		};
 
 		lpass_ag_noc: interconnect@3c40000 {
-			compatible = "qcom,sm7435-lpass-ag-noc";
+			compatible = "qcom,netrani-lpass-ag-noc";
 			reg = <0 0x03c40000 0 0x17200>;
 			#interconnect-cells = <2>;
 			qcom,bcm-voters = <&apps_bcm_voter>;

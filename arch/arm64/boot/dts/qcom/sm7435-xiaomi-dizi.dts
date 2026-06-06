@@ -7,19 +7,49 @@
 
 #include <dt-bindings/regulator/qcom,rpmh-regulator.h>
 
-#include "sm7435.dtsi"
+#include "netrani.dtsi"
 #include "pmk8350.dtsi"
 #include "pm6450.dtsi"
 #include "pm6150l.dtsi"
 
 / {
 	model = "Xiaomi Redmi Pad Pro/POCO Pad";
-	compatible = "xiaomi,dizi", "qcom,sm7435";
+	compatible = "xiaomi,dizi", "qcom,sm7435", "qcom,netrani";
 
 	chassis-type = "tablet";
 
 	qcom,msm-id = <537 0x10000>; // TODO: are the other values needed?
 	qcom,board-id = <0x2000b 1>;
+
+	framebuffer0: framebuffer@b8000000 {
+		compatible = "simple-framebuffer";
+		reg = <0x00 0xb8000000 0x00 (1600 * 2560 * 4)>;
+		width = <1600>;
+		height = <2560>;
+		stride = <(1600 * 4)>;
+		format = "a8r8g8b8";
+	};
+
+	memory {
+		device_type = "memory";
+		reg = <0x0 0x80000000 0x0 0x68e00000 0x0 0xe9500000 0x0 0x0 0x0 0xea700000 0x0 0x15900000 0x8 0x0 0x0 0x3fd00000 0x8 0x40000000 0x0 0x7ab00000 0x8 0xc0000000 0x0 0x40000000 0x8 0xbb100000 0x0 0x1e00000>;
+	};
+
+	reserved-memory {
+		ramoops@b5000000 {
+			compatible = "ramoops";
+			reg = <0x0 0x80d00000 0x0 0x200000>;
+			record-size = <0x40000>;
+			console-size = <0x80000>;
+			ftrace-size = <0>;
+			pmsg-size = <0x100000>;
+		};
+
+		cont_splash_mem: memory@b8000000 {
+			reg = <0x0 0xb8000000 0x0 0x2b00000>;
+			no-map;
+		};
+	};
 };
 
 &pm6150l_flash {
@@ -35,7 +65,7 @@
  */
 
 &apps_rsc {
-	regulators-1 {
+	/*regulators-0 {
 		compatible = "qcom,pm6450-rpmh-regulators";
 		qcom,pmic-id = "b";
 
@@ -238,7 +268,7 @@
 			regulator-max-microvolt = <3544000>;
 			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
 		};
-	};
+	};*/
 
 	regulators-1 {
 		compatible = "qcom,pm6150l-rpmh-regulators";
@@ -309,4 +339,8 @@
 			regulator-max-microvolt = <3400000>;
 		};
 	};
+};
+
+&tlmm {
+	gpio-reserved-ranges = <0 4>, <59 4>;
 };
