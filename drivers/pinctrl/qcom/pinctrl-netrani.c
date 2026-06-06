@@ -1793,7 +1793,7 @@ static const struct msm_pinctrl_soc_data netrani_tlmm = {
 	.nfunctions = ARRAY_SIZE(netrani_functions),
 	.groups = netrani_groups,
 	.ngroups = ARRAY_SIZE(netrani_groups),
-	.ngpios = 142,
+	.ngpios = 141,
 	.wakeirq_map = netrani_pdc_map,
 	.nwakeirq_map = ARRAY_SIZE(netrani_pdc_map),
 };
