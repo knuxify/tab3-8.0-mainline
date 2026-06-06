@@ -24,9 +24,10 @@ Patches as they are submitted to the mailing list; contain the most up-to-date a
 
 ## dizi/*
 
-Branches containing work-in-progress code for the Xiaomi Redmi Pad Pro/POCO Pad, as well as SM7435 SoC support. Very WIP, haven't even gotten to compiling it yet... Needs DPU driver, PM6450 driver, and maybe GPU nodes/driver support/GPUCC.
+Branches containing work-in-progress code for the Xiaomi Redmi Pad Pro/POCO Pad, as well as SM7435 SoC support. Very WIP, compiles and boots but lots of stuff is missing... Needs DPU driver, PM6450 driver, and maybe GPU nodes/driver support/GPUCC.
 
-- `dizi/6.14`: Current WIP work.
+- `dizi/7.0`: Current work.
+- `dizi/6.14`: Old, non-functional WIP branch.
 
 ## tab3/*
 
