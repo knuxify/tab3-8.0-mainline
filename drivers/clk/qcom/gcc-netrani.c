@@ -10,7 +10,7 @@
 #include <linux/platform_device.h>
 #include <linux/regmap.h>
 
-#include <dt-bindings/clock/qcom,gcc-netrani.h>
+#include <dt-bindings/clock/qcom,netrani-gcc.h>
 
 #include "clk-alpha-pll.h"
 #include "clk-branch.h"

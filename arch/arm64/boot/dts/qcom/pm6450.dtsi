@@ -40,6 +40,9 @@
 		compatible = "qcom,pm6450", "qcom,spmi-pmic";
 		reg = <0x1 SPMI_USID>;
 
+		#address-cells = <1>;
+		#size-cells = <0>;
+
 		pm6450_temp: temp-alarm@a00 {
 			compatible = "qcom,spmi-temp-alarm";
 			reg = <0x0a00>;

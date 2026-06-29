@@ -1879,5 +1879,5 @@ static void __exit qnoc_driver_exit(void)
 }
 module_exit(qnoc_driver_exit);
 
-MODULE_DESCRIPTION("netrani NoC driver");
+MODULE_DESCRIPTION("Netrani NoC driver");
 MODULE_LICENSE("GPL v2");

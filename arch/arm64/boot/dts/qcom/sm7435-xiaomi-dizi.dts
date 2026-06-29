@@ -15,7 +15,6 @@
 / {
 	model = "Xiaomi Redmi Pad Pro/POCO Pad";
 	compatible = "xiaomi,dizi", "qcom,sm7435", "qcom,netrani";
-
 	chassis-type = "tablet";
 
 	qcom,msm-id = <537 0x10000>; // TODO: are the other values needed?
@@ -28,6 +27,14 @@
 		height = <2560>;
 		stride = <(1600 * 4)>;
 		format = "a8r8g8b8";
+
+		clocks = <&gcc GCC_DISP_HF_AXI_CLK>,
+				<&dispcc DISP_CC_MDSS_MDP_CLK>,
+				<&dispcc DISP_CC_MDSS_BYTE0_CLK>,
+				<&dispcc DISP_CC_MDSS_BYTE0_INTF_CLK>,
+				<&dispcc DISP_CC_MDSS_PCLK0_CLK>,
+				<&dispcc DISP_CC_MDSS_VSYNC_CLK>;
+		//power-domains = <&dispcc DISP_CC_MDSS_CORE_GDSC>;
 	};
 
 	memory {
@@ -50,6 +57,33 @@
 			no-map;
 		};
 	};
+};
+
+&sdhc_2 {
+	vmmc-supply = <&pm6150l_l9>;
+	vqmmc-supply = <&pm6150l_l6>;
+
+	cd-gpios = <&tlmm 107 GPIO_ACTIVE_LOW>;
+	status = "okay";
+};
+
+&ufs_mem_hc {
+	//vcc-supply = <&pm6450_l24>;
+	//vccq-supply = <&pm6450_l13>;
+	//vdd-hba-supply = <&gdsc>;
+	//vccq2-supply = <&pm6450_l19>;
+	vccq-max-microamp = <1200000>;
+	vccq2-max-microamp = <750000>;
+
+	reset-gpios = <&tlmm 141 GPIO_ACTIVE_LOW>;
+
+	status = "okay";
+};
+
+&ufs_mem_phy {
+	//vdda-phy-supply = <&pm6450_l5>;
+	//vdda-pll-supply = <&pm6450_l16>;
+	status = "okay";
 };
 
 &pm6150l_flash {

@@ -15,6 +15,7 @@
 	asm volatile (__stringify(ASM_BUG_FLAGS(flags)));
 
 #define BUG() do {					\
+	printk("BUG: failure at %s:%d/%s()!\n", __FILE__, __LINE__, __func__); \
 	__BUG_FLAGS(0);					\
 	unreachable();					\
 } while (0)

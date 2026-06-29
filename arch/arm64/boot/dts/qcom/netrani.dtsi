@@ -5,8 +5,8 @@
 
 #include <dt-bindings/interrupt-controller/arm-gic.h>
 #include <dt-bindings/clock/qcom,netrani-gcc.h>
+#include <dt-bindings/clock/qcom,netrani-dispcc.h>
 #include <dt-bindings/clock/qcom,rpmh.h>
-/*#include <dt-bindings/clock/qcom,netrani-dispcc.h>*/
 #include <dt-bindings/gpio/gpio.h>
 #include <dt-bindings/mailbox/qcom-ipcc.h>
 #include <dt-bindings/power/qcom,rpmhpd.h>
@@ -627,7 +627,7 @@
 			status = "disabled";
 		};
 
-		/*qupv3_id_0: geniqup@9c0000 {
+		qupv3_id_0: geniqup@9c0000 {
 			compatible = "qcom,geni-se-qup";
 			reg = <0x0 0x009c0000 0x0 0x2000>;
 			clock-names = "m-ahb", "s-ahb";
@@ -865,6 +865,7 @@
 		};
 
 		gpi_dma1: dma-controller@a00000 {
+			// TODO compatible
 			compatible = "qcom,sm8450-gpi-dma", "qcom,sm6350-gpi-dma";
 			#dma-cells = <3>;
 			reg = <0 0x00a00000 0 0x60000>;
@@ -1039,7 +1040,7 @@
 				dma-names = "tx", "rx";
 				status = "disabled";
 			};
-		};*/
+		};
 
 		rng: rng@10c3000 {
 			compatible = "qcom,trng";
@@ -1121,15 +1122,15 @@
 
 		// TODO: MDSS
 
-		/*dispcc: clock-controller@af00000 {
+		dispcc: clock-controller@af00000 {
 			compatible = "qcom,netrani-dispcc";
 			reg = <0 0x0af00000 0 0x20000>;
 			clocks = <&rpmhcc RPMH_CXO_CLK>,
 				 <&rpmhcc RPMH_CXO_CLK_A>,
 				 <&gcc GCC_DISP_AHB_CLK>,
 				 <&sleep_clk>,
-				 // <&mdss_dsi0_phy 0>,
-				 // <&mdss_dsi0_phy 1>,
+				 <0>, // <&mdss_dsi0_phy 0>,
+				 <0>, // <&mdss_dsi0_phy 1>,
 				 <0>, // dp1 
 				 <0>,
 				 <0>, // dp2
@@ -1141,7 +1142,7 @@
 			#clock-cells = <1>;
 			#reset-cells = <1>;
 			#power-domain-cells = <1>;
-		};*/
+		};
 
 		pdc: interrupt-controller@b220000 {
 			compatible = "qcom,pdc";
@@ -1165,12 +1166,17 @@
 				    "obsrvr",
 				    "intr",
 				    "cnfg";
-			interrupt-names = "periph_irq";
+
 			interrupts-extended = <&pdc 1 IRQ_TYPE_LEVEL_HIGH>;
+			interrupt-names = "periph_irq";
+
 			qcom,ee = <0>;
 			qcom,channel = <0>;
+			qcom,bus-id = <0>;
+
 			interrupt-controller;
 			#interrupt-cells = <4>;
+
 			#address-cells = <2>;
 			#size-cells = <0>;
 		};
@@ -2078,7 +2084,7 @@
 					  "dm_hs_phy_irq",
 					  "ss_phy_irq";
 
-			// TODO
+			// TODO?
 			//power-domains = <&gcc USB30_PRIM_GDSC>;
 
 			resets = <&gcc GCC_USB30_PRIM_BCR>;
